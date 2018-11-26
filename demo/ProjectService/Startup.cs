@@ -37,10 +37,12 @@ namespace ProjectService
             {
                 app.UseHsts();
             }
+            app.UseStaticFiles();
             app.UseMvc();
             app.UseSwagger()
                 .UseSwaggerUI(c =>
                 {
+                    c.SwaggerEndpoint("/test.json", "Test");
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                 });
         }

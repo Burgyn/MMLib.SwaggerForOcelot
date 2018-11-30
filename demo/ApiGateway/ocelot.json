@@ -31,12 +31,12 @@
     {
       "Key": "projects",
       "Name": "Projects API",
-      "Url": "/test2.json"
+      "Url": "http://localhost:5200/swagger/v1/swagger.json"
     },
     {
       "Key": "contacts",
       "Name": "Contacts API",
-      "Url": "/test.json"
+      "Url": "http://localhost:5100/swagger/v1/swagger.json"
     }
   ],
   "GlobalConfiguration": {

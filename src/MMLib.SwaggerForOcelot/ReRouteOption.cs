@@ -2,11 +2,13 @@
 {
     internal class ReRouteOption
     {
-        public SwaggerEndPointOption SwaggerEndPoint { get; set; }
+        public string SwaggerKey { get; set; }
     }
 
     internal class SwaggerEndPointOption
     {
+        public string Key { get; set; }
+
         public string Name { get; set; }
 
         public string Url { get; set; }

@@ -10,7 +10,8 @@
         }
       ],
       "UpstreamPathTemplate": "/api/contacts/{everything}",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "contacts"
     },
     {
       "DownstreamPathTemplate": "/api/{everything}",
@@ -22,7 +23,20 @@
         }
       ],
       "UpstreamPathTemplate": "/api/projects/{everything}",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "projects"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "projects",
+      "Name": "Projects API",
+      "Url": "/test2.json"
+    },
+    {
+      "Key": "contacts",
+      "Name": "Contacts API",
+      "Url": "/test.json"
     }
   ],
   "GlobalConfiguration": {

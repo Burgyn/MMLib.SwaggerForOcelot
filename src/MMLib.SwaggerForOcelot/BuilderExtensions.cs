@@ -10,9 +10,9 @@ namespace MMLib.SwaggerForOcelot
         {
             app.UseSwaggerUI(c =>
             {
-                foreach (var reRoute in configuration.GetSection("ReRoutes").Get<IEnumerable<ReRouteOption>>())
+                foreach (var endPoint in configuration.GetSection("SwaggerEndPoints").Get<IEnumerable<SwaggerEndPointOption>>())
                 {
-                    c.SwaggerEndpoint(reRoute.SwaggerEndPoint.Url, reRoute.SwaggerEndPoint.Name);
+                    c.SwaggerEndpoint(endPoint.Url, endPoint.Name);
                 }
             });
 

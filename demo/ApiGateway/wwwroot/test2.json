@@ -1,0 +1,139 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "v1",
+    "title": "Projects API VVVV"
+  },
+  "paths": {
+    "/api/Projects": {
+      "get": {
+        "tags": [ "Service1 - Projects" ],
+        "operationId": "Get",
+        "consumes": [],
+        "produces": [ "text/plain", "application/json", "text/json" ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "uniqueItems": false,
+              "type": "array",
+              "items": { "$ref": "#/definitions/Service1 - Project" }
+            }
+          }
+        }
+      }
+    },
+    "/api/Projects/{id}": {
+      "get": {
+        "tags": [ "Service1 - Projects" ],
+        "operationId": "Get",
+        "consumes": [],
+        "produces": [ "text/plain", "application/json", "text/json" ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": { "$ref": "#/definitions/Service1 - Project" }
+          },
+          "404": { "description": "Not Found" }
+        }
+      }
+    },
+    "/api/Projects/projectCreate": {
+      "post": {
+        "tags": [ "Service1 - Projects" ],
+        "operationId": "CreateProject",
+        "consumes": [ "application/json-patch+json", "application/json", "text/json", "application/*+json" ],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "projectViewModel",
+            "in": "body",
+            "required": false,
+            "schema": { "$ref": "#/definitions/Service1 - ProjectViewModel" }
+          }
+        ],
+        "responses": {
+          "201": { "description": "Success" },
+          "400": { "description": "Bad Request" }
+        }
+      }
+    },
+    "/api/Values": {
+      "get": {
+        "tags": [ "Service1 - Values" ],
+        "operationId": "Get",
+        "consumes": [],
+        "produces": [ "text/plain", "application/json", "text/json" ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "uniqueItems": false,
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "service2/api/Values": {
+      "get": {
+        "tags": [ "Service2 - Values" ],
+        "operationId": "Get",
+        "consumes": [],
+        "produces": [ "text/plain", "application/json", "text/json" ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "uniqueItems": false,
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Service1 - Project": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "owner": { "type": "string" }
+      }
+    },
+    "Service1 - ProjectViewModel": {
+      "required": [ "name", "owner" ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "maxLength": 50,
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 255,
+          "type": "string"
+        },
+        "owner": { "type": "string" }
+      }
+    }
+  }
+}

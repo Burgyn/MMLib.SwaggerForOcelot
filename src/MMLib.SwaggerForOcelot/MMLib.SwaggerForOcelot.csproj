@@ -15,8 +15,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>MMLib.SwaggerForOcelot.xml</DocumentationFile>
-    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>bin\Release\MMLib.SwaggerForOcelot.xml</DocumentationFile>
+    <OutputPath>bin\Release</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

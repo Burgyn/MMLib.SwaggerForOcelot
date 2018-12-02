@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MMLib.SwaggerForOcelot</name>
+    </assembly>
+    <members>
+        <member name="T:MMLib.SwaggerForOcelot.Configuration.ReRouteOption">
+            <summary>
+            Ocelot ReRoute configuration.
+            </summary>
+        </member>
+        <member name="P:MMLib.SwaggerForOcelot.Configuration.ReRouteOption.SwaggerKey">
+            <summary>
+            Swagger key. This key is used for generating swagger documentation for downstream services.
+            The same key have to be in <see cref="T:MMLib.SwaggerForOcelot.Configuration.SwaggerEndPointOption"/> collection.
+            </summary>
+        </member>
+        <member name="P:MMLib.SwaggerForOcelot.Configuration.ReRouteOption.DownstreamPathTemplate">
+            <summary>
+            Gets or sets the downstream path template.
+            </summary>
+        </member>
+        <member name="P:MMLib.SwaggerForOcelot.Configuration.ReRouteOption.UpstreamPathTemplate">
+            <summary>
+            Gets or sets the upstream path template.
+            </summary>
+        </member>
+        <member name="P:MMLib.SwaggerForOcelot.Configuration.ReRouteOption.DownstreamPath">
+            <summary>
+            Gets the downstream path.
+            </summary>
+        </member>
+        <member name="P:MMLib.SwaggerForOcelot.Configuration.ReRouteOption.UpstreamPath">
+            <summary>
+            Gets the upstream path.
+            </summary>
+        </member>
+        <member name="T:MMLib.SwaggerForOcelot.Configuration.SwaggerEndPointOption">
+            <summary>
+            Swagger endpoint configuration.
+            </summary>
+        </member>
+        <member name="F:MMLib.SwaggerForOcelot.Configuration.SwaggerEndPointOption.ConfigurationSectionName">
+            <summary>
+            The configuration section name.
+            </summary>
+        </member>
+        <member name="P:MMLib.SwaggerForOcelot.Configuration.SwaggerEndPointOption.Key">
+            <summary>
+            Swagger endpoint key, which have to corresponding with <see cref="P:MMLib.SwaggerForOcelot.Configuration.ReRouteOption.SwaggerKey"/>.
+            </summary>
+        </member>
+        <member name="P:MMLib.SwaggerForOcelot.Configuration.SwaggerEndPointOption.KeyToPath">
+            <summary>
+            Gets the path from key.
+            </summary>
+        </member>
+        <member name="P:MMLib.SwaggerForOcelot.Configuration.SwaggerEndPointOption.Name">
+            <summary>
+            End point name. This name is displayed in Swagger UI page.
+            </summary>
+        </member>
+        <member name="P:MMLib.SwaggerForOcelot.Configuration.SwaggerEndPointOption.Url">
+            <summary>
+            Full url to downstream service swagger endpoint.
+            </summary>
+            <example>http://localhost:5100/swagger/v1/swagger.json</example>
+        </member>
+        <member name="T:MMLib.SwaggerForOcelot.Configuration.SwaggerForOCelotUIOptions">
+            <summary>
+            Configuration for Swagger UI.
+            </summary>
+            <seealso cref="T:Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIOptions" />
+        </member>
+        <member name="P:MMLib.SwaggerForOcelot.Configuration.SwaggerForOCelotUIOptions.EndPointBasePath">
+            <summary>
+            The end point base path. The final path to swagger endpoint is
+            <see cref="P:MMLib.SwaggerForOcelot.Configuration.SwaggerForOCelotUIOptions.EndPointBasePath"/> + <see cref="P:MMLib.SwaggerForOcelot.Configuration.SwaggerEndPointOption.Key"/>
+            </summary>
+        </member>
+        <member name="T:MMLib.SwaggerForOcelot.Middleware.SwaggerForOcelotMiddleware">
+            <summary>
+            Swagger for Ocelot middleware.
+            This middleware generate swagger documentation from downstream services for SwaggerUI.
+            </summary>
+        </member>
+        <member name="M:MMLib.SwaggerForOcelot.Middleware.SwaggerForOcelotMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,MMLib.SwaggerForOcelot.Configuration.SwaggerForOCelotUIOptions,Microsoft.Extensions.Options.IOptions{System.Collections.Generic.List{MMLib.SwaggerForOcelot.Configuration.ReRouteOption}},Microsoft.Extensions.Options.IOptions{System.Collections.Generic.List{MMLib.SwaggerForOcelot.Configuration.SwaggerEndPointOption}},System.Net.Http.IHttpClientFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MMLib.SwaggerForOcelot.Middleware.SwaggerForOcelotMiddleware"/> class.
+            </summary>
+            <param name="next">The next delegate.</param>
+            <param name="options">The options.</param>
+            <param name="reRoutes">The Ocelot ReRoutes configuration.</param>
+            <param name="swaggerEndPoints">The swagger end points.</param>
+            <param name="httpClientFactory">The HTTP client factory.</param>
+        </member>
+        <member name="M:MMLib.SwaggerForOcelot.Middleware.SwaggerForOcelotMiddleware.Invoke(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Invokes the specified context.
+            </summary>
+            <param name="context">The context.</param>
+        </member>
+        <member name="M:MMLib.SwaggerForOcelot.Transformation.SwaggerJsonTransformer.Transform(System.String,System.Collections.Generic.IEnumerable{MMLib.SwaggerForOcelot.Configuration.ReRouteOption})">
+            <summary>
+            Transforms swagger json from downstream service with ocelot configuration.
+            </summary>
+            <param name="swaggerJson">The swagger json.</param>
+            <param name="reRoutes">The re routes.</param>
+            <returns>
+            Transformed swagger json.
+            </returns>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions">
+            <summary>
+            Extensions for adding configuration for <see cref="!:SwaggerForOcelotMiddleware"/> into <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions.AddSwaggerForOcelot(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Adds configuration for for <see cref="!:SwaggerForOcelotMiddleware"/> into <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>.
+            </summary>
+            <param name="services">The services.</param>
+            <param name="configuration">The configuration.</param>
+            <returns><see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/></returns>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Builder.BuilderExtensions">
+            <summary>
+            Extensions for adding <see cref="T:MMLib.SwaggerForOcelot.Middleware.SwaggerForOcelotMiddleware"/> into application pipeline.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Builder.BuilderExtensions.UseSwaggerForOcelotUI(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Add Swagger generator for downstream services and UI into application pipeline.
+            </summary>
+            <param name="app">The application builder.</param>
+            <param name="configuration">The configuration.</param>
+            <returns>
+            <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder"/>.
+            </returns>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Builder.BuilderExtensions.UseSwaggerForOcelotUI(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.Extensions.Configuration.IConfiguration,System.Action{MMLib.SwaggerForOcelot.Configuration.SwaggerForOCelotUIOptions})">
+            <summary>
+            Add Swagger generator for downstream services and UI into application pipeline.
+            </summary>
+            <param name="app">The application builder.</param>
+            <param name="configuration">The configuration.</param>
+            <param name="setupAction">Setup <see cref="T:MMLib.SwaggerForOcelot.Configuration.SwaggerForOCelotUIOptions"/></param>
+            <returns>
+            <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder"/>.
+            </returns>
+        </member>
+    </members>
+</doc>

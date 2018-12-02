@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using MMLib.SwaggerForOcelot.Configuration;
 using MMLib.SwaggerForOcelot.Middleware;
 using Swashbuckle.AspNetCore.SwaggerUI;
@@ -8,20 +7,39 @@ using System.Collections.Generic;
 
 namespace Microsoft.AspNetCore.Builder
 {
+    /// <summary>
+    /// Extensions for adding <see cref="SwaggerForOcelotMiddleware"/> into application pipeline.
+    /// </summary>
     public static class BuilderExtensions
     {
-        public static IApplicationBuilder UseSwaggerForOcelot(
+        /// <summary>
+        /// Add Swagger generator for downstream services and UI into application pipeline.
+        /// </summary>
+        /// <param name="app">The application builder.</param>
+        /// <param name="configuration">The configuration.</param>
+        /// <returns>
+        /// <see cref="IApplicationBuilder"/>.
+        /// </returns>
+        public static IApplicationBuilder UseSwaggerForOcelotUI(
            this IApplicationBuilder app,
-           IConfiguration configuration) => app.UseSwaggerForOcelot(configuration, null);
+           IConfiguration configuration)
+            => app.UseSwaggerForOcelotUI(configuration, null);
 
-        public static IApplicationBuilder UseSwaggerForOcelot(
+        /// <summary>
+        /// Add Swagger generator for downstream services and UI into application pipeline.
+        /// </summary>
+        /// <param name="app">The application builder.</param>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="setupAction">Setup <see cref="SwaggerForOCelotUIOptions"/></param>
+        /// <returns>
+        /// <see cref="IApplicationBuilder"/>.
+        /// </returns>
+        public static IApplicationBuilder UseSwaggerForOcelotUI(
             this IApplicationBuilder app,
             IConfiguration configuration,
             Action<SwaggerForOCelotUIOptions> setupAction)
         {
-            var endPoints = GetConfugration(configuration);
             var options = new SwaggerForOCelotUIOptions();
-
             setupAction?.Invoke(options);
 
             UseSwaggerForOcelot(app, options);
@@ -30,6 +48,7 @@ namespace Microsoft.AspNetCore.Builder
             {
                 InitUIOption(c, options);
 
+                var endPoints = GetConfugration(configuration);
                 AddSwaggerEndPoints(c, endPoints, options.EndPointBasePath);
             });
 
@@ -37,15 +56,13 @@ namespace Microsoft.AspNetCore.Builder
         }
 
         private static void UseSwaggerForOcelot(IApplicationBuilder app, SwaggerForOCelotUIOptions options)
-        {
-            app.Map(options.EndPointBasePath, builder => builder.UseMiddleware<SwaggerForOcelotMiddleware>(options));
-        }
+            => app.Map(options.EndPointBasePath, builder => builder.UseMiddleware<SwaggerForOcelotMiddleware>(options));
 
         private static void AddSwaggerEndPoints(SwaggerUIOptions c, IEnumerable<SwaggerEndPointOption> endPoints, string basePath)
         {
             foreach (var endPoint in endPoints)
             {
-                c.SwaggerEndpoint($"{basePath}/{endPoint.Key}", endPoint.Name);
+                c.SwaggerEndpoint($"{basePath}/{endPoint.KeyToPath}", endPoint.Name);
             }
         }
 

@@ -11,6 +11,10 @@ using System.Threading.Tasks;
 
 namespace MMLib.SwaggerForOcelot.Middleware
 {
+    /// <summary>
+    /// Swagger for Ocelot middleware.
+    /// This middleware generate swagger documentation from downstream services for SwaggerUI.
+    /// </summary>
     public class SwaggerForOcelotMiddleware
     {
         private readonly RequestDelegate _next;
@@ -19,7 +23,14 @@ namespace MMLib.SwaggerForOcelot.Middleware
         private readonly Lazy<Dictionary<string, SwaggerEndPointOption>> _swaggerEndPoints;
         readonly IHttpClientFactory _httpClientFactory;
 
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SwaggerForOcelotMiddleware"/> class.
+        /// </summary>
+        /// <param name="next">The next delegate.</param>
+        /// <param name="options">The options.</param>
+        /// <param name="reRoutes">The Ocelot ReRoutes configuration.</param>
+        /// <param name="swaggerEndPoints">The swagger end points.</param>
+        /// <param name="httpClientFactory">The HTTP client factory.</param>
         public SwaggerForOcelotMiddleware(
             RequestDelegate next,
             SwaggerForOCelotUIOptions options,
@@ -33,9 +44,13 @@ namespace MMLib.SwaggerForOcelot.Middleware
             _httpClientFactory = Check.NotNull(httpClientFactory, nameof(httpClientFactory));
 
             _swaggerEndPoints = new Lazy<Dictionary<string, SwaggerEndPointOption>>(()
-                => swaggerEndPoints.Value.ToDictionary(p => $"/{p.Key}", p => p));
+                => swaggerEndPoints.Value.ToDictionary(p => $"/{p.KeyToPath}", p => p));
         }
 
+        /// <summary>
+        /// Invokes the specified context.
+        /// </summary>
+        /// <param name="context">The context.</param>
         public async Task Invoke(HttpContext context)
         {
             var endPoint = GetEndPoint(context.Request.Path);

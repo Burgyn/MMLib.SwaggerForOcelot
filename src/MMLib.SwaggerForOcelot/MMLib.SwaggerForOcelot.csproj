@@ -2,6 +2,21 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>0.1.0</Version>
+    <Authors>Milan Martiniak</Authors>
+    <Company>MMLib</Company>
+    <Description>Swagger generator for Ocelot downstream services.</Description>
+    <PackageProjectUrl>https://github.com/Burgyn/MMLib.SwaggerForOcelot</PackageProjectUrl>
+    <PackageIconUrl>https://lh6.googleusercontent.com/-HTC1Whl2A3A/UqoLh9OpF_I/AAAAAAAAABc/VviX0GTeB7Q/s96-no/1386896927_37130.ico</PackageIconUrl>
+    <RepositoryUrl>https://github.com/Burgyn/MMLib.SwaggerForOcelot</RepositoryUrl>
+    <PackageTags>swagger;documentation;ocelot</PackageTags>
+    <PackageReleaseNotes />
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>MMLib.SwaggerForOcelot.xml</DocumentationFile>
+    <OutputPath>bin\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

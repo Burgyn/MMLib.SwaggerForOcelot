@@ -39,7 +39,7 @@ namespace ApiGateway
             }
 
             app.UseStaticFiles();
-            app.UseSwaggerForOcelot(Configuration)
+            app.UseSwaggerForOcelotUI(Configuration)
                 .UseOcelot()
                 .Wait();
         }

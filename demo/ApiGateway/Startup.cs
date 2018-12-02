@@ -25,6 +25,7 @@ namespace ApiGateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOcelot();
+            services.AddSwaggerForOcelot(Configuration);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

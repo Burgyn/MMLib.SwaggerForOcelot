@@ -1,6 +1,6 @@
-﻿namespace MMLib.SwaggerForOcelot
+﻿namespace MMLib.SwaggerForOcelot.Configuration
 {
-    internal class ReRouteOption
+    public class ReRouteOption
     {
         public string SwaggerKey { get; set; }
 
@@ -13,14 +13,5 @@
         public string UpstreamPath => Replace(UpstreamPathTemplate);
 
         private string Replace(string value) => value.Replace("{everything}", "");
-    }
-
-    internal class SwaggerEndPointOption
-    {
-        public string Key { get; set; }
-
-        public string Name { get; set; }
-
-        public string Url { get; set; }
     }
 }

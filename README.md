@@ -11,7 +11,7 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
    > Follow the [SwashbuckleAspNetCore documentation](https://github.com/domaindrivendev/Swashbuckle.AspNetCore#getting-started).
 2. Install Nuget package into yout ASP.NET Core Ocelot project.
    > dotnet add package MMLib.SwaggerForOcelot
-3. Configure SwaggerForOcelot in `ocelot.json`
+3. Configure SwaggerForOcelot in `ocelot.json`.
    ```Json
     {
         "ReRoutes": [
@@ -56,7 +56,8 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
         ]
     }
     ```
-
+    >`SwaggerEndPoint` is configuration for downstream service swagger generator endpoint.
+    Property `Key` is used to pair with the ReRoute configuration. `Name` is displayed in the combobox. End `Url` is downstream service swagger generator endpoint.
 4. In the `ConfigureServices` method of `Startup.cs`, register the SwaggerForOcelot generator.
    ```CSharp
    services.AddSwaggerForOcelot(Configuration);
@@ -65,6 +66,8 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
    ```CSharp
    app.UseSwaggerForOcelotUI(Configuration)
    ```
+6. Show your microservices documentations
+   >`http://ocelotserviceurl/swagger`
 
 ## ToDo:
 - [x] Design.
@@ -75,5 +78,6 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 - [x] Add capability for confiuragtion SwaggerUI and configure EndpointBasePath.
 - [ ] Complex Ocelot configuration.
 - [ ] Unit tests
-- [ ] Documentations
+- [x] Documentations
+- [ ] Continuous deliveryzen
 - [ ] Custom Index.html.

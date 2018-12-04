@@ -2,12 +2,12 @@
   "swagger": "2.0",
   "info": {
     "version": "v1",
-    "title": "Contacts API XXXX"
+    "title": "Projects API"
   },
   "paths": {
-    "/api/Projects": {
+    "/api/contacts/Projects": {
       "get": {
-        "tags": [ "Service1 - Projects" ],
+        "tags": [ "Projects" ],
         "operationId": "Get",
         "consumes": [],
         "produces": [ "text/plain", "application/json", "text/json" ],
@@ -18,15 +18,15 @@
             "schema": {
               "uniqueItems": false,
               "type": "array",
-              "items": { "$ref": "#/definitions/Service1 - Project" }
+              "items": { "$ref": "#/definitions/Project" }
             }
           }
         }
       }
     },
-    "/api/Projects/{id}": {
+    "/api/contacts/Projects/{id}": {
       "get": {
-        "tags": [ "Service1 - Projects" ],
+        "tags": [ "Projects" ],
         "operationId": "Get",
         "consumes": [],
         "produces": [ "text/plain", "application/json", "text/json" ],
@@ -42,15 +42,15 @@
         "responses": {
           "200": {
             "description": "Success",
-            "schema": { "$ref": "#/definitions/Service1 - Project" }
+            "schema": { "$ref": "#/definitions/Project" }
           },
           "404": { "description": "Not Found" }
         }
       }
     },
-    "/api/Projects/projectCreate": {
+    "/api/contacts/Projects/projectCreate": {
       "post": {
-        "tags": [ "Service1 - Projects" ],
+        "tags": [ "Projects" ],
         "operationId": "CreateProject",
         "consumes": [ "application/json-patch+json", "application/json", "text/json", "application/*+json" ],
         "produces": [],
@@ -59,7 +59,7 @@
             "name": "projectViewModel",
             "in": "body",
             "required": false,
-            "schema": { "$ref": "#/definitions/Service1 - ProjectViewModel" }
+            "schema": { "$ref": "#/definitions/ProjectViewModel" }
           }
         ],
         "responses": {
@@ -68,28 +68,9 @@
         }
       }
     },
-    "/api/Values": {
+    "/api/contacts/Values": {
       "get": {
-        "tags": [ "Service1 - Values" ],
-        "operationId": "Get",
-        "consumes": [],
-        "produces": [ "text/plain", "application/json", "text/json" ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "schema": {
-              "uniqueItems": false,
-              "type": "array",
-              "items": { "type": "string" }
-            }
-          }
-        }
-      }
-    },
-    "service2/api/Values": {
-      "get": {
-        "tags": [ "Service2 - Values" ],
+        "tags": [ "Values" ],
         "operationId": "Get",
         "consumes": [],
         "produces": [ "text/plain", "application/json", "text/json" ],
@@ -108,7 +89,7 @@
     }
   },
   "definitions": {
-    "Service1 - Project": {
+    "Project": {
       "type": "object",
       "properties": {
         "id": {
@@ -120,7 +101,7 @@
         "owner": { "type": "string" }
       }
     },
-    "Service1 - ProjectViewModel": {
+    "ProjectViewModel": {
       "required": [ "name", "owner" ],
       "type": "object",
       "properties": {

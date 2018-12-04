@@ -14,13 +14,4 @@
     <ProjectReference Include="..\..\src\MMLib.SwaggerForOcelot\MMLib.SwaggerForOcelot.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="wwwroot\test2.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\test.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
 </Project>

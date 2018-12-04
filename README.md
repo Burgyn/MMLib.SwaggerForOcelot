@@ -66,7 +66,7 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
    ```CSharp
    app.UseSwaggerForOcelotUI(Configuration)
    ```
-6. Show your microservices documentations
+6. Show your microservices interactive documentation.
    >`http://ocelotserviceurl/swagger`
 
 ## ToDo:

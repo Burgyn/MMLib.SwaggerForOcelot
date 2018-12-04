@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using MMLib.SwaggerForOcelot.Configuration;
+using MMLib.SwaggerForOcelot.Transformation;
 using System.Collections.Generic;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -17,6 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns><see cref="IServiceCollection"/></returns>
         public static IServiceCollection AddSwaggerForOcelot(this IServiceCollection services, IConfiguration configuration)
             => services
+            .AddTransient<ISwaggerJsonTransformer, SwaggerJsonTransformer>()
             .Configure<List<ReRouteOption>>(options => configuration.GetSection("ReRoutes").Bind(options))
             .Configure<List<SwaggerEndPointOption>>(options
                 => configuration.GetSection(SwaggerEndPointOption.ConfigurationSectionName).Bind(options))

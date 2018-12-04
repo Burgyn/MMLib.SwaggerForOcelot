@@ -21,7 +21,8 @@ namespace MMLib.SwaggerForOcelot.Middleware
 
         private readonly IOptions<List<ReRouteOption>> _reRoutes;
         private readonly Lazy<Dictionary<string, SwaggerEndPointOption>> _swaggerEndPoints;
-        readonly IHttpClientFactory _httpClientFactory;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ISwaggerJsonTransformer _transformer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerForOcelotMiddleware"/> class.
@@ -36,8 +37,10 @@ namespace MMLib.SwaggerForOcelot.Middleware
             SwaggerForOCelotUIOptions options,
             IOptions<List<ReRouteOption>> reRoutes,
             IOptions<List<SwaggerEndPointOption>> swaggerEndPoints,
-            IHttpClientFactory httpClientFactory)
+            IHttpClientFactory httpClientFactory,
+            ISwaggerJsonTransformer transformer)
         {
+            _transformer = Check.NotNull(transformer, nameof(transformer));
             _next = Check.NotNull(next, nameof(next));
             _reRoutes = Check.NotNull(reRoutes, nameof(reRoutes));
             Check.NotNull(swaggerEndPoints, nameof(swaggerEndPoints));
@@ -57,7 +60,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
             var httpClient = _httpClientFactory.CreateClient();
 
             var content = await httpClient.GetStringAsync(endPoint.Url);
-            await context.Response.WriteAsync(SwaggerJsonTransformer.Transform(content, _reRoutes.Value));
+            await context.Response.WriteAsync(_transformer.Transform(content, _reRoutes.Value));
         }
 
         private SwaggerEndPointOption GetEndPoint(string path)

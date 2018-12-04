@@ -3,7 +3,7 @@ using Xunit;
 
 namespace MMLib.SwaggerForOcelot.Tests
 {
-    public class UnitTest1
+    public class SwaggerJsonFormatterShould
     {
         [Fact]
         public void Test1()

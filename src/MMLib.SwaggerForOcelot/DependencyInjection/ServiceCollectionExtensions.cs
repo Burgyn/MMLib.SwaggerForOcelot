@@ -19,9 +19,9 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddSwaggerForOcelot(this IServiceCollection services, IConfiguration configuration)
             => services
             .AddTransient<ISwaggerJsonTransformer, SwaggerJsonTransformer>()
-            .Configure<List<ReRouteOption>>(options => configuration.GetSection("ReRoutes").Bind(options))
-            .Configure<List<SwaggerEndPointOption>>(options
-                => configuration.GetSection(SwaggerEndPointOption.ConfigurationSectionName).Bind(options))
+            .Configure<List<ReRouteOptions>>(options => configuration.GetSection("ReRoutes").Bind(options))
+            .Configure<List<SwaggerEndPointOptions>>(options
+                => configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName).Bind(options))
             .AddHttpClient();
     }
 }

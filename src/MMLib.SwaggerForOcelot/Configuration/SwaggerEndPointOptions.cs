@@ -5,7 +5,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
     /// <summary>
     /// Swagger endpoint configuration.
     /// </summary>
-    public class SwaggerEndPointOption
+    public class SwaggerEndPointOptions
     {
         /// <summary>
         /// The configuration section name.
@@ -13,7 +13,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public const string ConfigurationSectionName = "SwaggerEndPoints";
 
         /// <summary>
-        /// Swagger endpoint key, which have to corresponding with <see cref="ReRouteOption.SwaggerKey"/>.
+        /// Swagger endpoint key, which have to corresponding with <see cref="ReRouteOptions.SwaggerKey"/>.
         /// </summary>
         public string Key { get; set; }
 

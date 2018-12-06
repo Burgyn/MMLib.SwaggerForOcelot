@@ -13,7 +13,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
     {
 
         /// <inheritdoc/>
-        public string Transform(string swaggerJson, IEnumerable<ReRouteOption> reRoutes)
+        public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes)
         {
             var sb = new StringBuilder(swaggerJson);
             var route = reRoutes.First();

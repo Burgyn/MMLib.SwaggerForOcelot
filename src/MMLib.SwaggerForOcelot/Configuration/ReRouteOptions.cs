@@ -3,11 +3,11 @@
     /// <summary>
     /// Ocelot ReRoute configuration.
     /// </summary>
-    public class ReRouteOption
+    public class ReRouteOptions
     {
         /// <summary>
         /// Swagger key. This key is used for generating swagger documentation for downstream services.
-        /// The same key have to be in <see cref="SwaggerEndPointOption"/> collection.
+        /// The same key have to be in <see cref="SwaggerEndPointOptions"/> collection.
         /// </summary>
         public string SwaggerKey { get; set; }
 

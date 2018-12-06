@@ -19,8 +19,8 @@ namespace MMLib.SwaggerForOcelot.Middleware
     {
         private readonly RequestDelegate _next;
 
-        private readonly IOptions<List<ReRouteOption>> _reRoutes;
-        private readonly Lazy<Dictionary<string, SwaggerEndPointOption>> _swaggerEndPoints;
+        private readonly IOptions<List<ReRouteOptions>> _reRoutes;
+        private readonly Lazy<Dictionary<string, SwaggerEndPointOptions>> _swaggerEndPoints;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ISwaggerJsonTransformer _transformer;
 
@@ -35,8 +35,8 @@ namespace MMLib.SwaggerForOcelot.Middleware
         public SwaggerForOcelotMiddleware(
             RequestDelegate next,
             SwaggerForOCelotUIOptions options,
-            IOptions<List<ReRouteOption>> reRoutes,
-            IOptions<List<SwaggerEndPointOption>> swaggerEndPoints,
+            IOptions<List<ReRouteOptions>> reRoutes,
+            IOptions<List<SwaggerEndPointOptions>> swaggerEndPoints,
             IHttpClientFactory httpClientFactory,
             ISwaggerJsonTransformer transformer)
         {
@@ -46,7 +46,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
             Check.NotNull(swaggerEndPoints, nameof(swaggerEndPoints));
             _httpClientFactory = Check.NotNull(httpClientFactory, nameof(httpClientFactory));
 
-            _swaggerEndPoints = new Lazy<Dictionary<string, SwaggerEndPointOption>>(()
+            _swaggerEndPoints = new Lazy<Dictionary<string, SwaggerEndPointOptions>>(()
                 => swaggerEndPoints.Value.ToDictionary(p => $"/{p.KeyToPath}", p => p));
         }
 
@@ -65,7 +65,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
             await context.Response.WriteAsync(content);
         }
 
-        private SwaggerEndPointOption GetEndPoint(string path)
+        private SwaggerEndPointOptions GetEndPoint(string path)
             => _swaggerEndPoints.Value[path];
     }
 }

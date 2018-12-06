@@ -58,7 +58,7 @@ namespace Microsoft.AspNetCore.Builder
         private static void UseSwaggerForOcelot(IApplicationBuilder app, SwaggerForOCelotUIOptions options)
             => app.Map(options.EndPointBasePath, builder => builder.UseMiddleware<SwaggerForOcelotMiddleware>(options));
 
-        private static void AddSwaggerEndPoints(SwaggerUIOptions c, IEnumerable<SwaggerEndPointOption> endPoints, string basePath)
+        private static void AddSwaggerEndPoints(SwaggerUIOptions c, IEnumerable<SwaggerEndPointOptions> endPoints, string basePath)
         {
             foreach (var endPoint in endPoints)
             {
@@ -76,8 +76,8 @@ namespace Microsoft.AspNetCore.Builder
             c.RoutePrefix = options.RoutePrefix;
         }
 
-        private static IEnumerable<SwaggerEndPointOption> GetConfugration(IConfiguration configuration)
-            => configuration.GetSection(SwaggerEndPointOption.ConfigurationSectionName)
-            .Get<IEnumerable<SwaggerEndPointOption>>();
+        private static IEnumerable<SwaggerEndPointOptions> GetConfugration(IConfiguration configuration)
+            => configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName)
+            .Get<IEnumerable<SwaggerEndPointOptions>>();
     }
 }

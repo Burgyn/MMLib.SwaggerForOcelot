@@ -61,12 +61,58 @@ namespace MMLib.SwaggerForOcelot.Tests.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized string similar to {
+        ///  &quot;swagger&quot;: &quot;2.0&quot;,
+        ///  &quot;info&quot;: {
+        ///    &quot;version&quot;: &quot;v1&quot;,
+        ///    &quot;title&quot;: &quot;Projects API&quot;
+        ///  },
+        ///  &quot;paths&quot;: {
+        ///    &quot;/api/Projects&quot;: {
+        ///      &quot;get&quot;: {
+        ///        &quot;tags&quot;: [ &quot;Projects&quot; ],
+        ///        &quot;operationId&quot;: &quot;Get&quot;,
+        ///        &quot;consumes&quot;: [],
+        ///        &quot;produces&quot;: [ &quot;text/plain&quot;, &quot;application/json&quot;, &quot;text/json&quot; ],
+        ///        &quot;parameters&quot;: [],
+        ///        &quot;responses&quot;: {
+        ///          &quot;200&quot;: {
+        ///            &quot;description&quot;: &quot;Success&quot;,
+        ///            &quot;schema&quot;: {
+        ///              &quot;uniqueItems&quot;: false,
+        ///              &quot;type&quot;: &quot;array&quot;,        /// [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static byte[] OcelotBase {
+        internal static string SwaggerBase {
             get {
-                object obj = ResourceManager.GetObject("OcelotBase", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("SwaggerBase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///  &quot;swagger&quot;: &quot;2.0&quot;,
+        ///  &quot;info&quot;: {
+        ///    &quot;version&quot;: &quot;v1&quot;,
+        ///    &quot;title&quot;: &quot;Projects API&quot;
+        ///  },
+        ///  &quot;paths&quot;: {
+        ///    &quot;/api/projects/Projects&quot;: {
+        ///      &quot;get&quot;: {
+        ///        &quot;tags&quot;: [ &quot;Projects&quot; ],
+        ///        &quot;operationId&quot;: &quot;Get&quot;,
+        ///        &quot;consumes&quot;: [],
+        ///        &quot;produces&quot;: [ &quot;text/plain&quot;, &quot;application/json&quot;, &quot;text/json&quot; ],
+        ///        &quot;parameters&quot;: [],
+        ///        &quot;responses&quot;: {
+        ///          &quot;200&quot;: {
+        ///            &quot;description&quot;: &quot;Success&quot;,
+        ///            &quot;schema&quot;: {
+        ///              &quot;uniqueItems&quot;: false,
+        ///              &quot;type&quot;:  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SwaggerBaseTransformed {
+            get {
+                return ResourceManager.GetString("SwaggerBaseTransformed", resourceCulture);
             }
         }
     }

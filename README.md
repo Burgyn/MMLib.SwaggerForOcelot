@@ -76,8 +76,8 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 - [x] Create extension for adding middleware into pipeline.
 - [x] Create `SwaggerForOcelotMiddleware` and replace downstream path.
 - [x] Add capability for confiuragtion SwaggerUI and configure EndpointBasePath.
+- [x] Unit tests
 - [ ] Complex Ocelot configuration.
-- [ ] Unit tests
 - [x] Documentations
-- [ ] Continuous deliveryzen
+- [ ] Continuous delivery
 - [ ] Custom Index.html.

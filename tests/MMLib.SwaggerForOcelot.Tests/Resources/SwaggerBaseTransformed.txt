@@ -5,7 +5,7 @@
     "title": "Projects API"
   },
   "paths": {
-    "/api/contacts/Projects": {
+    "/api/projects/Projects": {
       "get": {
         "tags": [ "Projects" ],
         "operationId": "Get",
@@ -24,7 +24,7 @@
         }
       }
     },
-    "/api/contacts/Projects/{id}": {
+    "/api/projects/Projects/{id}": {
       "get": {
         "tags": [ "Projects" ],
         "operationId": "Get",
@@ -48,7 +48,7 @@
         }
       }
     },
-    "/api/contacts/Projects/projectCreate": {
+    "/api/projects/Projects/projectCreate": {
       "post": {
         "tags": [ "Projects" ],
         "operationId": "CreateProject",
@@ -68,7 +68,7 @@
         }
       }
     },
-    "/api/contacts/Values": {
+    "/api/projects/Values": {
       "get": {
         "tags": [ "Values" ],
         "operationId": "Get",

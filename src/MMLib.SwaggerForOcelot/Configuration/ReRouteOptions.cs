@@ -1,4 +1,7 @@
-﻿namespace MMLib.SwaggerForOcelot.Configuration
+﻿using Kros.Extensions;
+using System;
+
+namespace MMLib.SwaggerForOcelot.Configuration
 {
     /// <summary>
     /// Ocelot ReRoute configuration.
@@ -22,9 +25,28 @@
         public string UpstreamPathTemplate { get; set; }
 
         /// <summary>
+        /// Gets or sets the virtual directory, where is host service.
+        /// </summary>
+        /// <remarks>Default value is <see langword="null"/>.</remarks>
+        public string VirtualDirectory { get; set; }
+
+        /// <summary>
         /// Gets the downstream path.
         /// </summary>
-        public string DownstreamPath => Replace(DownstreamPathTemplate);
+        public string DownstreamPath
+        {
+            get
+            {
+                var ret = Replace(DownstreamPathTemplate);
+                if (!VirtualDirectory.IsNullOrWhiteSpace()
+                    && ret.StartsWith(VirtualDirectory, StringComparison.OrdinalIgnoreCase))
+                {
+                    ret = ret.Substring(VirtualDirectory.Length);
+                }
+
+                return ret;
+            }
+        }
 
         /// <summary>
         /// Gets the upstream path.

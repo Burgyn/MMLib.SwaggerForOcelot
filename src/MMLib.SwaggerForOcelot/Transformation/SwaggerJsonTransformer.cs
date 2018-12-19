@@ -16,7 +16,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
         public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes)
         {
             var sb = new StringBuilder(swaggerJson);
-            var route = reRoutes.First();
+            var route = reRoutes.First();            
 
             sb.Replace(route.DownstreamPath, route.UpstreamPath);
 

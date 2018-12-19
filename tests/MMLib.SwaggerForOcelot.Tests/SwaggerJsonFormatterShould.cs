@@ -25,5 +25,24 @@ namespace MMLib.SwaggerForOcelot.Tests
             transfomed.Should()
                 .Be(Properties.Resources.SwaggerBaseTransformed);
         }
+
+        [Fact]
+        public void CreateNewJsonByBasicConfigurationWithVirtualDirectory()
+        {
+            var transformer = new SwaggerJsonTransformer();
+            var transfomed = transformer.Transform(
+                Properties.Resources.SwaggerBase,
+                new List<ReRouteOptions>()
+                {
+                    new ReRouteOptions(){
+                        SwaggerKey = "projects",
+                        VirtualDirectory = "/project",
+                        UpstreamPathTemplate ="/api/projects/{everything}",
+                        DownstreamPathTemplate ="/project/api/{everything}"}
+                });
+
+            transfomed.Should()
+                .Be(Properties.Resources.SwaggerBaseTransformed);
+        }
     }
 }

@@ -69,6 +69,27 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 6. Show your microservices interactive documentation.
    >`http://ocelotserviceurl/swagger`
 
+# Virtual directory
+If you have a `downstream service` hosted in the virtual directory, you probably have a `DownstreamPathTemplate` starting with the name of this virtual directory `/virtualdirectory/api/{everything}`. In order to properly replace the paths, it is necessary to set the property route `"Virtualdirectory":"/virtualdirectory"`.
+
+Example:
+```
+ {
+  "DownstreamPathTemplate": "/project/api/{everything}",
+  "DownstreamScheme": "http",
+  "DownstreamHostAndPorts": [
+      {
+      "Host": "localhost",
+      "Port": 5100
+      }
+  ],
+  "UpstreamPathTemplate": "/api/project/{everything}",
+  "UpstreamHttpMethod": [ "Get" ],
+  "SwaggerKey": "project",
+  "VirtualDirectory":"/project"
+}
+```
+
 ## ToDo:
 - [x] Design.
 - [x] Create demo project.

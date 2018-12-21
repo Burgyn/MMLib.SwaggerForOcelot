@@ -25,15 +25,11 @@ namespace MMLib.SwaggerForOcelot.Transformation
             {
                 for (int i = 0; i < swagger["paths"].Count(); i++)
                 {
-
                     string down = ((JProperty)swagger["paths"].ElementAt(i)).Name;
 
                     RenameToken(swagger["paths"].ElementAt(i), ReplaceFirst(down, route.DownstreamPath, route.UpstreamPath));
                 }
             }
-
-            //sb.Replace(route.DownstreamPath, route.UpstreamPath);
-
             return swagger.ToString(Newtonsoft.Json.Formatting.Indented);
         }
 
@@ -50,12 +46,9 @@ namespace MMLib.SwaggerForOcelot.Transformation
         public static void RenameToken(JToken token, string newName)
         {
             JProperty property;
-
             property = (JProperty)token;
-
             var newProperty = new JProperty(newName, property.Value);
             property.Replace(newProperty);
         }
-
     }
 }

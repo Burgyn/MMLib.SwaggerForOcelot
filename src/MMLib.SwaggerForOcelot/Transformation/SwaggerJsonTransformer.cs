@@ -20,6 +20,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
             JObject swagger = JObject.Parse(swaggerJson);
             swagger.Remove("host");
+            swagger.Remove("schemes");
             if (swagger["paths"] != null)
             {
                 for (int i = 0; i < swagger["paths"].Count(); i++)

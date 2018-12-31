@@ -102,5 +102,5 @@ Example:
 - [x] Unit tests
 - [ ] Complex Ocelot configuration.
 - [x] Documentations
-- [ ] Continuous delivery
+- [x] Continuous delivery
 - [ ] Custom Index.html.

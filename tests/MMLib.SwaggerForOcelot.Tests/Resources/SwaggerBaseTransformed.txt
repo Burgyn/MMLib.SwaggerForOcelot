@@ -7,10 +7,16 @@
   "paths": {
     "/api/projects/Projects": {
       "get": {
-        "tags": [ "Projects" ],
+        "tags": [
+          "Projects"
+        ],
         "operationId": "Get",
         "consumes": [],
-        "produces": [ "text/plain", "application/json", "text/json" ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
         "parameters": [],
         "responses": {
           "200": {
@@ -18,7 +24,9 @@
             "schema": {
               "uniqueItems": false,
               "type": "array",
-              "items": { "$ref": "#/definitions/Project" }
+              "items": {
+                "$ref": "#/definitions/Project"
+              }
             }
           }
         }
@@ -26,10 +34,16 @@
     },
     "/api/projects/Projects/{id}": {
       "get": {
-        "tags": [ "Projects" ],
+        "tags": [
+          "Projects"
+        ],
         "operationId": "Get",
         "consumes": [],
-        "produces": [ "text/plain", "application/json", "text/json" ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
         "parameters": [
           {
             "name": "id",
@@ -42,38 +56,61 @@
         "responses": {
           "200": {
             "description": "Success",
-            "schema": { "$ref": "#/definitions/Project" }
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
           },
-          "404": { "description": "Not Found" }
+          "404": {
+            "description": "Not Found"
+          }
         }
       }
     },
     "/api/projects/Projects/projectCreate": {
       "post": {
-        "tags": [ "Projects" ],
+        "tags": [
+          "Projects"
+        ],
         "operationId": "CreateProject",
-        "consumes": [ "application/json-patch+json", "application/json", "text/json", "application/*+json" ],
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
         "produces": [],
         "parameters": [
           {
             "name": "projectViewModel",
             "in": "body",
             "required": false,
-            "schema": { "$ref": "#/definitions/ProjectViewModel" }
+            "schema": {
+              "$ref": "#/definitions/ProjectViewModel"
+            }
           }
         ],
         "responses": {
-          "201": { "description": "Success" },
-          "400": { "description": "Bad Request" }
+          "201": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
         }
       }
     },
     "/api/projects/Values": {
       "get": {
-        "tags": [ "Values" ],
+        "tags": [
+          "Values"
+        ],
         "operationId": "Get",
         "consumes": [],
-        "produces": [ "text/plain", "application/json", "text/json" ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
         "parameters": [],
         "responses": {
           "200": {
@@ -81,7 +118,9 @@
             "schema": {
               "uniqueItems": false,
               "type": "array",
-              "items": { "type": "string" }
+              "items": {
+                "type": "string"
+              }
             }
           }
         }
@@ -96,13 +135,22 @@
           "format": "int32",
           "type": "integer"
         },
-        "name": { "type": "string" },
-        "description": { "type": "string" },
-        "owner": { "type": "string" }
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        }
       }
     },
     "ProjectViewModel": {
-      "required": [ "name", "owner" ],
+      "required": [
+        "name",
+        "owner"
+      ],
       "type": "object",
       "properties": {
         "name": {
@@ -113,7 +161,9 @@
           "maxLength": 255,
           "type": "string"
         },
-        "owner": { "type": "string" }
+        "owner": {
+          "type": "string"
+        }
       }
     }
   }

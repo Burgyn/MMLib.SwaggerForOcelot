@@ -1,5 +1,7 @@
 # MMLib.SwaggerForOcelot
 
+[![Build status](https://ci.appveyor.com/api/projects/status/qw082a4fh004p11u?svg=true)](https://ci.appveyor.com/project/Burgyn/mmlib-swaggerforocelot)
+
 **SwaggerForOcelot** combines two amazing projects **[Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)** and **[Ocelot](https://github.com/ThreeMammals/Ocelot)**. Allows you to view and use swagger documentation for downstream services directly through the Ocelot project.
 
 Direct via `http://ocelotprojecturl:port/swagger` provides documentation for downstream services configured in `ocelot.json`. Additionally, the addresses are modified to match the `UpstreamPathTemplate` from the configuration.

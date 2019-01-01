@@ -18,7 +18,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
         {
             var route = reRoutes.First();
             JObject swagger = JObject.Parse(swaggerJson);
-            var paths = swagger["paths"];
+            var paths = swagger[SwaggerProperties.Paths];
 
             RemoveHost(swagger);
 
@@ -38,8 +38,8 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
         private static void RemoveHost(JObject swagger)
         {
-            swagger.Remove("host");
-            swagger.Remove("schemes");
+            swagger.Remove(SwaggerProperties.Host);
+            swagger.Remove(SwaggerProperties.Schemes);
         }
 
         private string ReplaceFirst(string text, string search, string replace)

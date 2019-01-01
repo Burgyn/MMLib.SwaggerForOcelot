@@ -6,7 +6,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
     /// Configuration for Swagger UI.
     /// </summary>
     /// <seealso cref="Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIOptions" />
-    public class SwaggerForOCelotUIOptions: SwaggerUIOptions
+    public class SwaggerForOcelotUIOptions: SwaggerUIOptions
     {
         /// <summary>
         /// The end point base path. The final path to swagger endpoint is

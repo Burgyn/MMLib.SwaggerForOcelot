@@ -1,4 +1,4 @@
-﻿using MMLib.SwaggerForOcelot.Configuration;
+using MMLib.SwaggerForOcelot.Configuration;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;

@@ -17,20 +17,29 @@ namespace MMLib.SwaggerForOcelot.Transformation
         public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes)
         {
             var route = reRoutes.First();
-
             JObject swagger = JObject.Parse(swaggerJson);
-            swagger.Remove("host");
-            swagger.Remove("schemes");
-            if (swagger["paths"] != null)
-            {
-                for (int i = 0; i < swagger["paths"].Count(); i++)
-                {
-                    string down = ((JProperty)swagger["paths"].ElementAt(i)).Name;
+            var paths = swagger["paths"];
 
-                    RenameToken(swagger["paths"].ElementAt(i), ReplaceFirst(down, route.DownstreamPath, route.UpstreamPath));
+            RemoveHost(swagger);
+
+            if (paths != null)
+            {
+                for (int i = 0; i < paths.Count(); i++)
+                {
+                    var property = paths.ElementAt(i) as JProperty;
+                    string downstreamPath = property.Name;
+
+                    RenameToken(property, ReplaceFirst(downstreamPath, route.DownstreamPath, route.UpstreamPath));
                 }
             }
+
             return swagger.ToString(Newtonsoft.Json.Formatting.Indented);
+        }
+
+        private static void RemoveHost(JObject swagger)
+        {
+            swagger.Remove("host");
+            swagger.Remove("schemes");
         }
 
         private string ReplaceFirst(string text, string search, string replace)
@@ -40,13 +49,11 @@ namespace MMLib.SwaggerForOcelot.Transformation
             {
                 return text;
             }
-            return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
+            return $"{text.Substring(0, pos)}{replace}{text.Substring(pos + search.Length)}";
         }
 
-        public static void RenameToken(JToken token, string newName)
+        private static void RenameToken(JProperty property, string newName)
         {
-            JProperty property;
-            property = (JProperty)token;
             var newProperty = new JProperty(newName, property.Value);
             property.Replace(newProperty);
         }

@@ -34,7 +34,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// <param name="httpClientFactory">The HTTP client factory.</param>
         public SwaggerForOcelotMiddleware(
             RequestDelegate next,
-            SwaggerForOCelotUIOptions options,
+            SwaggerForOcelotUIOptions options,
             IOptions<List<ReRouteOptions>> reRoutes,
             IOptions<List<SwaggerEndPointOptions>> swaggerEndPoints,
             IHttpClientFactory httpClientFactory,

@@ -30,16 +30,16 @@ namespace Microsoft.AspNetCore.Builder
         /// </summary>
         /// <param name="app">The application builder.</param>
         /// <param name="configuration">The configuration.</param>
-        /// <param name="setupAction">Setup <see cref="SwaggerForOCelotUIOptions"/></param>
+        /// <param name="setupAction">Setup <see cref="SwaggerForOcelotUIOptions"/></param>
         /// <returns>
         /// <see cref="IApplicationBuilder"/>.
         /// </returns>
         public static IApplicationBuilder UseSwaggerForOcelotUI(
             this IApplicationBuilder app,
             IConfiguration configuration,
-            Action<SwaggerForOCelotUIOptions> setupAction)
+            Action<SwaggerForOcelotUIOptions> setupAction)
         {
-            var options = new SwaggerForOCelotUIOptions();
+            var options = new SwaggerForOcelotUIOptions();
             setupAction?.Invoke(options);
 
             UseSwaggerForOcelot(app, options);
@@ -55,7 +55,7 @@ namespace Microsoft.AspNetCore.Builder
             return app;
         }
 
-        private static void UseSwaggerForOcelot(IApplicationBuilder app, SwaggerForOCelotUIOptions options)
+        private static void UseSwaggerForOcelot(IApplicationBuilder app, SwaggerForOcelotUIOptions options)
             => app.Map(options.EndPointBasePath, builder => builder.UseMiddleware<SwaggerForOcelotMiddleware>(options));
 
         private static void AddSwaggerEndPoints(SwaggerUIOptions c, IEnumerable<SwaggerEndPointOptions> endPoints, string basePath)
@@ -66,7 +66,7 @@ namespace Microsoft.AspNetCore.Builder
             }
         }
 
-        private static void InitUIOption(SwaggerUIOptions c, SwaggerForOCelotUIOptions options)
+        private static void InitUIOption(SwaggerUIOptions c, SwaggerForOcelotUIOptions options)
         {
             c.ConfigObject = options.ConfigObject;
             c.DocumentTitle = options.DocumentTitle;

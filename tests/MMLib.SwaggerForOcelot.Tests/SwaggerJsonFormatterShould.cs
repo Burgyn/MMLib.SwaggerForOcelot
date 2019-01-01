@@ -1,6 +1,7 @@
 using FluentAssertions;
 using MMLib.SwaggerForOcelot.Configuration;
 using MMLib.SwaggerForOcelot.Transformation;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -26,9 +27,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                         DownstreamPathTemplate ="/api/{everything}"}
                 });
 
-            transfomed.Should()
-                .Be(await AssemblyHelper
-                    .GetStringFromResourceFileAsync("SwaggerBaseTransformed.txt"));
+            await AreEquel(transfomed);
         }
 
         [Fact]
@@ -47,9 +46,18 @@ namespace MMLib.SwaggerForOcelot.Tests
                         DownstreamPathTemplate ="/project/api/{everything}"}
                 });
 
-            transfomed.Should()
-                .Be(await AssemblyHelper
+            await AreEquel(transfomed);
+        }
+
+        private static async Task AreEquel(string transfomed)
+        {
+            var transformedJson = JObject.Parse(transfomed);
+            var expectedJson = JObject.Parse(await AssemblyHelper
                     .GetStringFromResourceFileAsync("SwaggerBaseTransformed.txt"));
+
+            JObject.DeepEquals(transformedJson, expectedJson)
+                .Should()
+                .BeTrue();
         }
     }
 }

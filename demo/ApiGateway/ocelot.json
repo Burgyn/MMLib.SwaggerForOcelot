@@ -32,7 +32,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5200
+          "Port": 5300
         }
       ],
       "UpstreamPathTemplate": "/api/pets/{everything}",

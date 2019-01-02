@@ -13,47 +13,63 @@ namespace MMLib.SwaggerForOcelot.Tests
         [Fact]
         public async Task CreateNewJsonByBasicConfiguration()
         {
-            var transformer = new SwaggerJsonTransformer();
-            var swaggerBase = await AssemblyHelper
-                .GetStringFromResourceFileAsync("SwaggerBase.txt");
+            var reroutes = new List<ReRouteOptions>()
+            {
+                new ReRouteOptions(){
+                    SwaggerKey = "projects",
+                    UpstreamPathTemplate ="/api/projects/{everything}",
+                    DownstreamPathTemplate ="/api/{everything}"}
+            };
 
-            var transfomed = transformer.Transform(
-                swaggerBase,
-                new List<ReRouteOptions>()
-                {
-                    new ReRouteOptions(){
-                        SwaggerKey = "projects",
-                        UpstreamPathTemplate ="/api/projects/{everything}",
-                        DownstreamPathTemplate ="/api/{everything}"}
-                });
-
-            await AreEquel(transfomed);
+            await TransformAndCheck(reroutes, "SwaggerBase", "SwaggerBaseTransformed");
         }
 
         [Fact]
         public async Task CreateNewJsonByBasicConfigurationWithVirtualDirectory()
         {
-            var transformer = new SwaggerJsonTransformer();
-            var transfomed = transformer.Transform(
-                await AssemblyHelper
-                    .GetStringFromResourceFileAsync("SwaggerBase.txt"),
-                new List<ReRouteOptions>()
-                {
-                    new ReRouteOptions(){
-                        SwaggerKey = "projects",
-                        VirtualDirectory = "/project",
-                        UpstreamPathTemplate ="/api/projects/{everything}",
-                        DownstreamPathTemplate ="/project/api/{everything}"}
-                });
+            var reroutes = new List<ReRouteOptions>()
+            {
+                new ReRouteOptions(){
+                    SwaggerKey = "projects",
+                    VirtualDirectory = "/project",
+                    UpstreamPathTemplate ="/api/projects/{everything}",
+                    DownstreamPathTemplate ="/project/api/{everything}"}
+            };
 
-            await AreEquel(transfomed);
+            await TransformAndCheck(reroutes, "SwaggerBase", "SwaggerBaseTransformed");
         }
 
-        private static async Task AreEquel(string transfomed)
+        // Select only one controller
+
+        // separate by controllers
+
+        // split to more parts
+
+        // some action dont propagate
+
+        // split by method type
+
+        private async Task TransformAndCheck(
+            IEnumerable<ReRouteOptions> reroutes,
+            string swaggerBaseFileName,
+            string expectedSwaggerFileName)
+        {
+            var transformer = new SwaggerJsonTransformer();
+            string swaggerBase = await GetBaseSwagger(swaggerBaseFileName);
+
+            var transfomed = transformer.Transform(swaggerBase, reroutes);
+
+            await AreEquel(transfomed, expectedSwaggerFileName);
+        }
+
+        private static async Task<string> GetBaseSwagger(string swaggerName)
+            => await AssemblyHelper.GetStringFromResourceFileAsync($"{swaggerName}.json");
+
+        private static async Task AreEquel(string transfomed, string expectedSwaggerFileName)
         {
             var transformedJson = JObject.Parse(transfomed);
             var expectedJson = JObject.Parse(await AssemblyHelper
-                    .GetStringFromResourceFileAsync("SwaggerBaseTransformed.txt"));
+                    .GetStringFromResourceFileAsync($"{expectedSwaggerFileName}.json"));
 
             JObject.DeepEquals(transformedJson, expectedJson)
                 .Should()

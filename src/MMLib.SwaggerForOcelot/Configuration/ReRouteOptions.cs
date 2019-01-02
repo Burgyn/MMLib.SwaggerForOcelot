@@ -1,5 +1,6 @@
 ﻿using Kros.Extensions;
 using System;
+using System.Collections.Generic;
 
 namespace MMLib.SwaggerForOcelot.Configuration
 {
@@ -23,6 +24,11 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// Gets or sets the upstream path template.
         /// </summary>
         public string UpstreamPathTemplate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the upstream HTTP method.
+        /// </summary>
+        public IEnumerable<string> UpstreamHttpMethod { get; set; }
 
         /// <summary>
         /// Gets or sets the virtual directory, where is host service.

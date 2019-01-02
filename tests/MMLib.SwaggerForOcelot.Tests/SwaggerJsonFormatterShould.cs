@@ -39,15 +39,85 @@ namespace MMLib.SwaggerForOcelot.Tests
             await TransformAndCheck(reroutes, "SwaggerBase", "SwaggerBaseTransformed");
         }
 
-        // Select only one controller
+        [Fact]
+        public async Task CreateNewJsonWhenConfigurationContainsOnlyOneController()
+        {
+            var reroutes = new List<ReRouteOptions>()
+            {
+                new ReRouteOptions(){
+                    SwaggerKey = "pets",
+                    UpstreamPathTemplate ="/api/store/{everything}",
+                    DownstreamPathTemplate ="/store/{everything}"}
+            };
 
-        // separate by controllers
+            await TransformAndCheck(reroutes, "SwaggerPetsBase", "SwaggerPetsOnlyStore");
+        }
 
-        // split to more parts
+        [Fact]
+        public async Task CreateNewJsonWhenConfigurationIsSplitByControllers()
+        {
+            var reroutes = new List<ReRouteOptions>()
+            {
+                new ReRouteOptions(){
+                    SwaggerKey = "pets",
+                    UpstreamPathTemplate ="/api/pets/pet/{everything}",
+                    DownstreamPathTemplate ="/pet/{everything}"},
+                new ReRouteOptions(){
+                    SwaggerKey = "pets",
+                    UpstreamPathTemplate ="/api/pets/store/{everything}",
+                    DownstreamPathTemplate ="/store/{everything}"},
+                new ReRouteOptions(){
+                    SwaggerKey = "pets",
+                    UpstreamPathTemplate ="/api/pets/user/{everything}",
+                    DownstreamPathTemplate ="/user/{everything}"}
+            };
 
-        // some action dont propagate
+            await TransformAndCheck(reroutes, "SwaggerPetsBase", "SwaggerPetsTransformed");
+        }
 
-        // split by method type
+        [Fact]
+        public async Task CreateNewJsonWhenConfigurationIsSplitToMoreParts()
+        {
+            var reroutes = new List<ReRouteOptions>()
+            {
+                new ReRouteOptions(){
+                    SwaggerKey = "pets",
+                    UpstreamPathTemplate ="/api/pets/pet/findByStatus",
+                    DownstreamPathTemplate ="/pet/findByStatus",
+                    UpstreamHttpMethod = new List<string>(){ "Get"} },
+                new ReRouteOptions(){
+                    SwaggerKey = "pets",
+                    UpstreamPathTemplate ="/api/pets/pet/{petId}",
+                    DownstreamPathTemplate ="/pet/{petId}",
+                    UpstreamHttpMethod = new List<string>(){ "Post"} },
+                new ReRouteOptions(){
+                    SwaggerKey = "pets",
+                    UpstreamPathTemplate ="/api/pets/store/{everything}",
+                    DownstreamPathTemplate ="/store/{everything}"},
+                new ReRouteOptions(){
+                    SwaggerKey = "pets",
+                    UpstreamPathTemplate ="/api/pets/user/{everything}",
+                    DownstreamPathTemplate ="/user/{everything}"}
+            };
+
+            await TransformAndCheck(reroutes, "SwaggerPetsBase", "SwaggerPetsOnlyAnyActions");
+        }
+
+        [Fact]
+        public async Task CreateNewJsonWhenConfigurationContainsOnlyPost()
+        {
+            var reroutes = new List<ReRouteOptions>()
+            {
+                new ReRouteOptions(){
+                    SwaggerKey = "pets",
+                    UpstreamPathTemplate ="/api/pets/{everything}",
+                    DownstreamPathTemplate ="/{everything}",
+                    UpstreamHttpMethod = new List<string>(){ "POST" }
+                }
+            };
+
+            await TransformAndCheck(reroutes, "SwaggerPetsBase", "SwaggerPetsOnlyPost");
+        }
 
         private async Task TransformAndCheck(
             IEnumerable<ReRouteOptions> reroutes,

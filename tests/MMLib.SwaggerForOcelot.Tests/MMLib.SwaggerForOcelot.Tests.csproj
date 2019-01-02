@@ -10,9 +10,25 @@
     <None Remove="Resources\SwaggerBase.json" />
     <None Remove="Resources\SwaggerBaseTransformed.json" />
     <None Remove="Resources\SwaggerPetsBase.json" />
+    <None Remove="Resources\SwaggerPetsOnlyAnyActions.json" />
+    <None Remove="Resources\SwaggerPetsOnlyPost.json" />
+    <None Remove="Resources\SwaggerPetsOnlyStore.json" />
+    <None Remove="Resources\SwaggerPetsTransformed.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\SwaggerPetsOnlyAnyActions.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\SwaggerPetsOnlyPost.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\SwaggerPetsTransformed.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\SwaggerPetsOnlyStore.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\SwaggerPetsBase.json">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </EmbeddedResource>

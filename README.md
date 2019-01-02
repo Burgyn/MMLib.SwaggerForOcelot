@@ -102,6 +102,7 @@ Example:
   - [x] Add `Petstore` swagger Example.
   - [ ] Group more reroutes with same `SwaggerKey`.
   - [ ] Filter `UpstreamHttpMethod`.
+  - [ ] Query parameters.
   - [ ] Aggregates.
 - [x] Documentations
 - [x] Continuous delivery

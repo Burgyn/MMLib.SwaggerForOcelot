@@ -50,10 +50,9 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
                 foreach (var definition in definitions.Cast<JProperty>())
                 {
-                    var path = $"$..parameters[?(@schema.$ref == '#/definitions/{definition.Name}')].schema";
-
-                    var schema = paths.SelectTokens(path);
-                    if (!schema.Any())
+                    var schema = paths.SelectTokens($"$..[?(@schema.$ref == '#/definitions/{definition.Name}')]");
+                    var schema2 = paths.SelectTokens($"$..[?(@*.schema.items.$ref == '#/definitions/{definition.Name}')]");
+                    if (!schema.Any() && !schema2.Any())
                     {
                         definitionsForRemove.Add(definition);
                     }
@@ -65,22 +64,25 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 }
 
                 var tags = swagger["tags"];
-                var tagsForRemove = new List<JObject>();
-
-                foreach (var tag in tags.Cast<JObject>())
+                if (tags != null)
                 {
-                    var path = $"$..tags[?(@ == '{tag["name"]}')]";
+                    var tagsForRemove = new List<JObject>();
 
-                    var tagInPat = paths.SelectTokens(path);
-                    if (!tagInPat.Any())
+                    foreach (var tag in tags.Cast<JObject>())
                     {
-                        tagsForRemove.Add(tag);
-                    }
-                }
+                        var path = $"$..tags[?(@ == '{tag["name"]}')]";
 
-                foreach (var tag in tagsForRemove)
-                {
-                    tag.Remove();
+                        var tagInPat = paths.SelectTokens(path);
+                        if (!tagInPat.Any())
+                        {
+                            tagsForRemove.Add(tag);
+                        }
+                    }
+
+                    foreach (var tag in tagsForRemove)
+                    {
+                        tag.Remove();
+                    }
                 }
             }
 

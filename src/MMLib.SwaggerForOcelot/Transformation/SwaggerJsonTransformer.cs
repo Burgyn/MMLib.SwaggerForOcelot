@@ -50,8 +50,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
                 foreach (var definition in definitions.Cast<JProperty>())
                 {
-                    var name = definition.Name;
-                    var path = $"$..parameters[?(@schema.$ref == '#/definitions/{name}')].schema";
+                    var path = $"$..parameters[?(@schema.$ref == '#/definitions/{definition.Name}')].schema";
 
                     var schema = paths.SelectTokens(path);
                     if (!schema.Any())
@@ -63,6 +62,25 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 foreach (var definition in definitionsForRemove)
                 {
                     definition.Remove();
+                }
+
+                var tags = swagger["tags"];
+                var tagsForRemove = new List<JObject>();
+
+                foreach (var tag in tags.Cast<JObject>())
+                {
+                    var path = $"$..tags[?(@ == '{tag["name"]}')]";
+
+                    var tagInPat = paths.SelectTokens(path);
+                    if (!tagInPat.Any())
+                    {
+                        tagsForRemove.Add(tag);
+                    }
+                }
+
+                foreach (var tag in tagsForRemove)
+                {
+                    tag.Remove();
                 }
             }
 

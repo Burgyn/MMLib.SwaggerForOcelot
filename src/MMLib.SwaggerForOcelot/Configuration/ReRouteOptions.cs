@@ -9,6 +9,8 @@ namespace MMLib.SwaggerForOcelot.Configuration
     /// </summary>
     public class ReRouteOptions
     {
+        private const string CatchAllPlaceHolder = "{everything}";
+
         /// <summary>
         /// Swagger key. This key is used for generating swagger documentation for downstream services.
         /// The same key have to be in <see cref="SwaggerEndPointOptions"/> collection.
@@ -55,10 +57,16 @@ namespace MMLib.SwaggerForOcelot.Configuration
         }
 
         /// <summary>
+        /// Gets a value indicating whether this instance can catch all.
+        /// </summary>
+        public bool CanCatchAll
+            => DownstreamPathTemplate.EndsWith(CatchAllPlaceHolder, StringComparison.CurrentCultureIgnoreCase);
+
+        /// <summary>
         /// Gets the upstream path.
         /// </summary>
         public string UpstreamPath => Replace(UpstreamPathTemplate);
 
-        private string Replace(string value) => value.Replace("{everything}", "");
+        private string Replace(string value) => value.Replace(CatchAllPlaceHolder, "");
     }
 }

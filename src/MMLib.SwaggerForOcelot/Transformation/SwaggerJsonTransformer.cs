@@ -45,53 +45,43 @@ namespace MMLib.SwaggerForOcelot.Transformation
                     path.Remove();
                 }
 
-                var definitions = swagger["definitions"];
-                var definitionsForRemove = new List<JToken>();
-
-                foreach (var definition in definitions.Cast<JProperty>())
+                RemoveItems<JProperty>(
+                    swagger[SwaggerProperties.Definitions],
+                    paths,
+                    (i) => $"$..[?(@schema.$ref == '#/definitions/{i.Name}')]",
+                    (i) => $"$..[?(@*.schema.items.$ref == '#/definitions/{i.Name}')]");
+                if (swagger["tags"] != null)
                 {
-                    var schema = paths.SelectTokens($"$..[?(@schema.$ref == '#/definitions/{definition.Name}')]");
-                    var schema2 = paths.SelectTokens($"$..[?(@*.schema.items.$ref == '#/definitions/{definition.Name}')]");
-                    if (!schema.Any() && !schema2.Any())
-                    {
-                        definitionsForRemove.Add(definition);
-                    }
-                }
-
-                foreach (var definition in definitionsForRemove)
-                {
-                    definition.Remove();
-                }
-
-                var tags = swagger["tags"];
-                if (tags != null)
-                {
-                    var tagsForRemove = new List<JObject>();
-
-                    foreach (var tag in tags.Cast<JObject>())
-                    {
-                        var path = $"$..tags[?(@ == '{tag["name"]}')]";
-
-                        var tagInPat = paths.SelectTokens(path);
-                        if (!tagInPat.Any())
-                        {
-                            tagsForRemove.Add(tag);
-                        }
-                    }
-
-                    foreach (var tag in tagsForRemove)
-                    {
-                        tag.Remove();
-                    }
+                    RemoveItems<JObject>(
+                        swagger[SwaggerProperties.Tags],
+                        paths,
+                        (i) => $"$..tags[?(@ == '{i[SwaggerProperties.TagName]}')]");
                 }
             }
 
             return swagger.ToString(Newtonsoft.Json.Formatting.Indented);
         }
 
+        private static void RemoveItems<T>(JToken token, JToken paths, params Func<T, string>[] searchPaths)
+            => token
+            .Cast<T>()
+            .Where(i => searchPaths.Select(p => paths.SelectTokens(p(i)).Any()).All(p => !p))
+            .ToList()
+            .ForEach(i =>
+            {
+                if (i is JObject o)
+                {
+                    o.Remove();
+                }
+                else if (i is JProperty t)
+                {
+                    t.Remove();
+                }
+            });
+
         private static ReRouteOptions FindReRoute(IEnumerable<ReRouteOptions> reRoutes, string downstreamPath)
-            => reRoutes.FirstOrDefault(p =>
-                p.CanCatchAll
+            => reRoutes.FirstOrDefault(p
+                => p.CanCatchAll
                 ? downstreamPath.StartsWith(p.DownstreamPath, StringComparison.CurrentCultureIgnoreCase)
                 : p.DownstreamPath.Equals(downstreamPath, StringComparison.CurrentCultureIgnoreCase));
 

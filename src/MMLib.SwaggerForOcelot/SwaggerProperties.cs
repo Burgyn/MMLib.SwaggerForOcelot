@@ -19,5 +19,20 @@
         /// The paths property name.
         /// </summary>
         public const string Paths = "paths";
+
+        /// <summary>
+        /// The definitions property name.
+        /// </summary>
+        public const string Definitions = "definitions";
+
+        /// <summary>
+        /// The tags property name.
+        /// </summary>
+        public const string Tags = "tags";
+
+        /// <summary>
+        /// The tag's name property name.
+        /// </summary>
+        public const string TagName = "name";
     }
 }

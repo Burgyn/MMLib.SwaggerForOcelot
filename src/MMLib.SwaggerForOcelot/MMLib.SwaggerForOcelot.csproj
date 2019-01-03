@@ -16,6 +16,7 @@
     <FileVersion>0.4.0.0</FileVersion>
     <PackageLicenseUrl>https://github.com/Burgyn/MMLib.SwaggerForOcelot/blob/master/LICENSE</PackageLicenseUrl>
     <Copyright>@MMLib</Copyright>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

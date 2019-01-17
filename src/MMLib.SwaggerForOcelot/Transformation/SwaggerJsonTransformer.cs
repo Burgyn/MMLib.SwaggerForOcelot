@@ -72,6 +72,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
         {
             var forRemove = new List<JProperty>();
             var method = path.First.First as JProperty;
+
             while (method != null)
             {
                 if(!reRoute.ContainsHttpMethod(method.Name))

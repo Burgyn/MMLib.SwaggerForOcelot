@@ -1,5 +1,4 @@
-﻿
-namespace System
+﻿namespace System
 {
     /// <summary>
     ///String extensions

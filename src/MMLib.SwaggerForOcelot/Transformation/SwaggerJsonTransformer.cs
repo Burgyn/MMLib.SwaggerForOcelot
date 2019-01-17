@@ -99,7 +99,6 @@ namespace MMLib.SwaggerForOcelot.Transformation
                     => paths.SelectTokens(p(i)).Any()).All(p => !p))
                 .ToList();
 
-
             if (typeof(T) == typeof(JProperty))
             {
                 var notForRemove = token.Cast<T>().Where(t => !forRemove.Contains(t)).Cast<JProperty>().ToList();

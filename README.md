@@ -100,8 +100,8 @@ Example:
 - [x] Unit tests
 - [ ] Complex Ocelot configuration.
   - [x] Add `Petstore` swagger Example.
-  - [ ] Group more reroutes with same `SwaggerKey`.
-  - [ ] Filter `UpstreamHttpMethod`.
+  - [x] Group more reroutes with same `SwaggerKey`.
+  - [x] Filter `UpstreamHttpMethod`.
   - [ ] Query parameters.
   - [ ] Aggregates.
 - [x] Documentations

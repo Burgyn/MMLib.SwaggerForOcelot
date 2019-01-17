@@ -84,12 +84,12 @@ namespace MMLib.SwaggerForOcelot.Tests
                     SwaggerKey = "pets",
                     UpstreamPathTemplate ="/api/pets/pet/findByStatus",
                     DownstreamPathTemplate ="/pet/findByStatus",
-                    UpstreamHttpMethod = new List<string>(){ "Get"} },
+                    UpstreamHttpMethod = new HashSet<string>(){ "Get"} },
                 new ReRouteOptions(){
                     SwaggerKey = "pets",
                     UpstreamPathTemplate ="/api/pets/pet/{petId}",
                     DownstreamPathTemplate ="/pet/{petId}",
-                    UpstreamHttpMethod = new List<string>(){ "Post"} },
+                    UpstreamHttpMethod = new HashSet<string>(){ "Post"} },
                 new ReRouteOptions(){
                     SwaggerKey = "pets",
                     UpstreamPathTemplate ="/api/pets/store/{everything}",

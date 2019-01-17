@@ -99,6 +99,11 @@ Example:
 - [x] Add capability for confiuragtion SwaggerUI and configure EndpointBasePath.
 - [x] Unit tests
 - [ ] Complex Ocelot configuration.
+  - [x] Add `Petstore` swagger Example.
+  - [x] Group more reroutes with same `SwaggerKey`.
+  - [x] Filter `UpstreamHttpMethod`.
+  - [ ] Query parameters.
+  - [ ] Aggregates.
 - [x] Documentations
 - [x] Continuous delivery
 - [ ] Custom Index.html.

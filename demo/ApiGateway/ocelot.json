@@ -25,6 +25,19 @@
       "UpstreamPathTemplate": "/api/projects/{everything}",
       "UpstreamHttpMethod": [ "Get" ],
       "SwaggerKey": "projects"
+    },
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5300
+        }
+      ],
+      "UpstreamPathTemplate": "/api/pets/{everything}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "pets"
     }
   ],
   "SwaggerEndPoints": [
@@ -37,6 +50,11 @@
       "Key": "contacts",
       "Name": "Contacts API",
       "Url": "http://localhost:5100/swagger/v1/swagger.json"
+    },
+    {
+      "Key": "pets",
+      "Name": "Petsstore API",
+      "Url": "http://localhost:5300/swagger.json"
     }
   ],
   "GlobalConfiguration": {

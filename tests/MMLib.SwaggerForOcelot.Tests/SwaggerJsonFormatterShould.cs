@@ -119,6 +119,22 @@ namespace MMLib.SwaggerForOcelot.Tests
             await TransformAndCheck(reroutes, "SwaggerPetsBase", "SwaggerPetsOnlyPost");
         }
 
+        [Fact]
+        public async Task CreateNewJsonWhenNestedClass()
+        {
+            var reroutes = new List<ReRouteOptions>()
+            {
+                new ReRouteOptions(){
+                    SwaggerKey = "data",
+                    UpstreamPathTemplate ="/api/r/{everything}",
+                    DownstreamPathTemplate ="/api/{everything}",
+                    UpstreamHttpMethod = new List<string>(){ "POST" }
+                }
+            };
+
+            await TransformAndCheck(reroutes, "SwaggerNestedClass", "SwaggerNestedClassTransformed");
+        }
+
         private async Task TransformAndCheck(
             IEnumerable<ReRouteOptions> reroutes,
             string swaggerBaseFileName,

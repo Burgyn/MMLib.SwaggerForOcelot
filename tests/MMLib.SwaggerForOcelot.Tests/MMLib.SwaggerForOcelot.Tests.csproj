@@ -9,6 +9,8 @@
   <ItemGroup>
     <None Remove="Resources\SwaggerBase.json" />
     <None Remove="Resources\SwaggerBaseTransformed.json" />
+    <None Remove="Resources\SwaggerNestedClass.json" />
+    <None Remove="Resources\SwaggerNestedClassTransformed.json" />
     <None Remove="Resources\SwaggerPetsBase.json" />
     <None Remove="Resources\SwaggerPetsOnlyAnyActions.json" />
     <None Remove="Resources\SwaggerPetsOnlyPost.json" />
@@ -17,6 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\SwaggerNestedClassTransformed.json" />
+    <EmbeddedResource Include="Resources\SwaggerNestedClass.json" />
     <EmbeddedResource Include="Resources\SwaggerPetsOnlyAnyActions.json">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </EmbeddedResource>

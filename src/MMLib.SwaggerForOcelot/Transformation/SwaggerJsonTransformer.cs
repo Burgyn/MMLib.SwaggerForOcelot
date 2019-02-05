@@ -75,7 +75,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
             while (method != null)
             {
-                if(!reRoute.ContainsHttpMethod(method.Name))
+                if (!reRoute.ContainsHttpMethod(method.Name))
                 {
                     forRemove.Add(method);
                 }
@@ -101,15 +101,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
             if (typeof(T) == typeof(JProperty))
             {
-                var notForRemove = token.Cast<T>().Where(t => !forRemove.Contains(t)).Cast<JProperty>().ToList();
-                var subReference = forRemove
-                        .Cast<JProperty>()
-                        .Where(i
-                        => searchPaths
-                            .Select(p => notForRemove.Any(t => t.SelectTokens(p(i as T)).Any())).Any(p => p))
-                        .ToDictionary(p => p.Name, p => p);
-
-                forRemove.RemoveAll(p => subReference.ContainsKey((p as JProperty).Name));
+                CheckSubreferences(token, searchPaths, forRemove);
             }
 
             foreach (var item in forRemove)
@@ -122,6 +114,25 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 {
                     t.Remove();
                 }
+            }
+        }
+
+        private static void CheckSubreferences<T>(IEnumerable<JToken> token, Func<T, string>[] searchPaths, List<T> forRemove)
+            where T : class
+        {
+            var notForRemove = token.Cast<T>().Where(t => !forRemove.Contains(t)).Cast<JProperty>().ToList();
+            var subReference = forRemove
+                    .Cast<JProperty>()
+                    .Where(i
+                    => searchPaths
+                        .Select(p => notForRemove.Any(t => t.SelectTokens(p(i as T)).Any())).Any(p => p))
+                    .ToDictionary(p => p.Name, p => p);
+
+            forRemove.RemoveAll(p => subReference.ContainsKey((p as JProperty).Name));
+
+            if (subReference.Count > 0)
+            {
+                CheckSubreferences(subReference.Values, searchPaths, forRemove);
             }
         }
 

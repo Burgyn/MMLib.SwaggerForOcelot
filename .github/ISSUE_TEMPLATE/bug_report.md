@@ -14,6 +14,6 @@ A clear and concise description of what the bug is.
 A clear and concise description of what you expected to happen.
 
 **To Reproduce**
-If it is a possible attache:
+If it is a possible then attach:
 1. Original downstream `swagger.json`.
 2. Ocelot ReRoutes configuration.

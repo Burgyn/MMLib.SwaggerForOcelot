@@ -101,15 +101,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
             if (typeof(T) == typeof(JProperty))
             {
-                var notForRemove = token.Cast<T>().Where(t => !forRemove.Contains(t)).Cast<JProperty>().ToList();
-                var subReference = forRemove
-                        .Cast<JProperty>()
-                        .Where(i
-                        => searchPaths
-                            .Select(p => notForRemove.Any(t => t.SelectTokens(p(i as T)).Any())).Any(p => p))
-                        .ToDictionary(p => p.Name, p => p);
-
-                forRemove.RemoveAll(p => subReference.ContainsKey((p as JProperty).Name));
+                RemoveSubreference(token, searchPaths, forRemove);
             }
 
             foreach (var item in forRemove)
@@ -122,6 +114,24 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 {
                     t.Remove();
                 }
+            }
+        }
+
+        private static void RemoveSubreference<T>(IEnumerable<JToken> token, Func<T, string>[] searchPaths, List<T> forRemove) where T : class
+        {
+            var notForRemove = token.Cast<T>().Where(t => !forRemove.Contains(t)).Cast<JProperty>().ToList();
+            var subReference = forRemove
+                    .Cast<JProperty>()
+                    .Where(i
+                    => searchPaths
+                        .Select(p => notForRemove.Any(t => t.SelectTokens(p(i as T)).Any())).Any(p => p))
+                    .ToDictionary(p => p.Name, p => p);
+
+            forRemove.RemoveAll(p => subReference.ContainsKey((p as JProperty).Name));
+
+            if (subReference.Count > 0)
+            {
+                RemoveSubreference(subReference.Values, searchPaths, forRemove);
             }
         }
 

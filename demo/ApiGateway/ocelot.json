@@ -42,19 +42,34 @@
   ],
   "SwaggerEndPoints": [
     {
-      "Key": "projects",
-      "Name": "Projects API",
-      "Url": "http://localhost:5200/swagger/v1/swagger.json"
+      "Key": "users",
+      "Config": [
+        {
+          "Name": "users API ",
+          "Version": "2019-01-01",
+          "Url": "https://microuser.dev.ringring.be/swagger/2019-01-01/swagger.json"
+        },
+        {
+          "Name": "users API",
+          "Version": "2018-01-01",
+          "Url": "https://microuser.dev.ringring.be/swagger/2018-01-01/swagger.json"
+        }
+      ]
     },
     {
-      "Key": "contacts",
-      "Name": "Contacts API",
-      "Url": "http://localhost:5100/swagger/v1/swagger.json"
-    },
-    {
-      "Key": "pets",
-      "Name": "Petsstore API",
-      "Url": "http://localhost:5300/swagger.json"
+      "Key": "customers",
+      "Config": [
+        {
+          "Name": "Customer API",
+          "Version": "2019-01-01",
+          "Url": "https://microcustomer.dev.ringring.be/swagger/2019-01-01/swagger.json"
+        },
+        {
+          "Name": "Customer API",
+          "Version": "2018-01-01",
+          "Url": "https://microcustomer.dev.ringring.be/swagger/2018-01-01/swagger.json"
+        }
+      ]
     }
   ],
   "GlobalConfiguration": {

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Collections.Generic;
 
 namespace MMLib.SwaggerForOcelot.Configuration
 {
@@ -21,11 +22,24 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// Gets the path from key.
         /// </summary>
         public string KeyToPath => WebUtility.UrlEncode(Key);
+        /// <summary>
+        /// The swagger endpoint config collection
+        /// </summary>
+        public List<SwaggerEndPointConfig> Config { get; set; }
+    }
 
+
+    public class SwaggerEndPointConfig
+    {
         /// <summary>
         /// End point name. This name is displayed in Swagger UI page.
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// End point version. This version is displayed in Swagger UI page.
+        /// </summary>
+        public string Version { get; set; }
 
         /// <summary>
         /// Full url to downstream service swagger endpoint.

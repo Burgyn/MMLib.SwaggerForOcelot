@@ -59,13 +59,22 @@ namespace MMLib.SwaggerForOcelot.Middleware
             var endPoint = GetEndPoint(context.Request.Path);
             var httpClient = _httpClientFactory.CreateClient();
 
-            var content = await httpClient.GetStringAsync(endPoint.Url);
+            var content = await httpClient.GetStringAsync(endPoint.Config.ElementAt(0).Url);
             content = _transformer.Transform(content, _reRoutes.Value.Where(p => p.SwaggerKey == endPoint.Key));
 
             await context.Response.WriteAsync(content);
         }
 
         private SwaggerEndPointOptions GetEndPoint(string path)
-            => _swaggerEndPoints.Value[path];
+        {
+            if(string.IsNullOrEmpty(path))
+            {
+                var first = _swaggerEndPoints.Value.First();
+                return _swaggerEndPoints.Value[first.Key];
+            }
+              
+           return _swaggerEndPoints.Value[path];
+        }
+           
     }
 }

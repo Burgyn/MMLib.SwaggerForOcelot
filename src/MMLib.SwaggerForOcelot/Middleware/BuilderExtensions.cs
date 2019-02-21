@@ -4,6 +4,7 @@ using MMLib.SwaggerForOcelot.Middleware;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -62,7 +63,11 @@ namespace Microsoft.AspNetCore.Builder
         {
             foreach (var endPoint in endPoints)
             {
-                c.SwaggerEndpoint($"{basePath}/{endPoint.KeyToPath}", endPoint.Name);
+                foreach (var config in endPoint.Config)
+                {
+                    c.SwaggerEndpoint($"{basePath}/{config.Version}", $"{config.Name} - {config.Version}");
+                }
+              
             }
         }
 

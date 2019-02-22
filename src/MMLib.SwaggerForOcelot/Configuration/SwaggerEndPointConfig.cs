@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MMLib.SwaggerForOcelot.Configuration
+﻿namespace MMLib.SwaggerForOcelot.Configuration
 {
+    /// <summary>
+    /// Swagger endpoint version configuration.
+    /// </summary>
     public class SwaggerEndPointConfig
     {
         /// <summary>

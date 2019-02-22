@@ -11,7 +11,7 @@
       ],
       "UpstreamPathTemplate": "/api/contacts/{everything}",
       "UpstreamHttpMethod": [ "Get" ],
-      "SwaggerKey": "contacts"
+      "SwaggerKey": "users"
     },
     {
       "DownstreamPathTemplate": "/api/{everything}",
@@ -24,20 +24,7 @@
       ],
       "UpstreamPathTemplate": "/api/projects/{everything}",
       "UpstreamHttpMethod": [ "Get" ],
-      "SwaggerKey": "projects"
-    },
-    {
-      "DownstreamPathTemplate": "/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5300
-        }
-      ],
-      "UpstreamPathTemplate": "/api/pets/{everything}",
-      "UpstreamHttpMethod": [ "Get" ],
-      "SwaggerKey": "pets"
+      "SwaggerKey": "customers"
     }
   ],
   "SwaggerEndPoints": [
@@ -45,7 +32,7 @@
       "Key": "users",
       "Config": [
         {
-          "Name": "users API ",
+          "Name": "users API",
           "Version": "2019-01-01",
           "Url": "https://microuser.dev.ringring.be/swagger/2019-01-01/swagger.json"
         },

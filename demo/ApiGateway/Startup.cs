@@ -39,7 +39,9 @@ namespace ApiGateway
             }
 
             app.UseStaticFiles();
-            app.UseSwaggerForOcelotUI(Configuration)
+            app.UseSwaggerForOcelotUI(Configuration, opt => {
+                opt.EndPointBasePath = "/swagger/docs";
+            })
                 .UseOcelot()
                 .Wait();
         }

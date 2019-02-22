@@ -59,21 +59,33 @@ namespace MMLib.SwaggerForOcelot.Middleware
             var endPoint = GetEndPoint(context.Request.Path);
             var httpClient = _httpClientFactory.CreateClient();
 
-            var content = await httpClient.GetStringAsync(endPoint.Config.ElementAt(0).Url);
-            content = _transformer.Transform(content, _reRoutes.Value.Where(p => p.SwaggerKey == endPoint.Key));
+            var content = await httpClient.GetStringAsync(endPoint.Url);
+            content = _transformer.Transform(content, _reRoutes.Value.Where(p => p.SwaggerKey == endPoint.EndPoint.Key));
 
             await context.Response.WriteAsync(content);
         }
 
-        private SwaggerEndPointOptions GetEndPoint(string path)
+        /// <summary>
+        /// Get Url and Endpoint from path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private (string Url, SwaggerEndPointOptions EndPoint) GetEndPoint(string path)
         {
-            if(string.IsNullOrEmpty(path))
-            {
-                var first = _swaggerEndPoints.Value.First();
-                return _swaggerEndPoints.Value[first.Key];
-            }
-              
-           return _swaggerEndPoints.Value[path];
+            var endPointInfo = GetEndPointInfo(path);
+            var endPoint = _swaggerEndPoints.Value[$"/{endPointInfo.key}"];
+            var url = endPoint.Config.Where(x => x.Version == endPointInfo.version).FirstOrDefault()?.Url;
+            return (url, endPoint);
+        }
+        /// <summary>
+        /// Get url and version from Path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private (string version, string key) GetEndPointInfo(string path)
+        {
+            var keys = path.Split('/');
+            return (keys[1], keys[2]);     
         }
            
     }

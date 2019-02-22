@@ -13,48 +13,76 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
    > dotnet add package MMLib.SwaggerForOcelot
 3. Configure SwaggerForOcelot in `ocelot.json`.
    ```Json
+{
+  "ReRoutes": [
     {
-        "ReRoutes": [
-          {
-            "DownstreamPathTemplate": "/api/{everything}",
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                "Host": "localhost",
-                "Port": 5100
-                }
-            ],
-            "UpstreamPathTemplate": "/api/contacts/{everything}",
-            "UpstreamHttpMethod": [ "Get" ],
-            "SwaggerKey": "contacts"
-          },
-          {
-            "DownstreamPathTemplate": "/api/{everything}",
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                "Host": "localhost",
-                "Port": 5200
-                }
-            ],
-            "UpstreamPathTemplate": "/api/projects/{everything}",
-            "UpstreamHttpMethod": [ "Get" ],
-            "SwaggerKey": "projects"
-          }
-        ],
-        "SwaggerEndPoints": [
-          {
-            "Key": "projects",
-            "Name": "Projects API",
-            "Url": "http://localhost:5200/swagger/v1/swagger.json"
-          },
-          {
-            "Key": "contacts",
-            "Name": "Contacts API",
-            "Url": "http://localhost:5100/swagger/v1/swagger.json"
-          }
-        ]
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5100
+        }
+      ],
+      "UpstreamPathTemplate": "/api/contacts/{everything}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "contacts"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5200
+        }
+      ],
+      "UpstreamPathTemplate": "/api/orders/{everything}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "orders"
     }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "contacts",
+      "Config": [
+        {
+          "Name": "Contacts API",
+          "Version": "v1",
+          "Url": "http://localhost:5100/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "orders",
+      "Config": [
+        {
+          "Name": "Orders API",
+          "Version": "v0.9",
+          "Url": "http://localhost:5200/swagger/v0.9/swagger.json"
+        },
+        {
+          "Name": "Orders API",
+          "Version": "v1",
+          "Url": "http://localhost:5200/swagger/v1/swagger.json"
+        },
+        {
+          "Name": "Orders API",
+          "Version": "v2",
+          "Url": "http://localhost:5200/swagger/v2/swagger.json"
+        },
+        {
+          "Name": "Orders API",
+          "Version": "v3",
+          "Url": "http://localhost:5200/swagger/v3/swagger.json"
+        }
+      ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost"
+  }
+}
     ```
     >`SwaggerEndPoint` is configuration for downstream service swagger generator endpoint.
     Property `Key` is used to pair with the ReRoute configuration. `Name` is displayed in the combobox. `Url` is downstream service swagger generator endpoint.
@@ -64,7 +92,9 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
    ```
 5. In `Configure` method, insert the `SwaggerForOcelot` middleware to expose interactive documentation.
    ```CSharp
-   app.UseSwaggerForOcelotUI(Configuration)
+          app.UseSwaggerForOcelotUI(Configuration, opt => {
+                opt.EndPointBasePath = "/swagger/docs";
+            })
    ```
 6. Show your microservices interactive documentation.
    >`http://ocelotserviceurl/swagger`

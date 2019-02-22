@@ -11,7 +11,7 @@
       ],
       "UpstreamPathTemplate": "/api/contacts/{everything}",
       "UpstreamHttpMethod": [ "Get" ],
-      "SwaggerKey": "users"
+      "SwaggerKey": "contacts"
     },
     {
       "DownstreamPathTemplate": "/api/{everything}",
@@ -22,39 +22,44 @@
           "Port": 5200
         }
       ],
-      "UpstreamPathTemplate": "/api/projects/{everything}",
+      "UpstreamPathTemplate": "/api/orders/{everything}",
       "UpstreamHttpMethod": [ "Get" ],
-      "SwaggerKey": "customers"
+      "SwaggerKey": "orders"
     }
   ],
   "SwaggerEndPoints": [
     {
-      "Key": "users",
+      "Key": "contacts",
       "Config": [
         {
-          "Name": "users API",
-          "Version": "2019-01-01",
-          "Url": "https://microuser.dev.ringring.be/swagger/2019-01-01/swagger.json"
-        },
-        {
-          "Name": "users API",
-          "Version": "2018-01-01",
-          "Url": "https://microuser.dev.ringring.be/swagger/2018-01-01/swagger.json"
+          "Name": "Contacts API",
+          "Version": "v1",
+          "Url": "http://localhost:5100/swagger/v1/swagger.json"
         }
       ]
     },
     {
-      "Key": "customers",
+      "Key": "orders",
       "Config": [
         {
-          "Name": "Customer API",
-          "Version": "2019-01-01",
-          "Url": "https://microcustomer.dev.ringring.be/swagger/2019-01-01/swagger.json"
+          "Name": "Orders API",
+          "Version": "v0.9",
+          "Url": "http://localhost:5200/swagger/v0.9/swagger.json"
         },
         {
-          "Name": "Customer API",
-          "Version": "2018-01-01",
-          "Url": "https://microcustomer.dev.ringring.be/swagger/2018-01-01/swagger.json"
+          "Name": "Orders API",
+          "Version": "v1",
+          "Url": "http://localhost:5200/swagger/v1/swagger.json"
+        },
+        {
+          "Name": "Orders API",
+          "Version": "v2",
+          "Url": "http://localhost:5200/swagger/v2/swagger.json"
+        },
+        {
+          "Name": "Orders API",
+          "Version": "v3",
+          "Url": "http://localhost:5200/swagger/v3/swagger.json"
         }
       ]
     }

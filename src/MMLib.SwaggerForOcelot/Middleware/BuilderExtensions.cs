@@ -5,7 +5,6 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Collections.Generic;
 
-
 namespace Microsoft.AspNetCore.Builder
 {
     /// <summary>

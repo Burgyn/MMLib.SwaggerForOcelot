@@ -86,7 +86,6 @@ namespace MMLib.SwaggerForOcelot.Middleware
         {
             var keys = path.Split('/');
             return (keys[1], keys[2]);     
-        }
-           
+        } 
     }
 }

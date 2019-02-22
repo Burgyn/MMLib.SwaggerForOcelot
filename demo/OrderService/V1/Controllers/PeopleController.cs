@@ -1,6 +1,5 @@
 ﻿namespace OrderService.V1.Controllers
 {
-
     using Microsoft.AspNetCore.Mvc;
     using Models;
 

@@ -12,8 +12,8 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 2. Install Nuget package into yout ASP.NET Core Ocelot project.
    > dotnet add package MMLib.SwaggerForOcelot
 3. Configure SwaggerForOcelot in `ocelot.json`.
-   ```Json
-{
+```Json
+ {
   "ReRoutes": [
     {
       "DownstreamPathTemplate": "/api/{everything}",
@@ -83,7 +83,7 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
     "BaseUrl": "http://localhost"
   }
 }
-    ```
+```
     >`SwaggerEndPoint` is configuration for downstream service swagger generator endpoint.
     Property `Key` is used to pair with the ReRoute configuration. `Name` is displayed in the combobox. `Url` is downstream service swagger generator endpoint.
 4. In the `ConfigureServices` method of `Startup.cs`, register the SwaggerForOcelot generator.

@@ -48,7 +48,7 @@ namespace Microsoft.AspNetCore.Builder
             {
                 InitUIOption(c, options);
 
-                var endPoints = GetConfugration(configuration);
+                var endPoints = GetConfiguration(configuration);
                 AddSwaggerEndPoints(c, endPoints, options.EndPointBasePath);
             });
 
@@ -76,8 +76,19 @@ namespace Microsoft.AspNetCore.Builder
             c.RoutePrefix = options.RoutePrefix;
         }
 
-        private static IEnumerable<SwaggerEndPointOptions> GetConfugration(IConfiguration configuration)
-            => configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName)
-            .Get<IEnumerable<SwaggerEndPointOptions>>();
+        private static IEnumerable<SwaggerEndPointOptions> GetConfiguration(IConfiguration configuration)
+        {
+            IEnumerable<SwaggerEndPointOptions> options =
+                configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName)
+                .Get<IEnumerable<SwaggerEndPointOptions>>();
+
+            if (options == null)
+            {
+                throw new InvalidOperationException(
+                    $"{SwaggerEndPointOptions.ConfigurationSectionName} configuration section is missing or empty.");
+            }
+
+            return options;
+        }
     }
 }

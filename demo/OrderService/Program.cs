@@ -1,8 +1,8 @@
-﻿namespace OrderService
-{
-    using Microsoft.AspNetCore;
-    using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 
+namespace OrderService
+{
     /// <summary>
     /// Represents the current application.
     /// </summary>

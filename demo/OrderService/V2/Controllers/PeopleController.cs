@@ -1,9 +1,9 @@
-﻿namespace OrderService.V2.Controllers
-{
-    using Microsoft.AspNetCore.Mvc;
-    using Models;
-    using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using OrderService.V2.Models;
 
+namespace OrderService.V2.Controllers
+{
     /// <summary>
     /// Represents a RESTful people service.
     /// </summary>

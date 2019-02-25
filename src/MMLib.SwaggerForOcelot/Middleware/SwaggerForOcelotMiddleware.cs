@@ -76,9 +76,10 @@ namespace MMLib.SwaggerForOcelot.Middleware
         {
             var endPointInfo = GetEndPointInfo(path);
             var endPoint = _swaggerEndPoints.Value[$"/{endPointInfo.Key}"];
-            var url = endPoint.Config.Where(x => x.Version == endPointInfo.Version).FirstOrDefault()?.Url;
+            var url = endPoint.Config.FirstOrDefault(x => x.Version == endPointInfo.Version)?.Url;
             return (url, endPoint);
         }
+
         /// <summary>
         /// Get url and version from Path
         /// </summary>
@@ -89,7 +90,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         private (string Version, string Key) GetEndPointInfo(string path)
         {
             var keys = path.Split('/');
-            return (keys[1], keys[2]);     
-        } 
+            return (keys[1], keys[2]);
+        }
     }
 }

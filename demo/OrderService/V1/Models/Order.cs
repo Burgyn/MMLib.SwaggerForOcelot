@@ -1,8 +1,8 @@
-﻿namespace OrderService.V1.Models
-{
-    using System;
-    using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
+namespace OrderService.V1.Models
+{
     /// <summary>
     /// Represents an order.
     /// </summary>

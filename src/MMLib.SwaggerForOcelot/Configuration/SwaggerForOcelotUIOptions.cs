@@ -12,6 +12,6 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// The end point base path. The final path to swagger endpoint is
         /// <see cref="EndPointBasePath"/> + <see cref="SwaggerEndPointOptions.Key"/>
         /// </summary>
-        public string EndPointBasePath { get; set; }
+        public string EndPointBasePath { get; set; } = "/swagger/docs";
     }
 }

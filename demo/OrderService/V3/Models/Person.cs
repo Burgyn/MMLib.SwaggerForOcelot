@@ -1,8 +1,7 @@
-﻿namespace OrderService.V3.Models
-{
-    using System;
-    using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
+namespace OrderService.V3.Models
+{
     /// <summary>
     /// Represents a person.
     /// </summary>

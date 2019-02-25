@@ -1,11 +1,11 @@
-﻿namespace OrderService
-{
-    using Microsoft.AspNetCore.Mvc.ApiExplorer;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Options;
-    using Swashbuckle.AspNetCore.Swagger;
-    using Swashbuckle.AspNetCore.SwaggerGen;
+﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Swagger;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
+namespace OrderService
+{
     /// <summary>
     /// Configures the Swagger generation options.
     /// </summary>

@@ -1,17 +1,17 @@
-﻿namespace OrderService
-{
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Mvc.ApiExplorer;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Options;
-    using Microsoft.Extensions.PlatformAbstractions;
-    using Swashbuckle.AspNetCore.SwaggerGen;
-    using System.IO;
-    using System.Reflection;
-    using static Microsoft.AspNetCore.Mvc.CompatibilityVersion;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.PlatformAbstractions;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.IO;
+using System.Reflection;
+using static Microsoft.AspNetCore.Mvc.CompatibilityVersion;
 
+namespace OrderService
+{
     /// <summary>
     /// Represents the startup process for the application.
     /// </summary>

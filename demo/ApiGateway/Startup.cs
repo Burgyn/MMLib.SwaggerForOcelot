@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MMLib.SwaggerForOcelot;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
@@ -39,9 +38,7 @@ namespace ApiGateway
             }
 
             app.UseStaticFiles();
-            app.UseSwaggerForOcelotUI(Configuration, opt => {
-                opt.EndPointBasePath = "/swagger/docs";
-            })
+            app.UseSwaggerForOcelotUI(Configuration)
                 .UseOcelot()
                 .Wait();
         }

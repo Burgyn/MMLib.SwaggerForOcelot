@@ -22,39 +22,46 @@
           "Port": 5200
         }
       ],
-      "UpstreamPathTemplate": "/api/projects/{everything}",
+      "UpstreamPathTemplate": "/api/orders/{everything}",
       "UpstreamHttpMethod": [ "Get" ],
-      "SwaggerKey": "projects"
-    },
-    {
-      "DownstreamPathTemplate": "/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5300
-        }
-      ],
-      "UpstreamPathTemplate": "/api/pets/{everything}",
-      "UpstreamHttpMethod": [ "Get" ],
-      "SwaggerKey": "pets"
+      "SwaggerKey": "orders"
     }
   ],
   "SwaggerEndPoints": [
     {
-      "Key": "projects",
-      "Name": "Projects API",
-      "Url": "http://localhost:5200/swagger/v1/swagger.json"
-    },
-    {
       "Key": "contacts",
-      "Name": "Contacts API",
-      "Url": "http://localhost:5100/swagger/v1/swagger.json"
+      "Config": [
+        {
+          "Name": "Contacts API",
+          "Version": "v1",
+          "Url": "http://localhost:5100/swagger/v1/swagger.json"
+        }
+      ]
     },
     {
-      "Key": "pets",
-      "Name": "Petsstore API",
-      "Url": "http://localhost:5300/swagger.json"
+      "Key": "orders",
+      "Config": [
+        {
+          "Name": "Orders API",
+          "Version": "v0.9",
+          "Url": "http://localhost:5200/swagger/v0.9/swagger.json"
+        },
+        {
+          "Name": "Orders API",
+          "Version": "v1",
+          "Url": "http://localhost:5200/swagger/v1/swagger.json"
+        },
+        {
+          "Name": "Orders API",
+          "Version": "v2",
+          "Url": "http://localhost:5200/swagger/v2/swagger.json"
+        },
+        {
+          "Name": "Orders API",
+          "Version": "v3",
+          "Url": "http://localhost:5200/swagger/v3/swagger.json"
+        }
+      ]
     }
   ],
   "GlobalConfiguration": {

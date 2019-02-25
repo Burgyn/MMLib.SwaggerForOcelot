@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Milan Martiniak</Authors>
     <Company>MMLib</Company>
     <Description>Swagger generator for Ocelot downstream services.</Description>
@@ -12,8 +12,6 @@
     <PackageTags>swagger;documentation;ocelot</PackageTags>
     <PackageReleaseNotes />
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>@MMLib</Copyright>
     <LangVersion>7.3</LangVersion>

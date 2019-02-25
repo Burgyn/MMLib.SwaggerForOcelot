@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.106
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28606.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectService", "demo\ProjectService\ProjectService.csproj", "{DE0D4EF5-77F2-49D8-9941-A0D473744972}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MMLib.SwaggerForOcelot.Tests", "tests\MMLib.SwaggerForOcelot.Tests\MMLib.SwaggerForOcelot.Tests.csproj", "{D66F3C86-8D57-4802-B2F9-15F91262F12D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetstoreService", "demo\PetstoreService\PetstoreService.csproj", "{0C20742E-0D4E-4407-AC5B-4162EEBD8FC5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderService", "demo\OrderService\OrderService.csproj", "{F823FFA3-F5D9-488E-ADAB-15C4E9790DC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{0C20742E-0D4E-4407-AC5B-4162EEBD8FC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C20742E-0D4E-4407-AC5B-4162EEBD8FC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C20742E-0D4E-4407-AC5B-4162EEBD8FC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F823FFA3-F5D9-488E-ADAB-15C4E9790DC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F823FFA3-F5D9-488E-ADAB-15C4E9790DC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F823FFA3-F5D9-488E-ADAB-15C4E9790DC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F823FFA3-F5D9-488E-ADAB-15C4E9790DC5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +68,7 @@ Global
 		{5D0346CB-0F8B-4D0F-94E5-0D7BAAAA0C5D} = {D0CA2BCE-C362-4C5A-8AC9-319742DDCDD8}
 		{D66F3C86-8D57-4802-B2F9-15F91262F12D} = {A9111054-B663-41BA-AE67-E6FE3E7515AF}
 		{0C20742E-0D4E-4407-AC5B-4162EEBD8FC5} = {75938D16-D280-4200-A970-8D33B719D252}
+		{F823FFA3-F5D9-488E-ADAB-15C4E9790DC5} = {75938D16-D280-4200-A970-8D33B719D252}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AAA408E9-E738-4F2B-A6C2-B35AAADDB00F}

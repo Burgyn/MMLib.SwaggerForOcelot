@@ -60,7 +60,8 @@ namespace MMLib.SwaggerForOcelot.Middleware
             var httpClient = _httpClientFactory.CreateClient();
 
             var content = await httpClient.GetStringAsync(endPoint.Url);
-            content = _transformer.Transform(content, _reRoutes.Value.Where(p => p.SwaggerKey == endPoint.EndPoint.Key));
+            var hostName = endPoint.EndPoint.HostOverride ?? context.Request.Host.Value;
+            content = _transformer.Transform(content, _reRoutes.Value.Where(p => p.SwaggerKey == endPoint.EndPoint.Key), hostName);
 
             await context.Response.WriteAsync(content);
         }

@@ -14,16 +14,21 @@ namespace MMLib.SwaggerForOcelot.Transformation
     {
 
         /// <inheritdoc/>
-        public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes)
+        public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes, string hostOverride)
         {
             JObject swagger = JObject.Parse(swaggerJson);
             var paths = swagger[SwaggerProperties.Paths];
-
+            var basePath = swagger.ContainsKey(SwaggerProperties.BasePath) ? swagger.GetValue(SwaggerProperties.BasePath).ToString() : "";
+            
             RemoveHost(swagger);
+            if (hostOverride != "")
+            {
+                AddHost(swagger, hostOverride);
+            }
 
             if (paths != null)
             {
-                RemovePaths(reRoutes, paths);
+                RemovePaths(reRoutes, paths, basePath);
 
                 RemoveItems<JProperty>(
                     swagger[SwaggerProperties.Definitions],
@@ -42,7 +47,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
             return swagger.ToString(Newtonsoft.Json.Formatting.Indented);
         }
 
-        private void RemovePaths(IEnumerable<ReRouteOptions> reRoutes, JToken paths)
+        private void RemovePaths(IEnumerable<ReRouteOptions> reRoutes, JToken paths, string basePath)
         {
             var forRemove = new List<JProperty>();
 
@@ -50,11 +55,11 @@ namespace MMLib.SwaggerForOcelot.Transformation
             {
                 var path = paths.ElementAt(i) as JProperty;
                 string downstreamPath = path.Name.RemoveSlashFromEnd();
-                var reRoute = FindReRoute(reRoutes, downstreamPath);
+                var reRoute = FindReRoute(reRoutes, downstreamPath, basePath);
 
                 if (reRoute != null && RemoveMethods(path, reRoute))
                 {
-                    RenameToken(path, ReplaceFirst(downstreamPath, reRoute.DownstreamPath, reRoute.UpstreamPath));
+                    RenameToken(path, ReplaceFirstInUrl(downstreamPath, reRoute.DownstreamPath, reRoute.UpstreamPath, basePath));
                 }
                 else
                 {
@@ -136,20 +141,35 @@ namespace MMLib.SwaggerForOcelot.Transformation
             }
         }
 
-        private static ReRouteOptions FindReRoute(IEnumerable<ReRouteOptions> reRoutes, string downstreamPath)
-            => reRoutes.FirstOrDefault(p
+        private static ReRouteOptions FindReRoute(IEnumerable<ReRouteOptions> reRoutes, string downstreamPath, string basePath)
+        {
+            var downstreamPathWithBasePath = basePath + downstreamPath;
+            return reRoutes.FirstOrDefault(p
                 => p.CanCatchAll
-                ? downstreamPath.StartsWith(p.DownstreamPath, StringComparison.CurrentCultureIgnoreCase)
-                : p.DownstreamPath.Equals(downstreamPath, StringComparison.CurrentCultureIgnoreCase));
+                    ? downstreamPathWithBasePath.StartsWith(p.DownstreamPath, StringComparison.CurrentCultureIgnoreCase)
+                    : p.DownstreamPath.Equals(downstreamPathWithBasePath, StringComparison.CurrentCultureIgnoreCase));
+        }
 
+        private static void AddHost(JObject swagger, string swaggerHost)
+        {
+            swagger.Add(SwaggerProperties.Host, swaggerHost);
+        }
+        
         private static void RemoveHost(JObject swagger)
         {
             swagger.Remove(SwaggerProperties.Host);
             swagger.Remove(SwaggerProperties.Schemes);
         }
 
-        private string ReplaceFirst(string text, string search, string replace)
+        private string ReplaceFirstInUrl(string text, string search, string replace, string basePath)
         {
+            //remove basePath from search and replace
+            if (basePath.Length > 0)
+            {
+                search = search.Replace(basePath, "");
+                replace = replace.Replace(basePath, "");
+            }
+            
             int pos = text.IndexOf(search, StringComparison.CurrentCultureIgnoreCase);
             if (pos < 0)
             {

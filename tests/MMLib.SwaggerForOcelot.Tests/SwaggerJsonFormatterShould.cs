@@ -21,7 +21,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                     DownstreamPathTemplate ="/api/{everything}"}
             };
 
-            await TransformAndCheck(reroutes, "SwaggerBase", "SwaggerBaseTransformed");
+            await TransformAndCheck(reroutes, "SwaggerBase", "SwaggerBaseTransformed", "localhost:8000");
         }
 
         [Fact]
@@ -36,7 +36,21 @@ namespace MMLib.SwaggerForOcelot.Tests
                     DownstreamPathTemplate ="/project/api/{everything}"}
             };
 
-            await TransformAndCheck(reroutes, "SwaggerBase", "SwaggerBaseTransformed");
+            await TransformAndCheck(reroutes, "SwaggerBase", "SwaggerBaseTransformed", "localhost:8000");
+        }
+        
+        [Fact]
+        public async Task CreateNewJsonWithBasePath()
+        {
+            var reroutes = new List<ReRouteOptions>()
+            {
+                new ReRouteOptions(){
+                    SwaggerKey = "projects",
+                    UpstreamPathTemplate ="/api/projects/{everything}",
+                    DownstreamPathTemplate ="/api/{everything}"}
+            };
+
+            await TransformAndCheck(reroutes, "SwaggerWithBasePathBase", "SwaggerWithBasePathBaseTransformed");
         }
 
         [Fact]
@@ -46,8 +60,8 @@ namespace MMLib.SwaggerForOcelot.Tests
             {
                 new ReRouteOptions(){
                     SwaggerKey = "pets",
-                    UpstreamPathTemplate ="/api/store/{everything}",
-                    DownstreamPathTemplate ="/store/{everything}"}
+                    UpstreamPathTemplate ="/v2/api/store/{everything}",
+                    DownstreamPathTemplate ="/v2/store/{everything}"}
             };
 
             await TransformAndCheck(reroutes, "SwaggerPetsBase", "SwaggerPetsOnlyStore");
@@ -60,16 +74,16 @@ namespace MMLib.SwaggerForOcelot.Tests
             {
                 new ReRouteOptions(){
                     SwaggerKey = "pets",
-                    UpstreamPathTemplate ="/api/pets/pet/{everything}",
-                    DownstreamPathTemplate ="/pet/{everything}"},
+                    UpstreamPathTemplate ="/v2/api/pets/pet/{everything}",
+                    DownstreamPathTemplate ="/v2/pet/{everything}"},
                 new ReRouteOptions(){
                     SwaggerKey = "pets",
-                    UpstreamPathTemplate ="/api/pets/store/{everything}",
-                    DownstreamPathTemplate ="/store/{everything}"},
+                    UpstreamPathTemplate ="/v2/api/pets/store/{everything}",
+                    DownstreamPathTemplate ="/v2/store/{everything}"},
                 new ReRouteOptions(){
                     SwaggerKey = "pets",
-                    UpstreamPathTemplate ="/api/pets/user/{everything}",
-                    DownstreamPathTemplate ="/user/{everything}"}
+                    UpstreamPathTemplate ="/v2/api/pets/user/{everything}",
+                    DownstreamPathTemplate ="/v2/user/{everything}"}
             };
 
             await TransformAndCheck(reroutes, "SwaggerPetsBase", "SwaggerPetsTransformed");
@@ -82,22 +96,22 @@ namespace MMLib.SwaggerForOcelot.Tests
             {
                 new ReRouteOptions(){
                     SwaggerKey = "pets",
-                    UpstreamPathTemplate ="/api/pets/pet/findByStatus",
-                    DownstreamPathTemplate ="/pet/findByStatus",
+                    UpstreamPathTemplate ="/v2/api/pets/pet/findByStatus",
+                    DownstreamPathTemplate ="/v2/pet/findByStatus",
                     UpstreamHttpMethod = new HashSet<string>(){ "Get"} },
                 new ReRouteOptions(){
                     SwaggerKey = "pets",
-                    UpstreamPathTemplate ="/api/pets/pet/{petId}",
-                    DownstreamPathTemplate ="/pet/{petId}",
+                    UpstreamPathTemplate ="/v2/api/pets/pet/{petId}",
+                    DownstreamPathTemplate ="/v2/pet/{petId}",
                     UpstreamHttpMethod = new HashSet<string>(){ "Post"} },
                 new ReRouteOptions(){
                     SwaggerKey = "pets",
-                    UpstreamPathTemplate ="/api/pets/store/{everything}",
-                    DownstreamPathTemplate ="/store/{everything}"},
+                    UpstreamPathTemplate ="/v2/api/pets/store/{everything}",
+                    DownstreamPathTemplate ="/v2/store/{everything}"},
                 new ReRouteOptions(){
                     SwaggerKey = "pets",
-                    UpstreamPathTemplate ="/api/pets/user/{everything}",
-                    DownstreamPathTemplate ="/user/{everything}"}
+                    UpstreamPathTemplate ="/v2/api/pets/user/{everything}",
+                    DownstreamPathTemplate ="/v2/user/{everything}"}
             };
 
             await TransformAndCheck(reroutes, "SwaggerPetsBase", "SwaggerPetsOnlyAnyActions");
@@ -110,8 +124,8 @@ namespace MMLib.SwaggerForOcelot.Tests
             {
                 new ReRouteOptions(){
                     SwaggerKey = "pets",
-                    UpstreamPathTemplate ="/api/pets/{everything}",
-                    DownstreamPathTemplate ="/{everything}",
+                    UpstreamPathTemplate ="/v2/api/pets/{everything}",
+                    DownstreamPathTemplate ="/v2/{everything}",
                     UpstreamHttpMethod = new List<string>(){ "POST" }
                 }
             };
@@ -138,12 +152,13 @@ namespace MMLib.SwaggerForOcelot.Tests
         private async Task TransformAndCheck(
             IEnumerable<ReRouteOptions> reroutes,
             string swaggerBaseFileName,
-            string expectedSwaggerFileName)
+            string expectedSwaggerFileName,
+            string basePath = "")
         {
             var transformer = new SwaggerJsonTransformer();
             string swaggerBase = await GetBaseSwagger(swaggerBaseFileName);
 
-            var transfomed = transformer.Transform(swaggerBase, reroutes);
+            var transfomed = transformer.Transform(swaggerBase, reroutes, basePath);
 
             await AreEquel(transfomed, expectedSwaggerFileName);
         }

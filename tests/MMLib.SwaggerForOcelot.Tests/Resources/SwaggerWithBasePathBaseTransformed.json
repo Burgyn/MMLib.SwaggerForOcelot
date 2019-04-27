@@ -4,8 +4,9 @@
     "version": "v1",
     "title": "Projects API"
   },
+  "basePath": "/api",
   "paths": {
-    "/api/projects/Projects": {
+    "/projects/Projects": {
       "get": {
         "tags": [
           "Projects"
@@ -32,7 +33,7 @@
         }
       }
     },
-    "/api/projects/Projects/{id}": {
+    "/projects/Projects/{id}": {
       "get": {
         "tags": [
           "Projects"
@@ -66,7 +67,7 @@
         }
       }
     },
-    "/api/projects/Projects/projectCreate": {
+    "/projects/Projects/projectCreate": {
       "post": {
         "tags": [
           "Projects"
@@ -99,7 +100,7 @@
         }
       }
     },
-    "/api/projects/Values": {
+    "/projects/Values": {
       "get": {
         "tags": [
           "Values"
@@ -166,6 +167,5 @@
         }
       }
     }
-  },
-  "host": "localhost:8000"
+  }
 }

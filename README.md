@@ -84,8 +84,7 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
   }
 }
 ```
-    > `SwaggerEndPoint` is configuration for downstream service swagger generator endpoint.
-    Property `Key` is used to pair with the ReRoute configuration. `Name` is displayed in the combobox. `Url` is downstream service swagger generator endpoint.
+    > `SwaggerEndPoint` is configuration for downstream service swagger generator endpoint. Property `Key` is used to pair with the ReRoute configuration. `Name` is displayed in the combobox. `Url` is downstream service swagger generator endpoint.
 4. In the `ConfigureServices` method of `Startup.cs`, register the SwaggerForOcelot generator.
    ```CSharp
    services.AddSwaggerForOcelot(Configuration);

@@ -23,7 +23,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/orders/{everything}",
-      "UpstreamHttpMethod": [ "Get" ],
+      "UpstreamHttpMethod": [ ],
       "SwaggerKey": "orders"
     }
   ],

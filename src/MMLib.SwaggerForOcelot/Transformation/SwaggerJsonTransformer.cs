@@ -18,8 +18,10 @@ namespace MMLib.SwaggerForOcelot.Transformation
         {
             JObject swagger = JObject.Parse(swaggerJson);
             var paths = swagger[SwaggerProperties.Paths];
-            var basePath = swagger.ContainsKey(SwaggerProperties.BasePath) ? swagger.GetValue(SwaggerProperties.BasePath).ToString() : "";
-            
+            var basePath = swagger.ContainsKey(SwaggerProperties.BasePath)
+                ? swagger.GetValue(SwaggerProperties.BasePath).ToString()
+                : "";
+
             RemoveHost(swagger);
             if (hostOverride != "")
             {
@@ -154,7 +156,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
         {
             swagger.Add(SwaggerProperties.Host, swaggerHost);
         }
-        
+
         private static void RemoveHost(JObject swagger)
         {
             swagger.Remove(SwaggerProperties.Host);
@@ -169,7 +171,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 search = search.Replace(basePath, "");
                 replace = replace.Replace(basePath, "");
             }
-            
+
             int pos = text.IndexOf(search, StringComparison.CurrentCultureIgnoreCase);
             if (pos < 0)
             {

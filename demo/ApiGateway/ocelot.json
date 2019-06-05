@@ -22,8 +22,33 @@
           "Port": 5200
         }
       ],
+      "UpstreamPathTemplate": "/api/projects/{everything}",
+      "SwaggerKey": "projects"
+    },
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5300
+        }
+      ],
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "UpstreamPathTemplate": "/api/pets/{everything}",
+      "SwaggerKey": "pets"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5400
+        }
+      ],
       "UpstreamPathTemplate": "/api/orders/{everything}",
-      "UpstreamHttpMethod": [ ],
+      "UpstreamHttpMethod": [],
       "SwaggerKey": "orders"
     }
   ],
@@ -39,27 +64,47 @@
       ]
     },
     {
+      "Key": "projects",
+      "Config": [
+        {
+          "Name": "Projects API",
+          "Version": "v1",
+          "Url": "http://localhost:5200/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "pets",
+      "Config": [
+        {
+          "Name": "Pets API",
+          "Version": "v1",
+          "Url": "http://localhost:5300/swagger.json"
+        }
+      ]
+    },
+    {
       "Key": "orders",
       "Config": [
         {
           "Name": "Orders API",
           "Version": "v0.9",
-          "Url": "http://localhost:5200/swagger/v0.9/swagger.json"
+          "Url": "http://localhost:5400/swagger/v0.9/swagger.json"
         },
         {
           "Name": "Orders API",
           "Version": "v1",
-          "Url": "http://localhost:5200/swagger/v1/swagger.json"
+          "Url": "http://localhost:5400/swagger/v1/swagger.json"
         },
         {
           "Name": "Orders API",
           "Version": "v2",
-          "Url": "http://localhost:5200/swagger/v2/swagger.json"
+          "Url": "http://localhost:5400/swagger/v2/swagger.json"
         },
         {
           "Name": "Orders API",
           "Version": "v3",
-          "Url": "http://localhost:5200/swagger/v3/swagger.json"
+          "Url": "http://localhost:5400/swagger/v3/swagger.json"
         }
       ]
     }

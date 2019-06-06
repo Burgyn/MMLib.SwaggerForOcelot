@@ -10,7 +10,6 @@ namespace ApiGatewayWithPath
 {
     public class Startup
     {
-
         private readonly IHostingEnvironment _env;
         public Startup(IHostingEnvironment env, IConfiguration config)
         {

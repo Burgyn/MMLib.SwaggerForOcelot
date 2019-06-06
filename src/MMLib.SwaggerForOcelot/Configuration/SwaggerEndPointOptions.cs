@@ -26,7 +26,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// The swagger endpoint config collection
         /// </summary>
         public List<SwaggerEndPointConfig> Config { get; set; }
-                
+
         /// <summary>
         /// This host url is use used to overwrite the host of the upstream service.
         /// </summary>

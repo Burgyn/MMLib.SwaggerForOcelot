@@ -47,14 +47,14 @@ namespace Microsoft.AspNetCore.Builder
             {
                 InitUIOption(c, options);
                 var endPoints = GetConfiguration(configuration);
-                AddSwaggerEndPoints(c, endPoints, options.EndPointBasePath);
+                AddSwaggerEndPoints(c, endPoints, options.DownstreamSwaggerEndPointBasePath);
             });
 
             return app;
         }
 
         private static void UseSwaggerForOcelot(IApplicationBuilder app, SwaggerForOcelotUIOptions options)
-            => app.Map(options.EndPointBasePath, builder => builder.UseMiddleware<SwaggerForOcelotMiddleware>(options));
+            => app.Map(options.PathToSwaggerGenerator, builder => builder.UseMiddleware<SwaggerForOcelotMiddleware>(options));
 
         private static void AddSwaggerEndPoints(SwaggerUIOptions c, IEnumerable<SwaggerEndPointOptions> endPoints, string basePath)
         {
@@ -63,7 +63,7 @@ namespace Microsoft.AspNetCore.Builder
                 foreach (var config in endPoint.Config)
                 {
                     c.SwaggerEndpoint($"{basePath}/{config.Version}/{endPoint.KeyToPath}", $"{config.Name} - {config.Version}");
-                }     
+                }
             }
         }
 

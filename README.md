@@ -93,7 +93,7 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 5. In `Configure` method, insert the `SwaggerForOcelot` middleware to expose interactive documentation.
    ```CSharp
           app.UseSwaggerForOcelotUI(Configuration, opt => {
-                opt.EndPointBasePath = "/swagger/docs";
+                opt.PathToSwaggerGenerator = "/swagger/docs";
             })
    ```
 6. Show your microservices interactive documentation.

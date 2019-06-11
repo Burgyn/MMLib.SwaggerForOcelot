@@ -1,3 +1,4 @@
+using Kros.IO;
 using MMLib.SwaggerForOcelot.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
@@ -21,6 +22,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
             var basePath = swagger.ContainsKey(SwaggerProperties.BasePath)
                 ? swagger.GetValue(SwaggerProperties.BasePath).ToString()
                 : "";
+            basePath = basePath.TrimEnd('/');
 
             RemoveHost(swagger);
             if (hostOverride != "")
@@ -145,7 +147,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
         private static ReRouteOptions FindReRoute(IEnumerable<ReRouteOptions> reRoutes, string downstreamPath, string basePath)
         {
-            var downstreamPathWithBasePath = basePath + downstreamPath;
+            var downstreamPathWithBasePath = PathHelper.BuildPath(basePath, downstreamPath);
             return reRoutes.FirstOrDefault(p
                 => p.CanCatchAll
                     ? downstreamPathWithBasePath.StartsWith(p.DownstreamPath, StringComparison.CurrentCultureIgnoreCase)

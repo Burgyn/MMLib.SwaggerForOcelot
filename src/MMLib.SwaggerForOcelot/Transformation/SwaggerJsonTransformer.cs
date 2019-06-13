@@ -74,7 +74,8 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 {
                     if (server[OpenApiProperties.Url] != null)
                     {
-                        server[OpenApiProperties.Url] = hostOverride + new Uri(server.Value<string>(OpenApiProperties.Url)).AbsolutePath;
+                        var url = new Uri(server.Value<string>(OpenApiProperties.Url), UriKind.RelativeOrAbsolute);
+                        server[OpenApiProperties.Url] = hostOverride + (url.IsAbsoluteUri ? url.AbsolutePath : url.OriginalString);
                     }
                 }
             }

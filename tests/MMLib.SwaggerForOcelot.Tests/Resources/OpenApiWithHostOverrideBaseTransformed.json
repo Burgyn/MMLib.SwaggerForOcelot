@@ -10,6 +10,9 @@
     },
     {
       "url": "http://override.host.it/"
+    },
+    {
+      "url": "http://override.host.it/api2"
     }
   ],
   "paths": {

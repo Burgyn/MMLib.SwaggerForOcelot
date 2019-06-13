@@ -13,7 +13,7 @@ namespace MMLib.SwaggerForOcelot.Tests
     public class BuilderExtensionsShould
     {
         [Fact]
-        public void ThrowWhenSwaggerEndPointsSectionIsMising() => TestWithInvalidConfiguration("{}");
+        public void ThrowWhenSwaggerEndPointsSectionIsMissing() => TestWithInvalidConfiguration("{}");
 
         [Fact]
         public void ThrowWhenSwaggerEndPointsSectionIsEmpty()

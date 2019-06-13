@@ -38,7 +38,7 @@ namespace MMLib.SwaggerForOcelot.Tests
 
             await TransformAndCheck(reroutes, "SwaggerBase", "SwaggerBaseTransformed", "localhost:8000");
         }
-        
+
         [Fact]
         public async Task CreateNewJsonWithBasePath()
         {
@@ -158,17 +158,17 @@ namespace MMLib.SwaggerForOcelot.Tests
             var transformer = new SwaggerJsonTransformer();
             string swaggerBase = await GetBaseSwagger(swaggerBaseFileName);
 
-            var transfomed = transformer.Transform(swaggerBase, reroutes, basePath);
+            var transformed = transformer.Transform(swaggerBase, reroutes, basePath);
 
-            await AreEquel(transfomed, expectedSwaggerFileName);
+            await AreEqual(transformed, expectedSwaggerFileName);
         }
 
         private static async Task<string> GetBaseSwagger(string swaggerName)
             => await AssemblyHelper.GetStringFromResourceFileAsync($"{swaggerName}.json");
 
-        private static async Task AreEquel(string transfomed, string expectedSwaggerFileName)
+        private static async Task AreEqual(string transformed, string expectedSwaggerFileName)
         {
-            var transformedJson = JObject.Parse(transfomed);
+            var transformedJson = JObject.Parse(transformed);
             var expectedJson = JObject.Parse(await AssemblyHelper
                     .GetStringFromResourceFileAsync($"{expectedSwaggerFileName}.json"));
 

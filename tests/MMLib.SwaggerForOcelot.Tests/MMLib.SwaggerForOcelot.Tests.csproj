@@ -15,6 +15,9 @@
     <None Remove="Resources\SwaggerPetsTransformed.json" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\OpenApiBase.json" />
+    <EmbeddedResource Include="Resources\OpenApiBaseTransformed.json" />
+    <EmbeddedResource Include="Resources\OpenApiWithHostOverrideBaseTransformed.json" />
     <EmbeddedResource Include="Resources\SwaggerNestedClassTransformed.json" />
     <EmbeddedResource Include="Resources\SwaggerNestedClass.json" />
     <EmbeddedResource Include="Resources\SwaggerPetsOnlyAnyActions.json">
@@ -34,6 +37,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\SwaggerWithBasePathBase.json" />
     <EmbeddedResource Include="Resources\SwaggerWithBasePathBaseTransformed.json" />
+    <EmbeddedResource Include="Resources\OpenApiWithServersBase.json" />
+    <EmbeddedResource Include="Resources\OpenApiWithServersBaseTransformed.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\SwaggerBase.json" />

@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace MMLib.SwaggerForOcelot.Transformation
 {
@@ -13,11 +14,26 @@ namespace MMLib.SwaggerForOcelot.Transformation
     /// <seealso cref="MMLib.SwaggerForOcelot.Transformation.ISwaggerJsonTransformer" />
     public class SwaggerJsonTransformer : ISwaggerJsonTransformer
     {
-
         /// <inheritdoc/>
         public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes, string hostOverride)
         {
             JObject swagger = JObject.Parse(swaggerJson);
+
+            if (swagger.ContainsKey("swagger"))
+            {
+                return TransformSwagger(swagger, reRoutes, hostOverride);
+            }
+
+            if (swagger.ContainsKey("openapi"))
+            {
+                return TransformOpenApi(swagger, reRoutes, hostOverride);
+            }
+
+            throw new InvalidOperationException("Unknown swagger/openapi version");
+        }
+
+        private string TransformSwagger(JObject swagger, IEnumerable<ReRouteOptions> reRoutes, string hostOverride)
+        {
             var paths = swagger[SwaggerProperties.Paths];
             var basePath = swagger.ContainsKey(SwaggerProperties.BasePath)
                 ? swagger.GetValue(SwaggerProperties.BasePath).ToString()
@@ -37,18 +53,62 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 RemoveItems<JProperty>(
                     swagger[SwaggerProperties.Definitions],
                     paths,
-                    (i) => $"$..[?(@*.$ref == '#/definitions/{i.Name}')]",
-                    (i) => $"$..[?(@*.*.items.$ref == '#/definitions/{i.Name}')]");
+                    i => $"$..[?(@*.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
+                    i => $"$..[?(@*.*.items.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]");
                 if (swagger["tags"] != null)
                 {
                     RemoveItems<JObject>(
                         swagger[SwaggerProperties.Tags],
                         paths,
-                        (i) => $"$..tags[?(@ == '{i[SwaggerProperties.TagName]}')]");
+                        i => $"$..tags[?(@ == '{i[SwaggerProperties.TagName]}')]");
                 }
             }
 
-            return swagger.ToString(Newtonsoft.Json.Formatting.Indented);
+            return swagger.ToString(Formatting.Indented);
+        }
+
+        private string TransformOpenApi(JObject openApi, IEnumerable<ReRouteOptions> reRoutes, string hostOverride = "")
+        {
+            var paths = openApi[OpenApiProperties.Paths];
+            if (openApi.ContainsKey(OpenApiProperties.Servers))
+            {
+                foreach (var server in openApi.GetValue(OpenApiProperties.Servers))
+                {
+                    if (server[OpenApiProperties.Url] != null)
+                    {
+                        var url = new Uri(server.Value<string>(OpenApiProperties.Url), UriKind.RelativeOrAbsolute);
+                        server[OpenApiProperties.Url] = hostOverride + (url.IsAbsoluteUri ? url.AbsolutePath : url.OriginalString);
+                    }
+                }
+            }
+
+            // NOTE: Only supporting one server for now.
+            var basePath = "";
+            if (openApi.ContainsKey(OpenApiProperties.Servers))
+            {
+                var firstUrl = openApi.GetValue(OpenApiProperties.Servers).First.Value<string>(OpenApiProperties.Url);
+                basePath = hostOverride.Length > 0 ? new Uri(firstUrl).AbsolutePath : firstUrl;
+            }
+
+            if (paths != null)
+            {
+                RemovePaths(reRoutes, paths, basePath);
+
+                RemoveItems<JProperty>(
+                    openApi[OpenApiProperties.Components][OpenApiProperties.Schemas],
+                    paths,
+                    i => $"$..[?(@*.$ref == '#/{OpenApiProperties.Components}/{OpenApiProperties.Schemas}/{i.Name}')]",
+                    i => $"$..[?(@*.*.items.$ref == '#/{OpenApiProperties.Components}/{OpenApiProperties.Schemas}/{i.Name}')]");
+                if (openApi["tags"] != null)
+                {
+                    RemoveItems<JObject>(
+                        openApi[OpenApiProperties.Tags],
+                        paths,
+                        i => $"$..tags[?(@ == '{i[OpenApiProperties.TagName]}')]");
+                }
+            }
+
+            return openApi.ToString(Formatting.Indented);
         }
 
         private void RemovePaths(IEnumerable<ReRouteOptions> reRoutes, JToken paths, string basePath)

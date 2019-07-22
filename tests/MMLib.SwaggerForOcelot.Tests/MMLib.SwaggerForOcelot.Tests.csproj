@@ -13,6 +13,16 @@
     <None Remove="Resources\SwaggerPetsOnlyPost.json" />
     <None Remove="Resources\SwaggerPetsOnlyStore.json" />
     <None Remove="Resources\SwaggerPetsTransformed.json" />
+    <None Remove="Resources\SwaggerWithInnerDefinnitionReference.json" />
+    <None Remove="Resources\SwaggerWithInnerDefinnitionReferenceTransformed.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\SwaggerWithInnerDefinnitionReferenceTransformed.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\SwaggerWithInnerDefinnitionReference.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\OpenApiBase.json" />

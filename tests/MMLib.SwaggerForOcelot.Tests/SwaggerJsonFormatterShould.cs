@@ -149,6 +149,23 @@ namespace MMLib.SwaggerForOcelot.Tests
             await TransformAndCheck(reroutes, "SwaggerNestedClass", "SwaggerNestedClassTransformed");
         }
 
+        [Fact]
+        public async Task CreateNewJsonWhenInnerDefinitionReferenceIsUsed()
+        {
+            var reroutes = new List<ReRouteOptions>()
+            {
+                new ReRouteOptions(){
+                    SwaggerKey = "admin",
+                    UpstreamPathTemplate ="/api/admin/{everything}",
+                    DownstreamPathTemplate ="/api/{everything}",
+                    UpstreamHttpMethod = new List<string>(){ "Get", "Post", "Delete", "Put" }
+                }
+            };
+
+            await TransformAndCheck(reroutes, "SwaggerWithInnerDefinnitionReference",
+                "SwaggerWithInnerDefinnitionReferenceTransformed");
+        }
+
         private async Task TransformAndCheck(
             IEnumerable<ReRouteOptions> reroutes,
             string swaggerBaseFileName,

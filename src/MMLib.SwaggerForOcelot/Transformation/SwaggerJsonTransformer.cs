@@ -54,7 +54,8 @@ namespace MMLib.SwaggerForOcelot.Transformation
                     swagger[SwaggerProperties.Definitions],
                     paths,
                     i => $"$..[?(@*.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
-                    i => $"$..[?(@*.*.items.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]");
+                    i => $"$..[?(@*.*.items.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
+                    i => $"$..[?(@*.*.allOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')])]");
                 if (swagger["tags"] != null)
                 {
                     RemoveItems<JObject>(

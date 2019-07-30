@@ -23,6 +23,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         private readonly Lazy<Dictionary<string, SwaggerEndPointOptions>> _swaggerEndPoints;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ISwaggerJsonTransformer _transformer;
+        private readonly SwaggerForOcelotUIOptions _options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerForOcelotMiddleware"/> class.
@@ -45,6 +46,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
             _reRoutes = Check.NotNull(reRoutes, nameof(reRoutes));
             Check.NotNull(swaggerEndPoints, nameof(swaggerEndPoints));
             _httpClientFactory = Check.NotNull(httpClientFactory, nameof(httpClientFactory));
+            _options = options;
 
             _swaggerEndPoints = new Lazy<Dictionary<string, SwaggerEndPointOptions>>(()
                 => swaggerEndPoints.Value.ToDictionary(p => $"/{p.KeyToPath}", p => p));
@@ -58,12 +60,21 @@ namespace MMLib.SwaggerForOcelot.Middleware
         {
             var endPoint = GetEndPoint(context.Request.Path);
             var httpClient = _httpClientFactory.CreateClient();
-
+            AddHeaders(httpClient);
             var content = await httpClient.GetStringAsync(endPoint.Url);
             var hostName = endPoint.EndPoint.HostOverride ?? context.Request.Host.Value;
             content = _transformer.Transform(content, _reRoutes.Value.Where(p => p.SwaggerKey == endPoint.EndPoint.Key), hostName);
 
             await context.Response.WriteAsync(content);
+        }
+
+        private void AddHeaders(HttpClient httpClient)
+        {
+            if (_options.DownstreamSwaggerHeaders == null) return;
+            foreach (var kvp in _options.DownstreamSwaggerHeaders)
+            {
+                httpClient.DefaultRequestHeaders.Add(kvp.Key, kvp.Value);
+            }
         }
 
         /// <summary>

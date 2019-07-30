@@ -96,6 +96,15 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
                 opt.PathToSwaggerGenerator = "/swagger/docs";
             })
    ```
+   You can optionally include headers that your Ocelot Gateway will send when requesting a swagger endpoint. This can be especially useful if your downstream microservices require contents from a header to authenticate.
+   ```CSharp
+        app.UseSwaggerForOcelotUI(Configuration, opt => {
+            opts.DownstreamSwaggerHeaders = new[]
+              {
+                  new KeyValuePair<string, string>("Auth-Key", "AuthValue"),
+              };
+        })
+   ```
 6. Show your microservices interactive documentation.
    > `http://ocelotserviceurl/swagger`
 

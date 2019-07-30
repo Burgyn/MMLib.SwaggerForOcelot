@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -38,7 +39,14 @@ namespace ApiGateway
             }
 
             app.UseStaticFiles();
-            app.UseSwaggerForOcelotUI(Configuration)
+            app.UseSwaggerForOcelotUI(Configuration,  opt =>
+                {
+                    opt.DownstreamSwaggerHeaders = new[]
+                    {
+                        new KeyValuePair<string, string>("Key", "Value"),
+                        new KeyValuePair<string, string>("Key2", "Value2"),
+                    };
+                })
                 .UseOcelot()
                 .Wait();
         }

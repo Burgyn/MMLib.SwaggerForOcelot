@@ -1,5 +1,6 @@
 ﻿using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
+using System.Collections.Generic;
 
 namespace MMLib.SwaggerForOcelot.Configuration
 {
@@ -32,5 +33,10 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// <see cref="EndPointBasePath"/> + <see cref="SwaggerEndPointConfig.Version"/> + <see cref="SwaggerEndPointOptions.Key"/>
         /// </summary>
         public string DownstreamSwaggerEndPointBasePath { get; set; } = "/swagger/docs";
+        
+        /// <summary>
+        /// Headers to include when requesting a downstream swagger endpoint.
+        /// </summary>
+        public IEnumerable<KeyValuePair<string, string>> DownstreamSwaggerHeaders { get; set; }
     }
 }

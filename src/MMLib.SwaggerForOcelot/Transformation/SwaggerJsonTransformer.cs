@@ -46,24 +46,24 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 AddHost(swagger, hostOverride);
             }
 
-            if (paths != null)
-            {
-                RemovePaths(reRoutes, paths, basePath);
+            //if (paths != null)
+            //{
+            //    RemovePaths(reRoutes, paths, basePath);
 
-                RemoveItems<JProperty>(
-                    swagger[SwaggerProperties.Definitions],
-                    paths,
-                    i => $"$..[?(@*.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
-                    i => $"$..[?(@*.*.items.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
-                    i => $"$..[?(@*.*.allOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')])]");
-                if (swagger["tags"] != null)
-                {
-                    RemoveItems<JObject>(
-                        swagger[SwaggerProperties.Tags],
-                        paths,
-                        i => $"$..tags[?(@ == '{i[SwaggerProperties.TagName]}')]");
-                }
-            }
+            //    RemoveItems<JProperty>(
+            //        swagger[SwaggerProperties.Definitions],
+            //        paths,
+            //        i => $"$..[?(@*.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
+            //        i => $"$..[?(@*.*.items.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
+            //        i => $"$..[?(@*.*.allOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')])]");
+            //    if (swagger["tags"] != null)
+            //    {
+            //        RemoveItems<JObject>(
+            //            swagger[SwaggerProperties.Tags],
+            //            paths,
+            //            i => $"$..tags[?(@ == '{i[SwaggerProperties.TagName]}')]");
+            //    }
+            //}
 
             return swagger.ToString(Formatting.Indented);
         }

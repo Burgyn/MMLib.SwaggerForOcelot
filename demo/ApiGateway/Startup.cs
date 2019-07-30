@@ -39,9 +39,9 @@ namespace ApiGateway
             }
 
             app.UseStaticFiles();
-            app.UseSwaggerForOcelotUI(Configuration,  opts =>
+            app.UseSwaggerForOcelotUI(Configuration,  opt =>
                 {
-                    opts.DownstreamSwaggerHeaders = new[]
+                    opt.DownstreamSwaggerHeaders = new[]
                     {
                         new KeyValuePair<string, string>("Key", "Value"),
                         new KeyValuePair<string, string>("Key2", "Value2"),

@@ -35,7 +35,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public string DownstreamSwaggerEndPointBasePath { get; set; } = "/swagger/docs";
         
         /// <summary>
-        /// Headers to include when requesting a downstream swagger endpoint
+        /// Headers to include when requesting a downstream swagger endpoint.
         /// </summary>
         public IEnumerable<KeyValuePair<string, string>> DownstreamSwaggerHeaders { get; set; }
     }

@@ -88,7 +88,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
             if (openApi.ContainsKey(OpenApiProperties.Servers))
             {
                 var firstUrl = openApi.GetValue(OpenApiProperties.Servers).First.Value<string>(OpenApiProperties.Url);
-                basePath = hostOverride.Length > 0 ? new Uri(firstUrl).AbsolutePath : firstUrl;
+                basePath = hostOverride.Length > 0 ? new Uri(firstUrl).AbsolutePath.RemoveSlashFromEnd() : firstUrl;
             }
 
             if (paths != null)

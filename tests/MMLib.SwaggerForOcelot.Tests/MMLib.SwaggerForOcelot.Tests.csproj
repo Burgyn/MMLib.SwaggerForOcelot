@@ -49,6 +49,9 @@
     <EmbeddedResource Include="Resources\SwaggerWithBasePathBaseTransformed.json" />
     <EmbeddedResource Include="Resources\OpenApiWithServersBase.json" />
     <EmbeddedResource Include="Resources\OpenApiWithServersBaseTransformed.json" />
+    <EmbeddedResource Include="Resources\OpenApiWithHostOverrideAndDifferentUpstreamAndDownstreamPathsBase.json" />
+    <EmbeddedResource Include="Resources\OpenApiWithHostOverrideAndDifferentUpstreamAndDownstreamPathsBaseTransformed.json" />
+
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\SwaggerBase.json" />

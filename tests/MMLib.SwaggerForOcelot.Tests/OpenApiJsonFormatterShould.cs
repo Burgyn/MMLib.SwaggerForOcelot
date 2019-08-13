@@ -73,6 +73,26 @@ namespace MMLib.SwaggerForOcelot.Tests
             await TransformAndCheck(reroutes, "OpenApiWithServersBase", "OpenApiWithHostOverrideBaseTransformed", "http://override.host.it");
         }
 
+        [Fact]
+        public async Task CreateNewJsonWithHostOverrideWhenUpstreamAndDownstreamPathsAreDifferent()
+        {
+            var reroutes = new List<ReRouteOptions>
+            {
+                new ReRouteOptions
+                {
+                    SwaggerKey = "projects",
+                    UpstreamPathTemplate = "/prefix/api/projects/{everything}",
+                    DownstreamPathTemplate = "/api/{everything}"
+                }
+            };
+
+            await TransformAndCheck(
+                reroutes,
+                "OpenApiWithHostOverrideAndDifferentUpstreamAndDownstreamPathsBase",
+                "OpenApiWithHostOverrideAndDifferentUpstreamAndDownstreamPathsBaseTransformed",
+                "http://service.api.io");
+        }
+
         private async Task TransformAndCheck(
             IEnumerable<ReRouteOptions> reroutes,
             string openApiBaseFileName,

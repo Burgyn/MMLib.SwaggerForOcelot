@@ -11,7 +11,7 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "basePath": "/v2",
+  "basePath": "/",
   "tags": [
     {
       "name": "pet",
@@ -35,7 +35,7 @@
     }
   ],
   "paths": {
-    "/api/pets/pet": {
+    "/v2/api/pets/pet": {
       "post": {
         "tags": [ "pet" ],
         "summary": "Add a new pet to the store",
@@ -79,7 +79,7 @@
         "security": [ { "petstore_auth": [ "write:pets", "read:pets" ] } ]
       }
     },
-    "/api/pets/pet/findByStatus": {
+    "/v2/api/pets/pet/findByStatus": {
       "get": {
         "tags": [ "pet" ],
         "summary": "Finds Pets by status",
@@ -114,7 +114,7 @@
         "security": [ { "petstore_auth": [ "write:pets", "read:pets" ] } ]
       }
     },
-    "/api/pets/pet/findByTags": {
+    "/v2/api/pets/pet/findByTags": {
       "get": {
         "tags": [ "pet" ],
         "summary": "Finds Pets by tags",
@@ -146,7 +146,7 @@
         "deprecated": true
       }
     },
-    "/api/pets/pet/{petId}": {
+    "/v2/api/pets/pet/{petId}": {
       "get": {
         "tags": [ "pet" ],
         "summary": "Find pet by ID",
@@ -236,7 +236,7 @@
         "security": [ { "petstore_auth": [ "write:pets", "read:pets" ] } ]
       }
     },
-    "/api/pets/pet/{petId}/uploadImage": {
+    "/v2/api/pets/pet/{petId}/uploadImage": {
       "post": {
         "tags": [ "pet" ],
         "summary": "uploads an image",
@@ -277,7 +277,7 @@
         "security": [ { "petstore_auth": [ "write:pets", "read:pets" ] } ]
       }
     },
-    "/api/pets/store/inventory": {
+    "/v2/api/pets/store/inventory": {
       "get": {
         "tags": [ "store" ],
         "summary": "Returns pet inventories by status",
@@ -300,7 +300,7 @@
         "security": [ { "api_key": [] } ]
       }
     },
-    "/api/pets/store/order": {
+    "/v2/api/pets/store/order": {
       "post": {
         "tags": [ "store" ],
         "summary": "Place an order for a pet",
@@ -325,7 +325,7 @@
         }
       }
     },
-    "/api/pets/store/order/{orderId}": {
+    "/v2/api/pets/store/order/{orderId}": {
       "get": {
         "tags": [ "store" ],
         "summary": "Find purchase order by ID",
@@ -376,7 +376,7 @@
         }
       }
     },
-    "/api/pets/user": {
+    "/v2/api/pets/user": {
       "post": {
         "tags": [ "user" ],
         "summary": "Create user",
@@ -395,7 +395,7 @@
         "responses": { "default": { "description": "successful operation" } }
       }
     },
-    "/api/pets/user/createWithArray": {
+    "/v2/api/pets/user/createWithArray": {
       "post": {
         "tags": [ "user" ],
         "summary": "Creates list of users with given input array",
@@ -417,7 +417,7 @@
         "responses": { "default": { "description": "successful operation" } }
       }
     },
-    "/api/pets/user/createWithList": {
+    "/v2/api/pets/user/createWithList": {
       "post": {
         "tags": [ "user" ],
         "summary": "Creates list of users with given input array",
@@ -439,7 +439,7 @@
         "responses": { "default": { "description": "successful operation" } }
       }
     },
-    "/api/pets/user/login": {
+    "/v2/api/pets/user/login": {
       "get": {
         "tags": [ "user" ],
         "summary": "Logs user into the system",
@@ -483,7 +483,7 @@
         }
       }
     },
-    "/api/pets/user/logout": {
+    "/v2/api/pets/user/logout": {
       "get": {
         "tags": [ "user" ],
         "summary": "Logs out current logged in user session",
@@ -494,7 +494,7 @@
         "responses": { "default": { "description": "successful operation" } }
       }
     },
-    "/api/pets/user/{username}": {
+    "/v2/api/pets/user/{username}": {
       "get": {
         "tags": [ "user" ],
         "summary": "Get user by user name",

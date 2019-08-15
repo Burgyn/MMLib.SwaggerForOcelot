@@ -7,12 +7,6 @@
   "servers": [
     {
       "url": "http://test.it/api"
-    },
-    {
-      "url": "http://dev.test.it"
-    },
-    {
-      "url": "/api2"
     }
   ],
   "paths": {

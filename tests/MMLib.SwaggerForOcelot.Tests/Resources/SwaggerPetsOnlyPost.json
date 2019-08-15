@@ -11,7 +11,7 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "basePath": "/v2",
+  "basePath": "/",
   "tags": [
     {
       "name": "pet",
@@ -35,7 +35,7 @@
     }
   ],
   "paths": {
-    "/api/pets/pet": {
+    "/v2/api/pets/pet": {
       "post": {
         "tags": [ "pet" ],
         "summary": "Add a new pet to the store",
@@ -56,7 +56,7 @@
         "security": [ { "petstore_auth": [ "write:pets", "read:pets" ] } ]
       }
     },
-    "/api/pets/pet/{petId}": {
+    "/v2/api/pets/pet/{petId}": {
       "post": {
         "tags": [ "pet" ],
         "summary": "Updates a pet in the store with form data",
@@ -92,7 +92,7 @@
         "security": [ { "petstore_auth": [ "write:pets", "read:pets" ] } ]
       }
     },
-    "/api/pets/pet/{petId}/uploadImage": {
+    "/v2/api/pets/pet/{petId}/uploadImage": {
       "post": {
         "tags": [ "pet" ],
         "summary": "uploads an image",
@@ -133,7 +133,7 @@
         "security": [ { "petstore_auth": [ "write:pets", "read:pets" ] } ]
       }
     },
-    "/api/pets/store/order": {
+    "/v2/api/pets/store/order": {
       "post": {
         "tags": [ "store" ],
         "summary": "Place an order for a pet",
@@ -158,7 +158,7 @@
         }
       }
     },
-    "/api/pets/user": {
+    "/v2/api/pets/user": {
       "post": {
         "tags": [ "user" ],
         "summary": "Create user",
@@ -177,7 +177,7 @@
         "responses": { "default": { "description": "successful operation" } }
       }
     },
-    "/api/pets/user/createWithArray": {
+    "/v2/api/pets/user/createWithArray": {
       "post": {
         "tags": [ "user" ],
         "summary": "Creates list of users with given input array",
@@ -199,7 +199,7 @@
         "responses": { "default": { "description": "successful operation" } }
       }
     },
-    "/api/pets/user/createWithList": {
+    "/v2/api/pets/user/createWithList": {
       "post": {
         "tags": [ "user" ],
         "summary": "Creates list of users with given input array",

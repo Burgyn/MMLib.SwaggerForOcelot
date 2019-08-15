@@ -4,9 +4,9 @@
     "version": "v1",
     "title": "Projects API"
   },
-  "basePath": "/api/",
+  "basePath": "/",
   "paths": {
-    "/projects/Projects": {
+    "/api/projects/Projects": {
       "get": {
         "tags": [
           "Projects"
@@ -33,7 +33,7 @@
         }
       }
     },
-    "/projects/Projects/{id}": {
+    "/api/projects/Projects/{id}": {
       "get": {
         "tags": [
           "Projects"
@@ -67,7 +67,7 @@
         }
       }
     },
-    "/projects/Projects/projectCreate": {
+    "/api/projects/Projects/projectCreate": {
       "post": {
         "tags": [
           "Projects"
@@ -100,7 +100,7 @@
         }
       }
     },
-    "/projects/Values": {
+    "/api/projects/Values": {
       "get": {
         "tags": [
           "Values"

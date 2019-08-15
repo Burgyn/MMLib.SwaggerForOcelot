@@ -6,17 +6,11 @@
   },
   "servers": [
     {
-      "url": "/api"
-    },
-    {
-      "url": "/"
-    },
-    {
-      "url": "/api2"
+      "url": ""
     }
   ],
   "paths": {
-    "/projects/Projects": {
+    "/api/projects/Projects": {
       "get": {
         "tags": [
           "Projects"
@@ -43,7 +37,7 @@
         }
       }
     },
-    "/projects/Projects/{id}": {
+    "/api/projects/Projects/{id}": {
       "get": {
         "tags": [
           "Projects"
@@ -77,7 +71,7 @@
         }
       }
     },
-    "/projects/Projects/projectCreate": {
+    "/api/projects/Projects/projectCreate": {
       "post": {
         "tags": [
           "Projects"
@@ -110,7 +104,7 @@
         }
       }
     },
-    "/projects/Values": {
+    "/api/projects/Values": {
       "get": {
         "tags": [
           "Values"

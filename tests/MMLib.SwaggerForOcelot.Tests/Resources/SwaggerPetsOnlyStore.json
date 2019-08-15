@@ -11,7 +11,7 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "basePath": "/v2",
+  "basePath": "/",
   "tags": [
     {
       "name": "store",
@@ -19,7 +19,7 @@
     }
   ],
   "paths": {
-    "/api/store/inventory": {
+    "/v2/api/store/inventory": {
       "get": {
         "tags": [ "store" ],
         "summary": "Returns pet inventories by status",
@@ -42,7 +42,7 @@
         "security": [ { "api_key": [] } ]
       }
     },
-    "/api/store/order": {
+    "/v2/api/store/order": {
       "post": {
         "tags": [ "store" ],
         "summary": "Place an order for a pet",
@@ -67,7 +67,7 @@
         }
       }
     },
-    "/api/store/order/{orderId}": {
+    "/v2/api/store/order/{orderId}": {
       "get": {
         "tags": [ "store" ],
         "summary": "Find purchase order by ID",

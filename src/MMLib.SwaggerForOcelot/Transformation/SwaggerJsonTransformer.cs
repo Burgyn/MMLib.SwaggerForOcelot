@@ -48,7 +48,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
             if (paths != null)
             {
-                RemovePaths(reRoutes, paths, basePath);
+                RenameAndRemovePaths(reRoutes, paths, basePath);
 
                 RemoveItems<JProperty>(
                     swagger[SwaggerProperties.Definitions],
@@ -65,35 +65,31 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 }
             }
 
+            if (swagger.ContainsKey(SwaggerProperties.BasePath))
+            {
+                swagger[SwaggerProperties.BasePath] = "/";
+            }
+
             return swagger.ToString(Formatting.Indented);
         }
 
-        private string TransformOpenApi(JObject openApi, IEnumerable<ReRouteOptions> reRoutes, string hostOverride = "")
+        private string TransformOpenApi(JObject openApi, IEnumerable<ReRouteOptions> reRoutes, string hostOverride = "/")
         {
-            var paths = openApi[OpenApiProperties.Paths];
-            if (openApi.ContainsKey(OpenApiProperties.Servers))
-            {
-                foreach (var server in openApi.GetValue(OpenApiProperties.Servers))
-                {
-                    if (server[OpenApiProperties.Url] != null)
-                    {
-                        var url = new Uri(server.Value<string>(OpenApiProperties.Url), UriKind.RelativeOrAbsolute);
-                        server[OpenApiProperties.Url] = hostOverride + (url.IsAbsoluteUri ? url.AbsolutePath : url.OriginalString);
-                    }
-                }
-            }
-
             // NOTE: Only supporting one server for now.
-            var basePath = "";
+            var downstreamBasePath = "";
             if (openApi.ContainsKey(OpenApiProperties.Servers))
             {
-                var firstUrl = openApi.GetValue(OpenApiProperties.Servers).First.Value<string>(OpenApiProperties.Url);
-                basePath = hostOverride.Length > 0 ? new Uri(firstUrl).AbsolutePath.RemoveSlashFromEnd() : firstUrl;
+                var firstServerUrl = openApi.GetValue(OpenApiProperties.Servers).First.Value<string>(OpenApiProperties.Url);
+                var downstreamUrl = new Uri(firstServerUrl, UriKind.RelativeOrAbsolute);
+                downstreamBasePath =
+                    (downstreamUrl.IsAbsoluteUri ? downstreamUrl.AbsolutePath : downstreamUrl.OriginalString)
+                    .RemoveSlashFromEnd();
             }
-
+            
+            var paths = openApi[OpenApiProperties.Paths];
             if (paths != null)
             {
-                RemovePaths(reRoutes, paths, basePath);
+                RenameAndRemovePaths(reRoutes, paths, downstreamBasePath);
 
                 RemoveItems<JProperty>(
                     openApi[OpenApiProperties.Components][OpenApiProperties.Schemas],
@@ -109,10 +105,12 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 }
             }
 
+            TransformServerPaths(openApi, hostOverride);
+
             return openApi.ToString(Formatting.Indented);
         }
 
-        private void RemovePaths(IEnumerable<ReRouteOptions> reRoutes, JToken paths, string basePath)
+        private void RenameAndRemovePaths(IEnumerable<ReRouteOptions> reRoutes, JToken paths, string basePath)
         {
             var forRemove = new List<JProperty>();
 
@@ -124,7 +122,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
                 if (reRoute != null && RemoveMethods(path, reRoute))
                 {
-                    RenameToken(path, ReplaceFirstInUrl(downstreamPath, reRoute.DownstreamPath, reRoute.UpstreamPath, basePath));
+                    RenameToken(path, ConvertDownstreamPathToUpstreamPath(downstreamPath, reRoute.DownstreamPath, reRoute.UpstreamPath, basePath));
                 }
                 else
                 {
@@ -226,27 +224,38 @@ namespace MMLib.SwaggerForOcelot.Transformation
             swagger.Remove(SwaggerProperties.Schemes);
         }
 
-        private string ReplaceFirstInUrl(string text, string search, string replace, string basePath)
+        private static string ConvertDownstreamPathToUpstreamPath(string downstreamPath, string downstreamPattern, string upstreamPattern, string downstreamBasePath)
         {
-            //remove basePath from search and replace
-            if (basePath.Length > 0)
+            if (downstreamBasePath.Length > 0)
             {
-                search = search.Replace(basePath, "");
-                replace = replace.Replace(basePath, "");
+                downstreamPath = PathHelper.BuildPath(downstreamBasePath, downstreamPath);
             }
 
-            int pos = text.IndexOf(search, StringComparison.CurrentCultureIgnoreCase);
+            int pos = downstreamPath.IndexOf(downstreamPattern, StringComparison.CurrentCultureIgnoreCase);
             if (pos < 0)
             {
-                return text;
+                return downstreamPath;
             }
-            return $"{text.Substring(0, pos)}{replace}{text.Substring(pos + search.Length)}";
+            return $"{downstreamPath.Substring(0, pos)}{upstreamPattern}{downstreamPath.Substring(pos + downstreamPattern.Length)}";
         }
 
         private static void RenameToken(JProperty property, string newName)
         {
             var newProperty = new JProperty(newName, property.Value);
             property.Replace(newProperty);
+        }
+        
+        private static void TransformServerPaths(JObject openApi, string hostOverride)
+        {
+            if (!openApi.ContainsKey(OpenApiProperties.Servers)) return;
+
+            foreach (var server in openApi.GetValue(OpenApiProperties.Servers))
+            {
+                if (server[OpenApiProperties.Url] != null)
+                {
+                    server[OpenApiProperties.Url] = hostOverride.RemoveSlashFromEnd();
+                }
+            }
         }
     }
 }

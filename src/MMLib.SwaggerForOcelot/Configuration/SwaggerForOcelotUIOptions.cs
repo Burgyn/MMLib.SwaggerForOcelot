@@ -1,6 +1,7 @@
 ﻿using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace MMLib.SwaggerForOcelot.Configuration
 {
@@ -38,5 +39,11 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// Headers to include when requesting a downstream swagger endpoint.
         /// </summary>
         public IEnumerable<KeyValuePair<string, string>> DownstreamSwaggerHeaders { get; set; }
+
+        /// <summary>
+        /// Alter swagger/openApi json after it has been transformed
+        /// </summary>
+        public Func<HttpContext, string, string> ReConfigureUpstreamSwaggerJson { get; set; }
+
     }
 }

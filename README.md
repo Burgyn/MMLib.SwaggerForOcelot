@@ -105,6 +105,19 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
               };
         })
    ```
+   You can also optionally alter the upstream swagger after it has been transformed.
+   ```CSharp
+       public string AlterUpstreamSwaggerJson(HttpContext context, string swaggerJson)
+       {
+            var swagger = JObject.Parse(swaggerJson);
+            // ...
+            return swagger.ToString(Formatting.Indented);
+       }
+
+       app.UseSwaggerForOcelotUI(Configuration, opt => {
+           opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
+       })
+   ```
 6. Show your microservices interactive documentation.
    > `http://ocelotserviceurl/swagger`
 

@@ -66,7 +66,6 @@ namespace MMLib.SwaggerForOcelot.Middleware
             content = _transformer.Transform(content, _reRoutes.Value.Where(p => p.SwaggerKey == endPoint.EndPoint.Key), hostName);
             content = _options.ReConfigureUpstreamSwaggerJson?.Invoke(context, content);
 
-
             await context.Response.WriteAsync(content);
         }
 

@@ -44,6 +44,5 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// Alter swagger/openApi json after it has been transformed
         /// </summary>
         public Func<HttpContext, string, string> ReConfigureUpstreamSwaggerJson { get; set; }
-
     }
 }

@@ -52,7 +52,6 @@ namespace MMLib.SwaggerForOcelot.Tests
                                 Name = "Test Service",
                                 Version = version,
                                 Url = $"http://test.com/{version}/{key}/swagger.json"
-                                
                             }
                         }
                     }
@@ -82,7 +81,6 @@ namespace MMLib.SwaggerForOcelot.Tests
             
             // Assert
             await AreEqual(transformedUpstreamSwagger, "OpenApiBaseTransformedReconfigured");
-
         }
 
         /// This method removes a route
@@ -121,7 +119,6 @@ namespace MMLib.SwaggerForOcelot.Tests
             context.Response.Body = new MemoryStream();
             return context;
         }
-        
 
         private HttpClient GetHttpClient(string downstreamSwagger)
         {
@@ -218,6 +215,5 @@ namespace MMLib.SwaggerForOcelot.Tests
                 return _transformedJson;
             }
         }
-
     }
 }

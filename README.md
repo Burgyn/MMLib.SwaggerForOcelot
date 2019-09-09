@@ -105,12 +105,12 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
               };
         })
    ```
-   You can also optionally alter the upstream swagger after it has been transformed.
+   After swagger for ocelot transforms the downstream swagger to the upstream swagger, you have the ability to alter the upstream swagger if you need to by setting the `ReConfigureUpstreamSwaggerJson` option or `ReConfigureUpstreamSwaggerJsonAsync` option for async methods.
    ```CSharp
        public string AlterUpstreamSwaggerJson(HttpContext context, string swaggerJson)
        {
             var swagger = JObject.Parse(swaggerJson);
-            // ...
+            // ... alter upstream json
             return swagger.ToString(Formatting.Indented);
        }
 

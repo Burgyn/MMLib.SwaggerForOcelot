@@ -22,7 +22,7 @@ namespace MMLib.SwaggerForOcelot.Tests
     public class SwaggerForOcelotMiddlewareShould
     {
         [Fact]
-        public async Task UserDefinedUpstreamTransformer()
+        public async Task AllowUserDefinedUpstreamTransformer()
         {
             // Arrange
             const string version = "v1";

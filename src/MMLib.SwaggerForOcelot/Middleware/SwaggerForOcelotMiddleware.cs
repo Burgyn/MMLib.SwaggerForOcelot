@@ -64,8 +64,30 @@ namespace MMLib.SwaggerForOcelot.Middleware
             var content = await httpClient.GetStringAsync(endPoint.Url);
             var hostName = endPoint.EndPoint.HostOverride ?? context.Request.Host.Value;
             content = _transformer.Transform(content, _reRoutes.Value.Where(p => p.SwaggerKey == endPoint.EndPoint.Key), hostName);
+            content = await ReconfigureUpstreamSwagger(context, content);
 
             await context.Response.WriteAsync(content);
+        }
+
+        private async Task<string> ReconfigureUpstreamSwagger(HttpContext context, string swaggerJson)
+        {
+            if (_options.ReConfigureUpstreamSwaggerJson != null && _options.ReConfigureUpstreamSwaggerJsonAsync != null)
+            {
+                throw new Exception(
+                    "Both ReConfigureUpstreamSwaggerJson and ReConfigureUpstreamSwaggerJsonAsync cannot have a value. Only use one method.");
+            }
+
+            if (_options.ReConfigureUpstreamSwaggerJson != null)
+            {
+                return _options.ReConfigureUpstreamSwaggerJson(context, swaggerJson);
+            }
+
+            if (_options.ReConfigureUpstreamSwaggerJsonAsync != null)
+            {
+                return await _options.ReConfigureUpstreamSwaggerJsonAsync(context, swaggerJson);
+            }
+
+            return swaggerJson;
         }
 
         private void AddHeaders(HttpClient httpClient)

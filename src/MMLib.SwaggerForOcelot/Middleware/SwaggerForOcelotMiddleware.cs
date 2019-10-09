@@ -33,6 +33,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// <param name="reRoutes">The Ocelot ReRoutes configuration.</param>
         /// <param name="swaggerEndPoints">The swagger end points.</param>
         /// <param name="httpClientFactory">The HTTP client factory.</param>
+        /// <param name="transformer">The SwaggerJsonTransformer</param>
         public SwaggerForOcelotMiddleware(
             RequestDelegate next,
             SwaggerForOcelotUIOptions options,
@@ -63,10 +64,42 @@ namespace MMLib.SwaggerForOcelot.Middleware
             AddHeaders(httpClient);
             var content = await httpClient.GetStringAsync(endPoint.Url);
             var hostName = endPoint.EndPoint.HostOverride ?? context.Request.Host.Value;
-            content = _transformer.Transform(content, _reRoutes.Value.Where(p => p.SwaggerKey == endPoint.EndPoint.Key), hostName);
+            var reRouteOptions = GetEndpointReRouteOptions(endPoint.EndPoint);
+
+            content = _transformer.Transform(content, reRouteOptions, hostName);
             content = await ReconfigureUpstreamSwagger(context, content);
 
             await context.Response.WriteAsync(content);
+        }
+
+        private IEnumerable<ReRouteOptions> GetEndpointReRouteOptions(SwaggerEndPointOptions endPoint)
+        {
+            var reRouteOptions = _reRoutes.Value.Where(p => p.SwaggerKey == endPoint.Key).ToList();
+
+            if (string.IsNullOrWhiteSpace(endPoint.VersionPlaceholder)) 
+                return reRouteOptions;
+
+            var versionReRouteOptions = reRouteOptions.Where(x =>
+                x.DownstreamPathTemplate.Contains(endPoint.VersionPlaceholder)
+                || x.UpstreamPathTemplate.Contains(endPoint.VersionPlaceholder)).ToList();
+            versionReRouteOptions.ForEach(o => reRouteOptions.Remove(o));
+            foreach(var reRouteOption in versionReRouteOptions) {
+                var versionMappedReRouteOptions = endPoint.Config.Select(c => new ReRouteOptions()
+                {
+                    SwaggerKey = reRouteOption.SwaggerKey,
+                    DownstreamPathTemplate =
+                        reRouteOption.DownstreamPathTemplate.Replace(endPoint.VersionPlaceholder,
+                            c.Version),
+                    UpstreamHttpMethod = reRouteOption.UpstreamHttpMethod,
+                    UpstreamPathTemplate =
+                        reRouteOption.UpstreamPathTemplate.Replace(endPoint.VersionPlaceholder,
+                            c.Version),
+                    VirtualDirectory = reRouteOption.VirtualDirectory
+                });
+                reRouteOptions.AddRange(versionMappedReRouteOptions);
+            }
+
+            return reRouteOptions;
         }
 
         private async Task<string> ReconfigureUpstreamSwagger(HttpContext context, string swaggerJson)

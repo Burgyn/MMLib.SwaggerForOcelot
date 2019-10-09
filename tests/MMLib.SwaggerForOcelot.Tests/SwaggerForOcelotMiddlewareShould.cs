@@ -22,11 +22,89 @@ namespace MMLib.SwaggerForOcelot.Tests
     public class SwaggerForOcelotMiddlewareShould
     {
         [Fact]
+        public async Task AllowVersionPlaceholder()
+        {
+            // Arrange
+            const string version = "v1";
+            const string key = "projects";
+            var httpContext = GetHttpContext(requestPath: $"/{version}/{key}");
+
+            var next = new TestRequestDelegate();
+
+            // What is being tested
+            var swaggerForOcelotOptions = new SwaggerForOcelotUIOptions();
+            var swaggerEndpointOptions = CreateSwaggerEndpointOptions(key,version);
+            var rerouteOptions = new TestReRouteOptions(new List<ReRouteOptions>
+            {
+                new ReRouteOptions
+                {
+                    SwaggerKey = "projects",
+                    UpstreamPathTemplate ="/api/{version}/projects/Values/{everything}",
+                    DownstreamPathTemplate ="/api/{version}/Values/{everything}",
+                },
+                new ReRouteOptions
+                {
+                    SwaggerKey = "projects",
+                    UpstreamPathTemplate = "/api/projects/Projects",
+                    DownstreamPathTemplate = "/api/Projects",
+                },
+                new ReRouteOptions
+                {
+                    SwaggerKey = "projects",
+                    UpstreamPathTemplate = "/api/projects/Projects/{everything}",
+                    DownstreamPathTemplate = "/api/Projects/{everything}",
+                }
+            });
+
+            // downstreamSwagger is returned when client.GetStringAsync is called by the middleware.
+            var downstreamSwagger = await GetBaseOpenApi("OpenApiWithVersionPlaceholderBase");
+            var httClientMock = GetHttpClient(downstreamSwagger);
+            var httpClientFactory = new TestHttpClientFactory(httClientMock);
+
+            // upstreamSwagger is returned after swaggerJsonTransformer transforms the downstreamSwagger
+            var expectedSwagger = await GetBaseOpenApi("OpenApiWithVersionPlaceholderBaseTransformed");
+
+            var swaggerJsonTransformerMock = new Mock<ISwaggerJsonTransformer>();
+            swaggerJsonTransformerMock
+                .Setup(x => x.Transform(
+                    It.IsAny<string>(), 
+                    It.IsAny<IEnumerable<ReRouteOptions>>(),
+                    It.IsAny<string>()))
+                .Returns((
+                    string swaggerJson, 
+                    IEnumerable<ReRouteOptions> reRouteOptions, 
+                    string hostOverride) => new SwaggerJsonTransformer()
+                    .Transform(swaggerJson,reRouteOptions,hostOverride));
+            var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
+                next.Invoke,
+                swaggerForOcelotOptions,
+                rerouteOptions,
+                swaggerEndpointOptions,
+                httpClientFactory,
+                swaggerJsonTransformerMock.Object);
+            
+            // Act
+            await swaggerForOcelotMiddleware.Invoke(httpContext);
+            httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
+            
+            // Assert
+            using (var streamReader = new StreamReader(httpContext.Response.Body))
+            {
+                var transformedUpstreamSwagger = await streamReader.ReadToEndAsync();
+                AreEqual(transformedUpstreamSwagger, expectedSwagger);
+            }
+            swaggerJsonTransformerMock.Verify(x => x.Transform(
+                It.IsAny<string>(),
+                It.IsAny<IEnumerable<ReRouteOptions>>(),
+                It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
         public async Task AllowUserDefinedUpstreamTransformer()
         {
             // Arrange
             const string version = "v1";
-            const string key = "test";
+            const string key = "projects";
             var httpContext = GetHttpContext(requestPath: $"/{version}/{key}");
 
             var next = new TestRequestDelegate();
@@ -36,10 +114,37 @@ namespace MMLib.SwaggerForOcelot.Tests
             {
                 ReConfigureUpstreamSwaggerJson = ExampleUserDefinedUpstreamTransformer
             };
-
+            var testSwaggerEndpointOptions = CreateSwaggerEndpointOptions(key,version);
             var rerouteOptions = new TestReRouteOptions();
 
-            var swaggerEndpointOptions = new TestSwaggerEndpointOptions(
+            // downstreamSwagger is returned when client.GetStringAsync is called by the middleware.
+            var downstreamSwagger = await GetBaseOpenApi("OpenApiBase");
+            var httClientMock = GetHttpClient(downstreamSwagger);
+            var httpClientFactory = new TestHttpClientFactory(httClientMock);
+
+            // upstreamSwagger is returned after swaggerJsonTransformer transforms the downstreamSwagger
+            var upstreamSwagger = await GetBaseOpenApi("OpenApiBaseTransformed");
+            var swaggerJsonTransformer = new TestSwaggerJsonTransformer(upstreamSwagger);
+
+            var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
+                next.Invoke,
+                swaggerForOcelotOptions,
+                rerouteOptions,
+                testSwaggerEndpointOptions,
+                httpClientFactory,
+                swaggerJsonTransformer);
+            
+            // Act
+            await swaggerForOcelotMiddleware.Invoke(httpContext);
+            httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
+            var transformedUpstreamSwagger = await new StreamReader(httpContext.Response.Body).ReadToEndAsync();
+            
+            // Assert
+            AreEqual(transformedUpstreamSwagger, upstreamSwagger);
+        }
+
+        private TestSwaggerEndpointOptions CreateSwaggerEndpointOptions(string key, string version)
+            => new TestSwaggerEndpointOptions(
                 new List<SwaggerEndPointOptions>()
                 {
                     new SwaggerEndPointOptions()
@@ -56,32 +161,6 @@ namespace MMLib.SwaggerForOcelot.Tests
                         }
                     }
                 });
-
-            // downstreamSwagger is returned when client.GetStringAsync is called by the middleware.
-            var downstreamSwagger = await GetBaseOpenApi("OpenApiBase");
-            var httClientMock = GetHttpClient(downstreamSwagger);
-            var httpClientFactory = new TestHttpClientFactory(httClientMock);
-
-            // upstreamSwagger is returned after swaggerJsonTransformer transforms the downstreamSwagger
-            var upstreamSwagger = await GetBaseOpenApi("OpenApiBaseTransformed");
-            var swaggerJsonTransformer = new TestSwaggerJsonTransformer(upstreamSwagger);
-
-            var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
-                next.Invoke,
-                swaggerForOcelotOptions,
-                rerouteOptions,
-                swaggerEndpointOptions,
-                httpClientFactory,
-                swaggerJsonTransformer);
-            
-            // Act
-            await swaggerForOcelotMiddleware.Invoke(httpContext);
-            httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
-            var transformedUpstreamSwagger = await new StreamReader(httpContext.Response.Body).ReadToEndAsync();
-            
-            // Assert
-            await AreEqual(transformedUpstreamSwagger, "OpenApiBaseTransformedReconfigured");
-        }
 
         /// This method removes a route
         private string ExampleUserDefinedUpstreamTransformer(HttpContext context, string openApiJson)
@@ -100,12 +179,12 @@ namespace MMLib.SwaggerForOcelot.Tests
             return swagger.ToString(Formatting.Indented);
         }
 
-        private static async Task AreEqual(string transformedSwagger, string expectedOpenApiFileName)
+        private static void AreEqual(string transformedSwagger, string expectedTransformedSwagger)
         {
             var transformedJson = JObject.Parse(transformedSwagger);
-            var expectedJson = JObject.Parse(await AssemblyHelper
-                .GetStringFromResourceFileAsync($"{expectedOpenApiFileName}.json"));
+            var expectedJson = JObject.Parse(expectedTransformedSwagger);
 
+            transformedJson.Should().BeEquivalentTo(expectedJson);
             JObject.DeepEquals(transformedJson, expectedJson)
                 .Should()
                 .BeTrue();
@@ -189,6 +268,12 @@ namespace MMLib.SwaggerForOcelot.Tests
             {
                 Value = new List<ReRouteOptions>();
             }
+
+            public TestReRouteOptions(List<ReRouteOptions> value)
+            {
+                Value = value;
+            }
+
             public List<ReRouteOptions> Value { get; }
         }
 

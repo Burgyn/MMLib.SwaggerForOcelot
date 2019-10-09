@@ -19,6 +19,11 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public string Key { get; set; }
 
         /// <summary>
+        /// Swagger version placeholder..
+        /// </summary>
+        public string VersionPlaceholder { get; set; } = "{version}";
+
+        /// <summary>
         /// Gets the path from key.
         /// </summary>
         public string KeyToPath => WebUtility.UrlEncode(Key);

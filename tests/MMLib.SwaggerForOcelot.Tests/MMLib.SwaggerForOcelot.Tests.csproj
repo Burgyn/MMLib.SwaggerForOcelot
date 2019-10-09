@@ -4,6 +4,8 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Resources\OpenApiWithVersionPlaceholderBase.json" />
+    <None Remove="Resources\OpenApiWithVersionPlaceholderBaseTransformed.json" />
     <None Remove="Resources\SwaggerBase.json" />
     <None Remove="Resources\SwaggerBaseTransformed.json" />
     <None Remove="Resources\SwaggerNestedClass.json" />
@@ -18,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\OpenApiBaseTransformedReconfigured.json" />
+    <EmbeddedResource Include="Resources\OpenApiWithVersionPlaceholderBase.json" />
+    <EmbeddedResource Include="Resources\OpenApiWithVersionPlaceholderBaseTransformed.json" />
     <EmbeddedResource Include="Resources\SwaggerWithInnerDefinnitionReferenceTransformed.json">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </EmbeddedResource>

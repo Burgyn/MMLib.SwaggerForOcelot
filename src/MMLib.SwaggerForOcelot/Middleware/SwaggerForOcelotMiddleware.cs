@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace MMLib.SwaggerForOcelot.Middleware
 {
@@ -63,7 +64,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
             var httpClient = _httpClientFactory.CreateClient();
             AddHeaders(httpClient);
             var content = await httpClient.GetStringAsync(endPoint.Url);
-            var hostName = endPoint.EndPoint.HostOverride ?? context.Request.Host.Value;
+            var hostName = endPoint.EndPoint.HostOverride ?? UriHelper.BuildAbsolute(context.Request.Scheme, context.Request.Host).RemoveSlashFromEnd();
             var reRouteOptions = ExpandReRouteOptions(endPoint.EndPoint);
 
             content = _transformer.Transform(content, reRouteOptions, hostName);

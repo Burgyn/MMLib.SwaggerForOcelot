@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
 using MMLib.SwaggerForOcelot.Middleware;
@@ -162,7 +164,23 @@ namespace MMLib.SwaggerForOcelot.Tests
                     }
                 });
 
-        /// This method removes a route
+        [Fact]
+        public void ConstructHostUriUsingUriBuilder()
+        {
+            // arrange
+            var expectedScheme = "http";
+            var expectedHostString = new HostString("localhost", 3333);
+           
+            // apply
+            var absoluteHostUri = UriHelper.BuildAbsolute(expectedScheme, expectedHostString)
+                .RemoveSlashFromEnd();
+
+            // assert
+            expectedHostString.ToUriComponent().Should().NotContain(expectedScheme);
+            absoluteHostUri.Should().Be($"{expectedScheme}://{expectedHostString}");
+        }
+
+        /// This method removes a routes
         private string ExampleUserDefinedUpstreamTransformer(HttpContext context, string openApiJson)
         {
             if (context.Request.Path.Value != "/v1/test")

@@ -24,8 +24,8 @@
 
   <ItemGroup>
     <PackageReference Include="Kros.Utils" Version="1.10.1" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.0-preview3.19553.2" />
-    <PackageReference Include="Ocelot" Version="13.9.0-alpha0115" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.0.1" />
+    <PackageReference Include="Ocelot" Version="13.8.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.0.0-rc4" />
   </ItemGroup>
 

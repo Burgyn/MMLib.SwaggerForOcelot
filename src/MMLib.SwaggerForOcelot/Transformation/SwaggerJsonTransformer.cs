@@ -85,17 +85,19 @@ namespace MMLib.SwaggerForOcelot.Transformation
                     (downstreamUrl.IsAbsoluteUri ? downstreamUrl.AbsolutePath : downstreamUrl.OriginalString)
                     .RemoveSlashFromEnd();
             }
-            
+
             var paths = openApi[OpenApiProperties.Paths];
             if (paths != null)
             {
                 RenameAndRemovePaths(reRoutes, paths, downstreamBasePath);
 
-                RemoveItems<JProperty>(
-                    openApi[OpenApiProperties.Components][OpenApiProperties.Schemas],
-                    paths,
-                    i => $"$..[?(@*.$ref == '#/{OpenApiProperties.Components}/{OpenApiProperties.Schemas}/{i.Name}')]",
-                    i => $"$..[?(@*.*.items.$ref == '#/{OpenApiProperties.Components}/{OpenApiProperties.Schemas}/{i.Name}')]");
+                var schemaToken = openApi[OpenApiProperties.Components][OpenApiProperties.Schemas];
+                if (schemaToken != null)
+                    RemoveItems<JProperty>(schemaToken,
+                        paths,
+                        i => $"$..[?(@*.$ref == '#/{OpenApiProperties.Components}/{OpenApiProperties.Schemas}/{i.Name}')]",
+                        i => $"$..[?(@*.*.items.$ref == '#/{OpenApiProperties.Components}/{OpenApiProperties.Schemas}/{i.Name}')]");
+
                 if (openApi["tags"] != null)
                 {
                     RemoveItems<JObject>(
@@ -244,7 +246,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
             var newProperty = new JProperty(newName, property.Value);
             property.Replace(newProperty);
         }
-        
+
         private static void TransformServerPaths(JObject openApi, string hostOverride)
         {
             if (!openApi.ContainsKey(OpenApiProperties.Servers)) return;

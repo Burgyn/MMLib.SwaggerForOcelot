@@ -24,6 +24,7 @@ namespace ApiGateway
                         .AddJsonFile("ocelot.json")
                         .AddEnvironmentVariables();
                 })
+
                 .UseStartup<Startup>();
     }
 }

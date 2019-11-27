@@ -1,11 +1,11 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Builder.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MMLib.SwaggerForOcelot.Configuration;
 using System;
 using System.IO;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace MMLib.SwaggerForOcelot.Tests
@@ -17,7 +17,7 @@ namespace MMLib.SwaggerForOcelot.Tests
 
         [Fact]
         public void ThrowWhenSwaggerEndPointsSectionIsEmpty()
-            => TestWithInvalidConfiguration($"{{{SwaggerEndPointOptions.ConfigurationSectionName}:[]}}");
+            => TestWithInvalidConfiguration($"{{\"{SwaggerEndPointOptions.ConfigurationSectionName}\":[]}}");
 
         private void TestWithInvalidConfiguration(string jsonConfiguration)
         {

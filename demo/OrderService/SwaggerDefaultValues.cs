@@ -2,6 +2,7 @@
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Linq;
+using Microsoft.OpenApi.Models;
 
 namespace OrderService
 {
@@ -17,29 +18,29 @@ namespace OrderService
         /// </summary>
         /// <param name="operation">The operation to apply the filter to.</param>
         /// <param name="context">The current operation filter context.</param>
-        public void Apply( Operation operation, OperationFilterContext context )
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
             var apiDescription = context.ApiDescription;
 
             operation.Deprecated = apiDescription.IsDeprecated();
 
-            if ( operation.Parameters == null )
+            if (operation.Parameters == null)
             {
                 return;
             }
 
             // REF: https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/412
             // REF: https://github.com/domaindrivendev/Swashbuckle.AspNetCore/pull/413
-            foreach ( var parameter in operation.Parameters.OfType<NonBodyParameter>() )
+            foreach (var parameter in operation.Parameters.OfType<NonBodyParameter>())
             {
-                var description = apiDescription.ParameterDescriptions.First( p => p.Name == parameter.Name );
+                var description = apiDescription.ParameterDescriptions.First(p => p.Name == parameter.Name);
 
-                if ( parameter.Description == null )
+                if (parameter.Description == null)
                 {
                     parameter.Description = description.ModelMetadata?.Description;
                 }
 
-                if ( parameter.Default == null )
+                if (parameter.Default == null)
                 {
                     parameter.Default = description.DefaultValue;
                 }
@@ -47,5 +48,10 @@ namespace OrderService
                 parameter.Required |= description.IsRequired;
             }
         }
+    }
+
+    public class NonBodyParameter : OpenApiParameter
+    {
+        public object Default { get; set; }
     }
 }

@@ -93,10 +93,12 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
                 var schemaToken = openApi[OpenApiProperties.Components][OpenApiProperties.Schemas];
                 if (schemaToken != null)
+                {
                     RemoveItems<JProperty>(schemaToken,
                         paths,
                         i => $"$..[?(@*.$ref == '#/{OpenApiProperties.Components}/{OpenApiProperties.Schemas}/{i.Name}')]",
                         i => $"$..[?(@*.*.items.$ref == '#/{OpenApiProperties.Components}/{OpenApiProperties.Schemas}/{i.Name}')]");
+                }
 
                 if (openApi["tags"] != null)
                 {

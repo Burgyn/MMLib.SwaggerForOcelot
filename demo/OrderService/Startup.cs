@@ -21,7 +21,7 @@ namespace OrderService
         /// Initializes a new instance of the <see cref="Startup"/> class.
         /// </summary>
         /// <param name="configuration">The current configuration.</param>
-        public Startup( IConfiguration configuration )
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -36,17 +36,17 @@ namespace OrderService
         /// Configures services for the application.
         /// </summary>
         /// <param name="services">The collection of services to configure the application with.</param>
-        public void ConfigureServices( IServiceCollection services )
+        public void ConfigureServices(IServiceCollection services)
         {
             // the sample application always uses the latest version, but you may want an explicit version such as Version_2_2
             // note: Endpoint Routing is enabled by default; however, if you need legacy style routing via IRouter, change it to false
-            services.AddMvc( options => options.EnableEndpointRouting = true ).SetCompatibilityVersion( Latest );
+            services.AddMvc(options => options.EnableEndpointRouting = true).SetCompatibilityVersion(Latest);
             services.AddApiVersioning(
                 options =>
                 {
                     // reporting api versions will return the headers "api-supported-versions" and "api-deprecated-versions"
                     options.ReportApiVersions = true;
-                } );
+                });
             services.AddVersionedApiExplorer(
                 options =>
                 {
@@ -57,7 +57,7 @@ namespace OrderService
                     // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
                     // can also be used to control the format of the API version in route templates
                     options.SubstituteApiVersionInUrl = true;
-                } );
+                });
             services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
             services.AddSwaggerGen(
                 options =>
@@ -66,8 +66,8 @@ namespace OrderService
                     options.OperationFilter<SwaggerDefaultValues>();
 
                     // integrate xml comments
-                    options.IncludeXmlComments( XmlCommentsFilePath );
-                } );
+                    options.IncludeXmlComments(XmlCommentsFilePath);
+                });
         }
 
         /// <summary>
@@ -76,19 +76,19 @@ namespace OrderService
         /// <param name="app">The current application builder.</param>
         /// <param name="env">The current hosting environment.</param>
         /// <param name="provider">The API version descriptor provider used to enumerate defined API versions.</param>
-        public void Configure( IApplicationBuilder app, IHostingEnvironment env, IApiVersionDescriptionProvider provider )
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApiVersionDescriptionProvider provider)
         {
-            app.UseMvc();
+            app.UseRouting();
             app.UseSwagger();
             app.UseSwaggerUI(
                 options =>
                 {
                     // build a swagger endpoint for each discovered API version
-                    foreach ( var description in provider.ApiVersionDescriptions )
+                    foreach (var description in provider.ApiVersionDescriptions)
                     {
-                        options.SwaggerEndpoint( $"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant() );
+                        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
                     }
-                } );
+                });
         }
 
         static string XmlCommentsFilePath
@@ -96,8 +96,8 @@ namespace OrderService
             get
             {
                 var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-                var fileName = typeof( Startup ).GetTypeInfo().Assembly.GetName().Name + ".xml";
-                return Path.Combine( basePath, fileName );
+                var fileName = typeof(Startup).GetTypeInfo().Assembly.GetName().Name + ".xml";
+                return Path.Combine(basePath, fileName);
             }
         }
     }

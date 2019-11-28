@@ -12,16 +12,17 @@ namespace OrderService
         /// The main entry point to the application.
         /// </summary>
         /// <param name="args">The arguments provided at start-up, if any.</param>
-        public static void Main( string[] args ) =>
-            CreateWebHostBuilder( args ).Build().Run();
+        public static void Main(string[] args) =>
+            CreateWebHostBuilder(args).Build().Run();
 
         /// <summary>
         /// Builds a new web host for the application.
         /// </summary>
         /// <param name="args">The command-line arguments, if any.</param>
         /// <returns>A new <see cref="IWebHostBuilder">web host builder</see>.</returns>
-        public static IWebHostBuilder CreateWebHostBuilder( string[] args ) =>
-            WebHost.CreateDefaultBuilder( args )
-                   .UseStartup<Startup>();
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                   .UseStartup<Startup>()
+                   .UseUrls("http://0.0.0.0:5400");
     }
 }

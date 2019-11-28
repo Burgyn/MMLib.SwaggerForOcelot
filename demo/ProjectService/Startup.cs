@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace ProjectService
@@ -22,7 +23,8 @@ namespace ProjectService
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "Projects API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo()
+                { Title = "Projects API", Version = "v1" });
             });
         }
 
@@ -37,8 +39,9 @@ namespace ProjectService
             {
                 app.UseHsts();
             }
-            app.UseStaticFiles();
-            app.UseMvc();
+
+            app.UseRouting();
+
             app.UseSwagger()
                 .UseSwaggerUI(c =>
                 {

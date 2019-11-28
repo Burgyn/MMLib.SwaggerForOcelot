@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace ContactService
@@ -22,7 +23,7 @@ namespace ContactService
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "Contacts API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo() { Title = "Contacts API", Version = "v1" });
             });
         }
 
@@ -38,7 +39,7 @@ namespace ContactService
                 app.UseHsts();
             }
 
-            app.UseMvc();
+            app.UseRouting();
             app.UseSwagger()
                 .UseSwaggerUI(c =>
                 {

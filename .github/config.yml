@@ -42,3 +42,16 @@ requestInfoUserstoExclude:
   
 todo:
   keyword: "@makeAnIssue"
+  
+# Configuration for update-docs - https://github.com/behaviorbot/update-docs
+
+# Comment to be posted to on PRs that don't update documentation
+updateDocsComment: >
+  Thanks for opening this pull request! If you have implemented new functions, write about them in the readme file.
+
+updateDocsWhiteList:
+  - bug
+  - unittest
+
+updateDocsTargetFiles:
+  - README

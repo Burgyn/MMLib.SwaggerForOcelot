@@ -39,3 +39,6 @@ requestInfoOn:
 # keys must be GitHub usernames
 requestInfoUserstoExclude:
   - burgyn
+  
+todo:
+  keyword: "@makeAnIssue"

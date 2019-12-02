@@ -12,7 +12,7 @@ categories:
       - 'bug'
   - title: '🧰 Maintenance'
     label: 
-      - 'refactor'
+      - 'refactor 🛠️'
       - 'unittests'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 template: |

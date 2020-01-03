@@ -1,0 +1,85 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Contacts-Api",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/demo/ContactService/bin/Debug/netcoreapp3.0/ContactService.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,            
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }            
+        },
+        {
+            "name": "Projects-Api",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/demo/ProjectService/bin/Debug/netcoreapp3.0/ProjectService.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,            
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }            
+        },
+        {
+            "name": "Orders-Api",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/demo/OrderService/bin/Debug/netcoreapp3.0/OrderService.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,            
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }            
+        },
+        {
+            "name": "Pets-Api",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/demo/PetstoreService/bin/Debug/netcoreapp3.0/PetstoreService.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,            
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }            
+        },
+        {
+            "name": "Ocelot-ApiGateway",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/demo/ApiGateway/bin/Debug/netcoreapp3.0/ApiGateway.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/demo/ApiGateway",
+            "stopAtEntry": false,            
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        }
+    ],
+    "compounds" : [
+        {
+            "name": "Demo app",
+            "configurations": [
+                "Contacts-Api",
+                "Ocelot-ApiGateway",
+                "Projects-Api",
+                "Orders-Api",
+                "Pets-Api"
+            ]
+        }
+    ]
+}

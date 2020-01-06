@@ -9,36 +9,7 @@ using Xunit;
 namespace MMLib.SwaggerForOcelot.Tests
 {
     public class SwaggerJsonFormatterShould
-    {
-        [Fact]
-        public async Task CreateNewJsonByBasicConfiguration()
-        {
-            var reroutes = new List<ReRouteOptions>()
-            {
-                new ReRouteOptions(){
-                    SwaggerKey = "projects",
-                    UpstreamPathTemplate ="/api/projects/{everything}",
-                    DownstreamPathTemplate ="/api/{everything}"}
-            };
-
-            await TransformAndCheck(reroutes, "SwaggerBase", "SwaggerBaseTransformed", "localhost:8000");
-        }
-
-        [Fact]
-        public async Task CreateNewJsonByBasicConfigurationWithVirtualDirectory()
-        {
-            var reroutes = new List<ReRouteOptions>()
-            {
-                new ReRouteOptions(){
-                    SwaggerKey = "projects",
-                    VirtualDirectory = "/project",
-                    UpstreamPathTemplate ="/api/projects/{everything}",
-                    DownstreamPathTemplate ="/project/api/{everything}"}
-            };
-
-            await TransformAndCheck(reroutes, "SwaggerBase", "SwaggerBaseTransformed", "localhost:8000");
-        }
-
+    {        
         [Fact]
         public async Task CreateNewJsonWithBasePath()
         {
@@ -131,22 +102,6 @@ namespace MMLib.SwaggerForOcelot.Tests
             };
 
             await TransformAndCheck(reroutes, "SwaggerPetsBase", "SwaggerPetsOnlyPost");
-        }
-
-        [Fact]
-        public async Task CreateNewJsonWhenNestedClass()
-        {
-            var reroutes = new List<ReRouteOptions>()
-            {
-                new ReRouteOptions(){
-                    SwaggerKey = "data",
-                    UpstreamPathTemplate ="/api/r/{everything}",
-                    DownstreamPathTemplate ="/api/{everything}",
-                    UpstreamHttpMethod = new List<string>(){ "POST" }
-                }
-            };
-
-            await TransformAndCheck(reroutes, "SwaggerNestedClass", "SwaggerNestedClassTransformed");
         }
 
         [Fact]

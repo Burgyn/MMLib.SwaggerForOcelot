@@ -10,6 +10,37 @@
                 "${workspaceFolder}"
             ],
             "problemMatcher": "$msCompile"
-        }
+        },
+        {
+            "label": "build src",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/MMLib.SwaggerForOcelot/MMLib.SwaggerForOcelot.csproj"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "test",
+            "command": "dotnet",
+            "type": "process",
+            "group": {
+                "isDefault": true,
+                "kind": "test"   
+            },
+            "args": [
+                "test",
+                "${workspaceFolder}/tests/MMLib.SwaggerForOcelot.Tests/MMLib.SwaggerForOcelot.Tests.csproj"
+            ],
+            "presentation": {
+                "reveal": "always",
+            },
+            "problemMatcher": "$msCompile"
+          }
     ]
 }

@@ -77,14 +77,15 @@ namespace MMLib.SwaggerForOcelot.Middleware
         {
             var reRouteOptions = _reRoutes.Value.Where(p => p.SwaggerKey == endPoint.Key).ToList();
 
-            if (string.IsNullOrWhiteSpace(endPoint.VersionPlaceholder)) 
+            if (string.IsNullOrWhiteSpace(endPoint.VersionPlaceholder))
                 return reRouteOptions;
 
             var versionReRouteOptions = reRouteOptions.Where(x =>
                 x.DownstreamPathTemplate.Contains(endPoint.VersionPlaceholder)
                 || x.UpstreamPathTemplate.Contains(endPoint.VersionPlaceholder)).ToList();
             versionReRouteOptions.ForEach(o => reRouteOptions.Remove(o));
-            foreach(var reRouteOption in versionReRouteOptions) {
+            foreach (var reRouteOption in versionReRouteOptions)
+            {
                 var versionMappedReRouteOptions = endPoint.Config.Select(c => new ReRouteOptions()
                 {
                     SwaggerKey = reRouteOption.SwaggerKey,

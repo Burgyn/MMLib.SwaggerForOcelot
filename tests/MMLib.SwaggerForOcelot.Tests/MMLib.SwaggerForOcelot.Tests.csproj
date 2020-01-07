@@ -4,23 +4,10 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Resources\OpenApiWithVersionPlaceholderBase.json" />
-    <None Remove="Resources\OpenApiWithVersionPlaceholderBaseTransformed.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\OpenApiBaseTransformedReconfigured.json" />
     <EmbeddedResource Include="Resources\OpenApiWithVersionPlaceholderBase.json" />
     <EmbeddedResource Include="Resources\OpenApiWithVersionPlaceholderBaseTransformed.json" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\OpenApiBase.json" />
     <EmbeddedResource Include="Resources\OpenApiBaseTransformed.json" />
-    <EmbeddedResource Include="Resources\OpenApiWithHostOverrideBaseTransformed.json" />
-    <EmbeddedResource Include="Resources\OpenApiWithServersBase.json" />
-    <EmbeddedResource Include="Resources\OpenApiWithServersBaseTransformed.json" />
-    <EmbeddedResource Include="Resources\OpenApiWithHostOverrideAndDifferentUpstreamAndDownstreamPathsBase.json" />
-    <EmbeddedResource Include="Resources\OpenApiWithHostOverrideAndDifferentUpstreamAndDownstreamPathsBaseTransformed.json" />
-
 
     <EmbeddedResource Include="Tests\BasicConfiguration.json" />
     <EmbeddedResource Include="Tests\SwaggerWithBasePath.json" />
@@ -31,6 +18,11 @@
     <EmbeddedResource Include="Tests\ConfigurationIsSplitToSomeParts.json" />
     <EmbeddedResource Include="Tests\ConfigurationContainsOnlyPostMethods.json" />
     <EmbeddedResource Include="Tests\SwaggerContainsInnerReferenceDefinition.json" />
+    <EmbeddedResource Include="Tests\OpenApiWithBasicConfiguration.json" />
+    <EmbeddedResource Include="Tests\OpenApiWithVirtualDirectory.json" />
+    <EmbeddedResource Include="Tests\OpenApiWithServers.json" />
+    <EmbeddedResource Include="Tests\OpenApiWithHostOverridden.json" />
+    <EmbeddedResource Include="Tests\OpenApiWithHostOverriddenWhenUpstreamAndDownstreamPathsAreDifferent.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.9.0" />

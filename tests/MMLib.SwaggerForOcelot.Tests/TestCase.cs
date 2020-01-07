@@ -10,6 +10,11 @@ namespace MMLib.SwaggerForOcelot.Tests
     public class TestCase
     {
         /// <summary>
+        /// Test case file name.
+        /// </summary>
+        public string FileName { get; set; }
+
+        /// <summary>
         /// Test name.
         /// </summary>
         public string Name { get; set; }
@@ -37,6 +42,6 @@ namespace MMLib.SwaggerForOcelot.Tests
         /// <summary>
         /// Test name.
         /// </summary>
-        public override string ToString() => Name;
+        public override string ToString() => $"{Name} ({FileName})";
     }
 }

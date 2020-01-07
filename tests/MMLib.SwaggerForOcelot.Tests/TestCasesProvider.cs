@@ -25,7 +25,10 @@ namespace MMLib.SwaggerForOcelot.Tests
 
             foreach(string testFilePath in tests)
             {
-                yield return new object[] { GetData(testFilePath) };
+                TestCase testCase = GetData(testFilePath);
+                testCase.FileName = Path.GetFileName(testFilePath);
+
+                yield return new object[] { testCase };
             }
         }
 

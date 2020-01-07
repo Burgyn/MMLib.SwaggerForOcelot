@@ -1,0 +1,17 @@
+{
+    "name": "Test name",
+    "description": "description",
+    "hostOverride": "",
+    "reRoutes": [
+        {
+            "DownstreamPathTemplate": "/api/{everything}",
+            "UpstreamPathTemplate": "/api/something/{everything}",
+            "UpstreamHttpMethod": [
+                "POST"
+            ],
+            "SwaggerKey": "data"
+        }
+    ],
+    "downstreamSwagger": {},
+    "expectedTransformedSwagger": {}
+}

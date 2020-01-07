@@ -4,66 +4,29 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Resources\OpenApiWithVersionPlaceholderBase.json" />
-    <None Remove="Resources\OpenApiWithVersionPlaceholderBaseTransformed.json" />
-    <None Remove="Resources\SwaggerBase.json" />
-    <None Remove="Resources\SwaggerBaseTransformed.json" />
-    <None Remove="Resources\SwaggerNestedClass.json" />
-    <None Remove="Resources\SwaggerNestedClassTransformed.json" />
-    <None Remove="Resources\SwaggerPetsBase.json" />
-    <None Remove="Resources\SwaggerPetsOnlyAnyActions.json" />
-    <None Remove="Resources\SwaggerPetsOnlyPost.json" />
-    <None Remove="Resources\SwaggerPetsOnlyStore.json" />
-    <None Remove="Resources\SwaggerPetsTransformed.json" />
-    <None Remove="Resources\SwaggerWithInnerDefinnitionReference.json" />
-    <None Remove="Resources\SwaggerWithInnerDefinnitionReferenceTransformed.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\OpenApiBaseTransformedReconfigured.json" />
     <EmbeddedResource Include="Resources\OpenApiWithVersionPlaceholderBase.json" />
     <EmbeddedResource Include="Resources\OpenApiWithVersionPlaceholderBaseTransformed.json" />
-    <EmbeddedResource Include="Resources\SwaggerWithInnerDefinnitionReferenceTransformed.json">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\SwaggerWithInnerDefinnitionReference.json">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\OpenApiBase.json" />
     <EmbeddedResource Include="Resources\OpenApiBaseTransformed.json" />
-    <EmbeddedResource Include="Resources\OpenApiWithHostOverrideBaseTransformed.json" />
-    <EmbeddedResource Include="Resources\SwaggerNestedClassTransformed.json" />
-    <EmbeddedResource Include="Resources\SwaggerNestedClass.json" />
-    <EmbeddedResource Include="Resources\SwaggerPetsOnlyAnyActions.json">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\SwaggerPetsOnlyPost.json">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\SwaggerPetsTransformed.json">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\SwaggerPetsOnlyStore.json">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\SwaggerPetsBase.json">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\SwaggerWithBasePathBase.json" />
-    <EmbeddedResource Include="Resources\SwaggerWithBasePathBaseTransformed.json" />
-    <EmbeddedResource Include="Resources\OpenApiWithServersBase.json" />
-    <EmbeddedResource Include="Resources\OpenApiWithServersBaseTransformed.json" />
-    <EmbeddedResource Include="Resources\OpenApiWithHostOverrideAndDifferentUpstreamAndDownstreamPathsBase.json" />
-    <EmbeddedResource Include="Resources\OpenApiWithHostOverrideAndDifferentUpstreamAndDownstreamPathsBaseTransformed.json" />
 
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\SwaggerBase.json" />
-    <EmbeddedResource Include="Resources\SwaggerBaseTransformed.json" />
+    <EmbeddedResource Include="Tests\BasicConfiguration.json" />
+    <EmbeddedResource Include="Tests\SwaggerWithBasePath.json" />
+    <EmbeddedResource Include="Tests\OcelotRouteOnlyOneController.json" />
+    <EmbeddedResource Include="Tests\BasicConfigurationWithVirtualDirectory.json" />
+    <EmbeddedResource Include="Tests\NestedClasses.json" />
+    <EmbeddedResource Include="Tests\ConfigurationIsSplitByControllers.json" />
+    <EmbeddedResource Include="Tests\ConfigurationIsSplitToSomeParts.json" />
+    <EmbeddedResource Include="Tests\ConfigurationContainsOnlyPostMethods.json" />
+    <EmbeddedResource Include="Tests\SwaggerContainsInnerReferenceDefinition.json" />
+    <EmbeddedResource Include="Tests\OpenApiWithBasicConfiguration.json" />
+    <EmbeddedResource Include="Tests\OpenApiWithVirtualDirectory.json" />
+    <EmbeddedResource Include="Tests\OpenApiWithServers.json" />
+    <EmbeddedResource Include="Tests\OpenApiWithHostOverridden.json" />
+    <EmbeddedResource Include="Tests\OpenApiWithHostOverriddenWhenUpstreamAndDownstreamPathsAreDifferent.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.9.0" />
+    <PackageReference Include="JsonDiffPatch.Net" Version="2.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Include="Moq" Version="4.13.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />

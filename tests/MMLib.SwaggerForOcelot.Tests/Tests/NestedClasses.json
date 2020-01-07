@@ -1,0 +1,434 @@
+{
+    "name": "Nested classes",
+    "hostOverride": "",
+    "reRoutes": [
+        {
+            "DownstreamPathTemplate": "/api/{everything}",
+            "UpstreamPathTemplate": "/api/r/{everything}",
+            "UpstreamHttpMethod": [
+                "POST"
+            ],
+            "SwaggerKey": "data"
+        }
+    ],
+    "downstreamSwagger": {
+        "swagger": "2.0",
+        "info": {
+            "version": "v1",
+            "title": "Data",
+            "description": ""
+        },
+        "paths": {
+            "/api/reportdata/savings": {
+                "post": {
+                    "tags": [
+                        "ReportData"
+                    ],
+                    "operationId": "GetData",
+                    "consumes": [
+                        "application/json"
+                    ],
+                    "produces": [
+                        "application/json"
+                    ],
+                    "parameters": [
+                        {
+                            "name": "contextRequest",
+                            "in": "body",
+                            "required": false,
+                            "schema": {
+                                "$ref": "#/definitions/RequestContext"
+                            }
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Success",
+                            "schema": {
+                                "$ref": "#/definitions/SavingData"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "definitions": {
+            "RequestContext": {
+                "type": "object",
+                "properties": {
+                    "organizationId": {
+                        "type": "string"
+                    },
+                    "context": {
+                        "$ref": "#/definitions/Context"
+                    }
+                }
+            },
+            "Context": {
+                "type": "object",
+                "properties": {
+                    "comment": {
+                        "type": "string"
+                    },
+                    "facilityIds": {
+                        "uniqueItems": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "startTime": {
+                        "type": "string"
+                    },
+                    "endTime": {
+                        "type": "string"
+                    },
+                    "interval": {
+                        "type": "string"
+                    },
+                    "groupBy": {
+                        "type": "string"
+                    }
+                }
+            },
+            "SavingData": {
+                "type": "object",
+                "properties": {
+                    "mainChartData": {
+                        "$ref": "#/definitions/MainChartSavingData"
+                    },
+                    "detailedChartData": {
+                        "uniqueItems": false,
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/DetailedChartSavingData"
+                        }
+                    },
+                    "groupPerformances": {
+                        "uniqueItems": false,
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/GroupPerformanceFinancialData"
+                        }
+                    }
+                }
+            },
+            "MainChartSavingData": {
+                "type": "object",
+                "properties": {
+                    "comfort": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "energy": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "realEstate": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "total": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "projection": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "target": {
+                        "format": "double",
+                        "type": "number"
+                    }
+                }
+            },
+            "DetailedChartSavingData": {
+                "type": "object",
+                "properties": {
+                    "group": {
+                        "type": "string"
+                    },
+                    "projection": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "target": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "actual": {
+                        "$ref": "#/definitions/SavingActuals"
+                    }
+                }
+            },
+            "GroupPerformanceFinancialData": {
+                "type": "object",
+                "properties": {
+                    "criterion": {
+                        "type": "string"
+                    },
+                    "groups": {
+                        "uniqueItems": false,
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/FinancialPerformanceData"
+                        }
+                    }
+                }
+            },
+            "SavingActuals": {
+                "type": "object",
+                "properties": {
+                    "comfort": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "energy": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "realEstate": {
+                        "format": "double",
+                        "type": "number"
+                    }
+                }
+            },
+            "FinancialPerformanceData": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "format": "int32",
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "securityDefinitions": {
+            "Bearer": {
+                "name": "Authorization",
+                "in": "header",
+                "type": "apiKey",
+                "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\""
+            }
+        },
+        "security": [
+            {
+                "Bearer": [],
+                "Basic": []
+            }
+        ]
+    },
+    "expectedTransformedSwagger": {
+        "swagger": "2.0",
+        "info": {
+            "version": "v1",
+            "title": "Data",
+            "description": ""
+        },
+        "paths": {
+            "/api/r/reportdata/savings": {
+                "post": {
+                    "tags": [
+                        "ReportData"
+                    ],
+                    "operationId": "GetData",
+                    "consumes": [
+                        "application/json"
+                    ],
+                    "produces": [
+                        "application/json"
+                    ],
+                    "parameters": [
+                        {
+                            "name": "contextRequest",
+                            "in": "body",
+                            "required": false,
+                            "schema": {
+                                "$ref": "#/definitions/RequestContext"
+                            }
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Success",
+                            "schema": {
+                                "$ref": "#/definitions/SavingData"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "definitions": {
+            "RequestContext": {
+                "type": "object",
+                "properties": {
+                    "organizationId": {
+                        "type": "string"
+                    },
+                    "context": {
+                        "$ref": "#/definitions/Context"
+                    }
+                }
+            },
+            "Context": {
+                "type": "object",
+                "properties": {
+                    "comment": {
+                        "type": "string"
+                    },
+                    "facilityIds": {
+                        "uniqueItems": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "startTime": {
+                        "type": "string"
+                    },
+                    "endTime": {
+                        "type": "string"
+                    },
+                    "interval": {
+                        "type": "string"
+                    },
+                    "groupBy": {
+                        "type": "string"
+                    }
+                }
+            },
+            "SavingData": {
+                "type": "object",
+                "properties": {
+                    "mainChartData": {
+                        "$ref": "#/definitions/MainChartSavingData"
+                    },
+                    "detailedChartData": {
+                        "uniqueItems": false,
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/DetailedChartSavingData"
+                        }
+                    },
+                    "groupPerformances": {
+                        "uniqueItems": false,
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/GroupPerformanceFinancialData"
+                        }
+                    }
+                }
+            },
+            "MainChartSavingData": {
+                "type": "object",
+                "properties": {
+                    "comfort": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "energy": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "realEstate": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "total": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "projection": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "target": {
+                        "format": "double",
+                        "type": "number"
+                    }
+                }
+            },
+            "DetailedChartSavingData": {
+                "type": "object",
+                "properties": {
+                    "group": {
+                        "type": "string"
+                    },
+                    "projection": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "target": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "actual": {
+                        "$ref": "#/definitions/SavingActuals"
+                    }
+                }
+            },
+            "GroupPerformanceFinancialData": {
+                "type": "object",
+                "properties": {
+                    "criterion": {
+                        "type": "string"
+                    },
+                    "groups": {
+                        "uniqueItems": false,
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/FinancialPerformanceData"
+                        }
+                    }
+                }
+            },
+            "SavingActuals": {
+                "type": "object",
+                "properties": {
+                    "comfort": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "energy": {
+                        "format": "double",
+                        "type": "number"
+                    },
+                    "realEstate": {
+                        "format": "double",
+                        "type": "number"
+                    }
+                }
+            },
+            "FinancialPerformanceData": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "format": "int32",
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "securityDefinitions": {
+            "Bearer": {
+                "name": "Authorization",
+                "in": "header",
+                "type": "apiKey",
+                "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\""
+            }
+        },
+        "security": [
+            {
+                "Bearer": [],
+                "Basic": []
+            }
+        ]
+    }
+}

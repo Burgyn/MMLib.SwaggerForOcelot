@@ -10,7 +10,7 @@ namespace MMLib.SwaggerForOcelot.Tests
 {
     /// <summary>
     /// Generic tests for transformation downstream swagger to upstream format. 
-    /// Source tests cases are located as resources in '/test' folder and providing by <see cref="TestCasesProvider" />.
+    /// Source test cases are located as resources in '/tests' folder and providing by <see cref="TestCasesProvider" />.
     /// </summary>
     public class SwaggerForOcelotShould
     {

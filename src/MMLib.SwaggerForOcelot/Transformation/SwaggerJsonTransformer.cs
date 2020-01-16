@@ -122,7 +122,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
             {
                 var path = paths.ElementAt(i) as JProperty;
                 string downstreamPath = path.Name.RemoveSlashFromEnd();
-                var reRoute = FindReRoute(reRoutes, downstreamPath, basePath);
+                var reRoute = FindReRoute(reRoutes, path.Name.WithShashEnding(), basePath);
 
                 if (reRoute != null && RemoveMethods(path, reRoute))
                 {
@@ -213,8 +213,8 @@ namespace MMLib.SwaggerForOcelot.Transformation
             var downstreamPathWithBasePath = PathHelper.BuildPath(basePath, downstreamPath);
             return reRoutes.FirstOrDefault(p
                 => p.CanCatchAll
-                    ? downstreamPathWithBasePath.StartsWith(p.DownstreamPath, StringComparison.CurrentCultureIgnoreCase)
-                    : p.DownstreamPath.Equals(downstreamPathWithBasePath, StringComparison.CurrentCultureIgnoreCase));
+                    ? downstreamPathWithBasePath.StartsWith(p.DownstreamPathWithShash, StringComparison.CurrentCultureIgnoreCase)
+                    : p.DownstreamPathWithShash.Equals(downstreamPathWithBasePath, StringComparison.CurrentCultureIgnoreCase));
         }
 
         private static void AddHost(JObject swagger, string swaggerHost)

@@ -4,12 +4,17 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Tests\Issue_65.json" />
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Resources\OpenApiWithVersionPlaceholderBase.json" />
     <EmbeddedResource Include="Resources\OpenApiWithVersionPlaceholderBaseTransformed.json" />
     <EmbeddedResource Include="Resources\OpenApiBase.json" />
     <EmbeddedResource Include="Resources\OpenApiBaseTransformed.json" />
 
     <EmbeddedResource Include="Tests\BasicConfiguration.json" />
+
+    <EmbeddedResource Include="Tests\Issue_65.json" />
     <EmbeddedResource Include="Tests\SwaggerWithBasePath.json" />
     <EmbeddedResource Include="Tests\OcelotRouteOnlyOneController.json" />
     <EmbeddedResource Include="Tests\BasicConfigurationWithVirtualDirectory.json" />

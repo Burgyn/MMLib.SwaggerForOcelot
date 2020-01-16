@@ -1,9 +1,9 @@
 ﻿namespace System
 {
     /// <summary>
-    ///String extensions
+    /// String extensions
     /// </summary>
-    public static class StringExtensions
+    internal static class StringExtensions
     {
         /// <summary>
         /// Removes the slash from end.
@@ -12,6 +12,14 @@
         public static string RemoveSlashFromEnd(this string value)
             => value.TrimEnd().EndsWith("/")
             ? value.TrimEnd().TrimEnd('/')
+            : value;
+
+        /// <summary>
+        /// Add slash to end.
+        /// </summary>
+        public static string WithShashEnding(this string value)
+            => !value.TrimEnd().EndsWith("/")
+            ? value + "/"
             : value;
     }
 }

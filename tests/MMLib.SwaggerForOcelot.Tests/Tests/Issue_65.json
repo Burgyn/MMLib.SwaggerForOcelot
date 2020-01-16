@@ -1,0 +1,1166 @@
+{
+  "name": "GitHub issue #65",
+  "description": "Confusion in the interpretation of the routes. https://github.com/Burgyn/MMLib.SwaggerForOcelot/issues/65",
+  "hostOverride": "",
+  "reRoutes": [
+    {
+      "DownstreamPathTemplate": "/api/companies",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6001
+        }
+      ],
+      "UpstreamPathTemplate": "/companies",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "SwaggerKey": "Locals"
+    },
+    {
+      "DownstreamPathTemplate": "/api/masterdata",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6001
+        }
+      ],
+      "UpstreamPathTemplate": "/masterdata",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put"
+      ],
+      "SwaggerKey": "Locals"
+    },
+    {
+      "DownstreamPathTemplate": "/api/masterdata/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6001
+        }
+      ],
+      "UpstreamPathTemplate": "/masterdata/{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Delete"
+      ],
+      "SwaggerKey": "Locals"
+    },
+    {
+      "DownstreamPathTemplate": "/api/masterdatatype",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6001
+        }
+      ],
+      "UpstreamPathTemplate": "/masterdatatype",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put"
+      ],
+      "SwaggerKey": "Locals"
+    },
+    {
+      "DownstreamPathTemplate": "/api/masterdatatype/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6001
+        }
+      ],
+      "UpstreamPathTemplate": "/masterdatatype/{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Delete"
+      ],
+      "SwaggerKey": "Locals"
+    }
+  ],
+  "downstreamSwagger": {
+    "openapi": "3.0.1",
+    "info": {
+      "title": "Locals API",
+      "description": "Services collection to access local data of the ContextOwner",
+      "version": "v1"
+    },
+    "paths": {
+      "/api/Companies": {
+        "get": {
+          "tags": [
+            "Companies"
+          ],
+          "summary": "Get the list of the enabled ContextOwner for the current Company",
+          "parameters": [
+            {
+              "name": "Company",
+              "in": "header",
+              "description": "The ContextOwner",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "User",
+              "in": "header",
+              "description": "The user that sends the request",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Companies"
+                    }
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Companies"
+                    }
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Companies"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/MasterData/{code}": {
+        "get": {
+          "tags": [
+            "MasterData"
+          ],
+          "summary": "Get the MasterData requested",
+          "parameters": [
+            {
+              "name": "ContextOwner",
+              "in": "header",
+              "description": "The company to which the MasterData belongs, from header",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "code",
+              "in": "path",
+              "description": "The code of the MasterData to search for",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MasterData"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MasterData"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MasterData"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "tags": [
+            "MasterData"
+          ],
+          "summary": "Delete the MasterData with the specified parameters from the db",
+          "parameters": [
+            {
+              "name": "ContextOwner",
+              "in": "header",
+              "description": "The company to which the MasterData belongs, from header",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "code",
+              "in": "path",
+              "description": "The code of the MasterData to delete",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        }
+      },
+      "/api/MasterData": {
+        "get": {
+          "tags": [
+            "MasterData"
+          ],
+          "summary": "Get the MasterDatas of the requested type for the specified Company",
+          "parameters": [
+            {
+              "name": "ContextOwner",
+              "in": "header",
+              "description": "The company to which the MasterDatas belong, from header",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "type",
+              "in": "query",
+              "description": "The type of the MasterDatas to search for, from query string",
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MasterData"
+                    }
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MasterData"
+                    }
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MasterData"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": [
+            "MasterData"
+          ],
+          "summary": "Insert the MasterData object from the body into the db",
+          "requestBody": {
+            "description": "The MasterData object to insert, from body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterData"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterData"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterData"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        },
+        "put": {
+          "tags": [
+            "MasterData"
+          ],
+          "summary": "Update the db with the MasterData object specified",
+          "requestBody": {
+            "description": "The MasterData object to update, from body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterData"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterData"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterData"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        }
+      },
+      "/api/MasterDataType": {
+        "get": {
+          "tags": [
+            "MasterDataType"
+          ],
+          "summary": "Get all the MasterDataType from the current db",
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MasterDataType"
+                    }
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MasterDataType"
+                    }
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MasterDataType"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": [
+            "MasterDataType"
+          ],
+          "summary": "Insert the MasterDataType object from the body into the db",
+          "requestBody": {
+            "description": "The MasterDataType object to insert, from body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterDataType"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterDataType"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterDataType"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        },
+        "put": {
+          "tags": [
+            "MasterDataType"
+          ],
+          "summary": "Update the db with the MasterDataType object specified",
+          "requestBody": {
+            "description": "The MasterData object to update, from body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterDataType"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterDataType"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterDataType"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        }
+      },
+      "/api/MasterDataType/{id}": {
+        "get": {
+          "tags": [
+            "MasterDataType"
+          ],
+          "summary": "Get the MasterDataType with the specified id",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "The id to search for",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MasterDataType"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MasterDataType"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MasterDataType"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "tags": [
+            "MasterDataType"
+          ],
+          "summary": "Delete the MasterDataType with the specified id",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "The id of the MasterDataTyper to delete",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Companies": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "companyName": {
+              "type": "string",
+              "nullable": true
+            },
+            "owner": {
+              "type": "string",
+              "nullable": true
+            },
+            "administrator": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "type": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "MasterDataType": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": {
+              "type": "string",
+              "nullable": true
+            },
+            "code": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "additionalProperties": false
+        },
+        "MasterData": {
+          "type": "object",
+          "properties": {
+            "companyCode": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "code": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "type": {
+              "type": "string",
+              "nullable": true
+            },
+            "companyName": {
+              "type": "string",
+              "nullable": true
+            },
+            "typeId": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "taCode": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "company": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Companies"
+                }
+              ],
+              "nullable": true
+            },
+            "masterDataType": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/MasterDataType"
+                }
+              ],
+              "nullable": true
+            },
+            "taCompany": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Companies"
+                }
+              ],
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  "expectedTransformedSwagger": {
+    "openapi": "3.0.1",
+    "info": {
+      "title": "Locals API",
+      "description": "Services collection to access local data of the ContextOwner",
+      "version": "v1"
+    },
+    "paths": {
+      "/companies": {
+        "get": {
+          "tags": [
+            "Companies"
+          ],
+          "summary": "Get the list of the enabled ContextOwner for the current Company",
+          "parameters": [
+            {
+              "name": "Company",
+              "in": "header",
+              "description": "The ContextOwner",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "User",
+              "in": "header",
+              "description": "The user that sends the request",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Companies"
+                    }
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Companies"
+                    }
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Companies"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/masterdata/{code}": {
+        "get": {
+          "tags": [
+            "MasterData"
+          ],
+          "summary": "Get the MasterData requested",
+          "parameters": [
+            {
+              "name": "ContextOwner",
+              "in": "header",
+              "description": "The company to which the MasterData belongs, from header",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "code",
+              "in": "path",
+              "description": "The code of the MasterData to search for",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MasterData"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MasterData"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MasterData"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "tags": [
+            "MasterData"
+          ],
+          "summary": "Delete the MasterData with the specified parameters from the db",
+          "parameters": [
+            {
+              "name": "ContextOwner",
+              "in": "header",
+              "description": "The company to which the MasterData belongs, from header",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "code",
+              "in": "path",
+              "description": "The code of the MasterData to delete",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        }
+      },
+      "/masterdata": {
+        "get": {
+          "tags": [
+            "MasterData"
+          ],
+          "summary": "Get the MasterDatas of the requested type for the specified Company",
+          "parameters": [
+            {
+              "name": "ContextOwner",
+              "in": "header",
+              "description": "The company to which the MasterDatas belong, from header",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "type",
+              "in": "query",
+              "description": "The type of the MasterDatas to search for, from query string",
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MasterData"
+                    }
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MasterData"
+                    }
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MasterData"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": [
+            "MasterData"
+          ],
+          "summary": "Insert the MasterData object from the body into the db",
+          "requestBody": {
+            "description": "The MasterData object to insert, from body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterData"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterData"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterData"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        },
+        "put": {
+          "tags": [
+            "MasterData"
+          ],
+          "summary": "Update the db with the MasterData object specified",
+          "requestBody": {
+            "description": "The MasterData object to update, from body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterData"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterData"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterData"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        }
+      },
+      "/masterdatatype": {
+        "get": {
+          "tags": [
+            "MasterDataType"
+          ],
+          "summary": "Get all the MasterDataType from the current db",
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MasterDataType"
+                    }
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MasterDataType"
+                    }
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MasterDataType"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": [
+            "MasterDataType"
+          ],
+          "summary": "Insert the MasterDataType object from the body into the db",
+          "requestBody": {
+            "description": "The MasterDataType object to insert, from body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterDataType"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterDataType"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterDataType"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        },
+        "put": {
+          "tags": [
+            "MasterDataType"
+          ],
+          "summary": "Update the db with the MasterDataType object specified",
+          "requestBody": {
+            "description": "The MasterData object to update, from body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterDataType"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterDataType"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterDataType"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        }
+      },
+      "/masterdatatype/{id}": {
+        "get": {
+          "tags": [
+            "MasterDataType"
+          ],
+          "summary": "Get the MasterDataType with the specified id",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "The id to search for",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MasterDataType"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MasterDataType"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MasterDataType"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "tags": [
+            "MasterDataType"
+          ],
+          "summary": "Delete the MasterDataType with the specified id",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "The id of the MasterDataTyper to delete",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Companies": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "companyName": {
+              "type": "string",
+              "nullable": true
+            },
+            "owner": {
+              "type": "string",
+              "nullable": true
+            },
+            "administrator": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "type": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "MasterDataType": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": {
+              "type": "string",
+              "nullable": true
+            },
+            "code": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "additionalProperties": false
+        },
+        "MasterData": {
+          "type": "object",
+          "properties": {
+            "companyCode": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "code": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "type": {
+              "type": "string",
+              "nullable": true
+            },
+            "companyName": {
+              "type": "string",
+              "nullable": true
+            },
+            "typeId": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "taCode": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "company": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Companies"
+                }
+              ],
+              "nullable": true
+            },
+            "masterDataType": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/MasterDataType"
+                }
+              ],
+              "nullable": true
+            },
+            "taCompany": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Companies"
+                }
+              ],
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  }
+}

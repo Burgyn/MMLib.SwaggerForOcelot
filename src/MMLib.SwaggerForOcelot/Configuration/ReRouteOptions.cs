@@ -20,8 +20,31 @@ namespace MMLib.SwaggerForOcelot.Configuration
         {
             _httpMethods = new Lazy<HashSet<string>>(()
                 => new HashSet<string>(
-                    UpstreamHttpMethod?.Count() > 0 ? UpstreamHttpMethod: DefaultMethodsTypes,
+                    UpstreamHttpMethod?.Count() > 0 ? UpstreamHttpMethod : DefaultMethodsTypes,
                     StringComparer.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReRouteOptions"/> class.
+        /// </summary>
+        /// <param name="swaggerKey">The swagger key.</param>
+        /// <param name="upstreamPathTemplate">The upstream path template.</param>
+        /// <param name="downstreamPathTemplate">The downstream path template.</param>
+        /// <param name="virtualDirectory">The virtual directory.</param>
+        /// <param name="upstreamMethods">The upstream methods.</param>
+        public ReRouteOptions(
+            string swaggerKey,
+            string upstreamPathTemplate,
+            string downstreamPathTemplate,
+            string virtualDirectory,
+            IEnumerable<string> upstreamMethods)
+            : this()
+        {
+            SwaggerKey = swaggerKey;
+            UpstreamPathTemplate = upstreamPathTemplate;
+            DownstreamPathTemplate = downstreamPathTemplate;
+            VirtualDirectory = virtualDirectory;
+            UpstreamHttpMethod = upstreamMethods;
         }
 
         /// <summary>
@@ -64,10 +87,21 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// <summary>
         /// Gets the downstream path.
         /// </summary>
-        public string DownstreamPath
+        public string DownstreamPath => DownstreamPathWithVirtualDirectory.RemoveSlashFromEnd();
+
+        internal string DownstreamPathWithShash => DownstreamPathWithVirtualDirectory.WithShashEnding();
+
+        private string _downstreamPathWithVirtualDirectory = null;
+
+        private string DownstreamPathWithVirtualDirectory
         {
             get
             {
+                if (!_downstreamPathWithVirtualDirectory.IsNullOrEmpty())
+                {
+                    return _downstreamPathWithVirtualDirectory;
+                }
+
                 var ret = Replace(DownstreamPathTemplate);
                 if (!VirtualDirectory.IsNullOrWhiteSpace()
                     && ret.StartsWith(VirtualDirectory, StringComparison.OrdinalIgnoreCase))
@@ -75,7 +109,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
                     ret = ret.Substring(VirtualDirectory.Length);
                 }
 
-                return ret.RemoveSlashFromEnd();
+                return ret;
             }
         }
 
@@ -91,5 +125,14 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public string UpstreamPath => Replace(UpstreamPathTemplate).RemoveSlashFromEnd();
 
         private string Replace(string value) => value.Replace(CatchAllPlaceHolder, "");
+
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+            => $"{UpstreamPathTemplate} => {DownstreamPathTemplate} | ({UpstreamPath} => {DownstreamPath})";
     }
 }

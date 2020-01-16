@@ -65,43 +65,14 @@ namespace MMLib.SwaggerForOcelot.Middleware
             AddHeaders(httpClient);
             var content = await httpClient.GetStringAsync(endPoint.Url);
             var hostName = endPoint.EndPoint.HostOverride ?? UriHelper.BuildAbsolute(context.Request.Scheme, context.Request.Host).RemoveSlashFromEnd();
-            var reRouteOptions = ExpandReRouteOptions(endPoint.EndPoint);
+            var reRouteOptions = _reRoutes.Value
+                .ExpandConfig(endPoint.EndPoint)
+                .GroupByPaths();
 
             content = _transformer.Transform(content, reRouteOptions, hostName);
             content = await ReconfigureUpstreamSwagger(context, content);
 
             await context.Response.WriteAsync(content);
-        }
-
-        private IEnumerable<ReRouteOptions> ExpandReRouteOptions(SwaggerEndPointOptions endPoint)
-        {
-            var reRouteOptions = _reRoutes.Value.Where(p => p.SwaggerKey == endPoint.Key).ToList();
-
-            if (string.IsNullOrWhiteSpace(endPoint.VersionPlaceholder))
-                return reRouteOptions;
-
-            var versionReRouteOptions = reRouteOptions.Where(x =>
-                x.DownstreamPathTemplate.Contains(endPoint.VersionPlaceholder)
-                || x.UpstreamPathTemplate.Contains(endPoint.VersionPlaceholder)).ToList();
-            versionReRouteOptions.ForEach(o => reRouteOptions.Remove(o));
-            foreach (var reRouteOption in versionReRouteOptions)
-            {
-                var versionMappedReRouteOptions = endPoint.Config.Select(c => new ReRouteOptions()
-                {
-                    SwaggerKey = reRouteOption.SwaggerKey,
-                    DownstreamPathTemplate =
-                        reRouteOption.DownstreamPathTemplate.Replace(endPoint.VersionPlaceholder,
-                            c.Version),
-                    UpstreamHttpMethod = reRouteOption.UpstreamHttpMethod,
-                    UpstreamPathTemplate =
-                        reRouteOption.UpstreamPathTemplate.Replace(endPoint.VersionPlaceholder,
-                            c.Version),
-                    VirtualDirectory = reRouteOption.VirtualDirectory
-                });
-                reRouteOptions.AddRange(versionMappedReRouteOptions);
-            }
-
-            return reRouteOptions;
         }
 
         private async Task<string> ReconfigureUpstreamSwagger(HttpContext context, string swaggerJson)

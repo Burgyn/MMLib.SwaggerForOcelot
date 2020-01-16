@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using JsonDiffPatchDotNet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Options;
@@ -18,6 +19,7 @@ using Moq.Protected;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using Xunit.Sdk;
 
 namespace MMLib.SwaggerForOcelot.Tests
 {
@@ -69,12 +71,12 @@ namespace MMLib.SwaggerForOcelot.Tests
             var swaggerJsonTransformerMock = new Mock<ISwaggerJsonTransformer>();
             swaggerJsonTransformerMock
                 .Setup(x => x.Transform(
-                    It.IsAny<string>(), 
+                    It.IsAny<string>(),
                     It.IsAny<IEnumerable<ReRouteOptions>>(),
                     It.IsAny<string>()))
                 .Returns((
-                    string swaggerJson, 
-                    IEnumerable<ReRouteOptions> reRouteOptions, 
+                    string swaggerJson,
+                    IEnumerable<ReRouteOptions> reRouteOptions,
                     string hostOverride) => new SwaggerJsonTransformer()
                     .Transform(swaggerJson,reRouteOptions,hostOverride));
             var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
@@ -84,11 +86,11 @@ namespace MMLib.SwaggerForOcelot.Tests
                 swaggerEndpointOptions,
                 httpClientFactory,
                 swaggerJsonTransformerMock.Object);
-            
+
             // Act
             await swaggerForOcelotMiddleware.Invoke(httpContext);
             httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
-            
+
             // Assert
             using (var streamReader = new StreamReader(httpContext.Response.Body))
             {
@@ -135,12 +137,12 @@ namespace MMLib.SwaggerForOcelot.Tests
                 testSwaggerEndpointOptions,
                 httpClientFactory,
                 swaggerJsonTransformer);
-            
+
             // Act
             await swaggerForOcelotMiddleware.Invoke(httpContext);
             httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
             var transformedUpstreamSwagger = await new StreamReader(httpContext.Response.Body).ReadToEndAsync();
-            
+
             // Assert
             AreEqual(transformedUpstreamSwagger, upstreamSwagger);
         }
@@ -170,7 +172,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             // arrange
             var expectedScheme = "http";
             var expectedHostString = new HostString("localhost", 3333);
-           
+
             // apply
             var absoluteHostUri = UriHelper.BuildAbsolute(expectedScheme, expectedHostString)
                 .RemoveSlashFromEnd();
@@ -189,7 +191,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             }
 
             const string routeToRemove = "/api/projects/Values";
-            
+
             var swagger = JObject.Parse(openApiJson);
             var paths = swagger[OpenApiProperties.Paths];
             var pathToRemove = paths.Values<JProperty>().FirstOrDefault(c => c.Name == routeToRemove);
@@ -202,10 +204,14 @@ namespace MMLib.SwaggerForOcelot.Tests
             var transformedJson = JObject.Parse(transformedSwagger);
             var expectedJson = JObject.Parse(expectedTransformedSwagger);
 
-            transformedJson.Should().BeEquivalentTo(expectedJson);
-            JObject.DeepEquals(transformedJson, expectedJson)
-                .Should()
-                .BeTrue();
+            if (!JObject.DeepEquals(transformedJson, expectedJson))
+            {
+                var jdp = new JsonDiffPatch();
+                JToken patch = jdp.Diff(transformedJson, expectedJson);
+
+                throw new XunitException(
+                    $"Transformed upstream swagger is not equal to expected. {Environment.NewLine} Diff: {patch.ToString()}");
+            }
         }
 
         private HttpContext GetHttpContext(string requestPath)
@@ -279,7 +285,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                 return _mockHttpClient;
             }
         }
-        
+
         private class TestReRouteOptions : IOptions<List<ReRouteOptions>>
         {
             public TestReRouteOptions()
@@ -303,7 +309,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             }
             public List<SwaggerEndPointOptions> Value { get; }
         }
-        
+
         private class TestSwaggerJsonTransformer : ISwaggerJsonTransformer
         {
             private readonly string _transformedJson;
@@ -312,7 +318,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             {
                 _transformedJson = transformedJson;
             }
-            
+
             public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes, string hostOverride)
             {
                 return _transformedJson;

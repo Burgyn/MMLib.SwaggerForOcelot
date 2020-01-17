@@ -64,7 +64,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
             var httpClient = _httpClientFactory.CreateClient();
             AddHeaders(httpClient);
             var content = await httpClient.GetStringAsync(endPoint.Url);
-            var hostName = endPoint.EndPoint.HostOverride ?? UriHelper.BuildAbsolute(context.Request.Scheme, context.Request.Host).RemoveSlashFromEnd();
+            var hostName = endPoint.EndPoint.HostOverride ?? context.Request.Host.Value.RemoveSlashFromEnd();
             var reRouteOptions = _reRoutes.Value
                 .ExpandConfig(endPoint.EndPoint)
                 .GroupByPaths();

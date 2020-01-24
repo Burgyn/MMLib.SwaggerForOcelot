@@ -11,7 +11,7 @@ categories:
       - 'bugfix'
       - 'bug'
   - title: '🧰 Maintenance'
-    label: 
+    labels: 
       - 'refactor 🛠️'
       - 'unittests'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'

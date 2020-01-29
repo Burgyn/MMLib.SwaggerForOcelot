@@ -74,17 +74,16 @@ namespace OrderService
         /// Configures the application using the provided builder, hosting environment, and API version description provider.
         /// </summary>
         /// <param name="app">The current application builder.</param>
-        /// <param name="env">The current hosting environment.</param>
         /// <param name="provider">The API version descriptor provider used to enumerate defined API versions.</param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApiVersionDescriptionProvider provider)
+        public void Configure(IApplicationBuilder app, IApiVersionDescriptionProvider provider)
         {
             app.UseRouting();
             app.UseSwagger();
-            app.UseSwaggerUI(
+            _ = app.UseSwaggerUI(
                 options =>
                 {
                     // build a swagger endpoint for each discovered API version
-                    foreach (var description in provider.ApiVersionDescriptions)
+                    foreach (ApiVersionDescription description in provider.ApiVersionDescriptions)
                     {
                         options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
                     }
@@ -95,8 +94,8 @@ namespace OrderService
         {
             get
             {
-                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-                var fileName = typeof(Startup).GetTypeInfo().Assembly.GetName().Name + ".xml";
+                string basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                string fileName = typeof(Startup).GetTypeInfo().Assembly.GetName().Name + ".xml";
                 return Path.Combine(basePath, fileName);
             }
         }

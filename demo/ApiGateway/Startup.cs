@@ -6,16 +6,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Microsoft.Extensions.Hosting;
 
 namespace ApiGateway
 {
     public class Startup
     {
 
-        private readonly IHostingEnvironment _env;
-        public Startup(IHostingEnvironment env, IConfiguration config)
+        public Startup(IConfiguration config)
         {
-            _env = env;
             Configuration = config;
         }
 
@@ -27,11 +26,11 @@ namespace ApiGateway
             services.AddOcelot();
             services.AddSwaggerForOcelot(Configuration);
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

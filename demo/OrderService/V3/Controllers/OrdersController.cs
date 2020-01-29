@@ -9,8 +9,8 @@ namespace OrderService.V3.Controllers
     /// Represents a RESTful service of orders.
     /// </summary>
     [ApiController]
-    [ApiVersion( "3.0" )]
-    [Route( "api/[controller]" )]
+    [ApiVersion("3.0")]
+    [Route("api/[controller]")]
     public class OrdersController : ControllerBase
     {
         /// <summary>
@@ -20,19 +20,19 @@ namespace OrderService.V3.Controllers
         /// <response code="200">Orders successfully retrieved.</response>
         /// <response code="400">The order is invalid.</response>
         [HttpGet]
-        [Produces( "application/json" )]
-        [ProducesResponseType( typeof( IEnumerable<Order> ), 200 )]
-        [ProducesResponseType( 400 )]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<Order>), 200)]
+        [ProducesResponseType(400)]
         public IActionResult Get()
         {
-            var orders = new[]
+            Order[] orders = new[]
             {
                 new Order(){ Id = 1, Customer = "John Doe" },
                 new Order(){ Id = 2, Customer = "John Doe" },
                 new Order(){ Id = 3, Customer = "Jane Doe", EffectiveDate = DateTimeOffset.UtcNow.AddDays( 7d ) }
             };
 
-            return Ok( orders );
+            return Ok(orders);
         }
 
         /// <summary>
@@ -42,12 +42,12 @@ namespace OrderService.V3.Controllers
         /// <returns>The requested order.</returns>
         /// <response code="200">The order was successfully retrieved.</response>
         /// <response code="404">The order does not exist.</response>
-        [HttpGet( "{id:int}" )]
-        [Produces( "application/json" )]
-        [ProducesResponseType( typeof( Order ), 200 )]
-        [ProducesResponseType( 400 )]
-        [ProducesResponseType( 404 )]
-        public IActionResult Get( int id ) => Ok( new Order() { Id = id, Customer = "John Doe" } );
+        [HttpGet("{id:int}")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(Order), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult Get(int id) => Ok(new Order() { Id = id, Customer = "John Doe" });
 
         /// <summary>
         /// Places a new order.
@@ -57,13 +57,13 @@ namespace OrderService.V3.Controllers
         /// <response code="201">The order was successfully placed.</response>
         /// <response code="400">The order is invalid.</response>
         [HttpPost]
-        [Produces( "application/json" )]
-        [ProducesResponseType( typeof( Order ), 201 )]
-        [ProducesResponseType( 400 )]
-        public IActionResult Post( [FromBody] Order order )
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(Order), 201)]
+        [ProducesResponseType(400)]
+        public IActionResult Post([FromBody] Order order)
         {
             order.Id = 42;
-            return CreatedAtAction( nameof( Get ), new { id = order.Id }, order );
+            return CreatedAtAction(nameof(Get), new { id = order.Id }, order);
         }
 
         /// <summary>
@@ -71,8 +71,12 @@ namespace OrderService.V3.Controllers
         /// </summary>
         /// <param name="id">The order to cancel.</param>
         /// <returns>None</returns>
-        [HttpDelete( "{id:int}" )]
-        [ProducesResponseType( 204 )]
-        public IActionResult Delete( int id ) => NoContent();
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(204)]
+        public IActionResult Delete(int id)
+        {
+            Console.Write(id);
+            return NoContent();
+        }
     }
 }

@@ -31,13 +31,13 @@ namespace MMLib.SwaggerForOcelot.Tests
             // Arrange
             const string version = "v1";
             const string key = "projects";
-            var httpContext = GetHttpContext(requestPath: $"/{version}/{key}");
+            HttpContext httpContext = GetHttpContext(requestPath: $"/{version}/{key}");
 
             var next = new TestRequestDelegate();
 
             // What is being tested
             var swaggerForOcelotOptions = new SwaggerForOcelotUIOptions();
-            var swaggerEndpointOptions = CreateSwaggerEndpointOptions(key,version);
+            TestSwaggerEndpointOptions swaggerEndpointOptions = CreateSwaggerEndpointOptions(key,version);
             var rerouteOptions = new TestReRouteOptions(new List<ReRouteOptions>
             {
                 new ReRouteOptions
@@ -61,12 +61,12 @@ namespace MMLib.SwaggerForOcelot.Tests
             });
 
             // downstreamSwagger is returned when client.GetStringAsync is called by the middleware.
-            var downstreamSwagger = await GetBaseOpenApi("OpenApiWithVersionPlaceholderBase");
-            var httClientMock = GetHttpClient(downstreamSwagger);
+            string downstreamSwagger = await GetBaseOpenApi("OpenApiWithVersionPlaceholderBase");
+            HttpClient httClientMock = GetHttpClient(downstreamSwagger);
             var httpClientFactory = new TestHttpClientFactory(httClientMock);
 
             // upstreamSwagger is returned after swaggerJsonTransformer transforms the downstreamSwagger
-            var expectedSwagger = await GetBaseOpenApi("OpenApiWithVersionPlaceholderBaseTransformed");
+            string expectedSwagger = await GetBaseOpenApi("OpenApiWithVersionPlaceholderBaseTransformed");
 
             var swaggerJsonTransformerMock = new Mock<ISwaggerJsonTransformer>();
             swaggerJsonTransformerMock
@@ -94,7 +94,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             // Assert
             using (var streamReader = new StreamReader(httpContext.Response.Body))
             {
-                var transformedUpstreamSwagger = await streamReader.ReadToEndAsync();
+                string transformedUpstreamSwagger = await streamReader.ReadToEndAsync();
                 AreEqual(transformedUpstreamSwagger, expectedSwagger);
             }
             swaggerJsonTransformerMock.Verify(x => x.Transform(
@@ -109,7 +109,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             // Arrange
             const string version = "v1";
             const string key = "projects";
-            var httpContext = GetHttpContext(requestPath: $"/{version}/{key}");
+            HttpContext httpContext = GetHttpContext(requestPath: $"/{version}/{key}");
 
             var next = new TestRequestDelegate();
 
@@ -118,16 +118,16 @@ namespace MMLib.SwaggerForOcelot.Tests
             {
                 ReConfigureUpstreamSwaggerJson = ExampleUserDefinedUpstreamTransformer
             };
-            var testSwaggerEndpointOptions = CreateSwaggerEndpointOptions(key,version);
+            TestSwaggerEndpointOptions testSwaggerEndpointOptions = CreateSwaggerEndpointOptions(key,version);
             var rerouteOptions = new TestReRouteOptions();
 
             // downstreamSwagger is returned when client.GetStringAsync is called by the middleware.
-            var downstreamSwagger = await GetBaseOpenApi("OpenApiBase");
-            var httClientMock = GetHttpClient(downstreamSwagger);
+            string downstreamSwagger = await GetBaseOpenApi("OpenApiBase");
+            HttpClient httClientMock = GetHttpClient(downstreamSwagger);
             var httpClientFactory = new TestHttpClientFactory(httClientMock);
 
             // upstreamSwagger is returned after swaggerJsonTransformer transforms the downstreamSwagger
-            var upstreamSwagger = await GetBaseOpenApi("OpenApiBaseTransformed");
+            string upstreamSwagger = await GetBaseOpenApi("OpenApiBaseTransformed");
             var swaggerJsonTransformer = new TestSwaggerJsonTransformer(upstreamSwagger);
 
             var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
@@ -141,7 +141,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             // Act
             await swaggerForOcelotMiddleware.Invoke(httpContext);
             httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
-            var transformedUpstreamSwagger = await new StreamReader(httpContext.Response.Body).ReadToEndAsync();
+            string transformedUpstreamSwagger = await new StreamReader(httpContext.Response.Body).ReadToEndAsync();
 
             // Assert
             AreEqual(transformedUpstreamSwagger, upstreamSwagger);
@@ -170,11 +170,11 @@ namespace MMLib.SwaggerForOcelot.Tests
         public void ConstructHostUriUsingUriBuilder()
         {
             // arrange
-            var expectedScheme = "http";
+            string expectedScheme = "http";
             var expectedHostString = new HostString("localhost", 3333);
 
             // apply
-            var absoluteHostUri = UriHelper.BuildAbsolute(expectedScheme, expectedHostString)
+            string absoluteHostUri = UriHelper.BuildAbsolute(expectedScheme, expectedHostString)
                 .RemoveSlashFromEnd();
 
             // assert
@@ -193,8 +193,8 @@ namespace MMLib.SwaggerForOcelot.Tests
             const string routeToRemove = "/api/projects/Values";
 
             var swagger = JObject.Parse(openApiJson);
-            var paths = swagger[OpenApiProperties.Paths];
-            var pathToRemove = paths.Values<JProperty>().FirstOrDefault(c => c.Name == routeToRemove);
+            JToken paths = swagger[OpenApiProperties.Paths];
+            JProperty pathToRemove = paths.Values<JProperty>().FirstOrDefault(c => c.Name == routeToRemove);
             pathToRemove?.Remove();
             return swagger.ToString(Formatting.Indented);
         }
@@ -249,19 +249,20 @@ namespace MMLib.SwaggerForOcelot.Tests
 
         private class TestRequestDelegate
         {
-            private readonly int _statusCode;
-
             public TestRequestDelegate(int statusCode = 200)
             {
-                _statusCode = statusCode;
-            }
+                StatusCode = statusCode;                
+            }            
 
             public bool Called => CalledCount > 0;
 
             public int CalledCount { get; private set; }
 
+            public int StatusCode { get; }
+
             public Task Invoke(HttpContext context)
             {
+                System.Console.WriteLine(context);
                 CalledCount++;
                 return Task.CompletedTask;
             }

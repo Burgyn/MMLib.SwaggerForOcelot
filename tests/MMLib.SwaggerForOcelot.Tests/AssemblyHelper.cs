@@ -19,7 +19,7 @@ namespace MMLib.SwaggerForOcelot.Tests
         public static async Task<string> GetStringFromResourceFileAsync(string resourceFile)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceStream = assembly.GetManifestResourceStream($"{RootNamespaceResources}.{resourceFile}");
+            Stream resourceStream = assembly.GetManifestResourceStream($"{RootNamespaceResources}.{resourceFile}");
             using (var reader = new StreamReader(resourceStream, Encoding.UTF8))
             {
                 return await reader.ReadToEndAsync();

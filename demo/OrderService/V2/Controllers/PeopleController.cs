@@ -22,7 +22,7 @@ namespace OrderService.V2.Controllers
         [ProducesResponseType( typeof( IEnumerable<Person> ), 200 )]
         public IActionResult Get()
         {
-            var people = new[]
+            Person[] people = new[]
             {
                 new Person()
                 {

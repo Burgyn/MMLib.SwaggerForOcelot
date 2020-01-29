@@ -5,15 +5,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Microsoft.Extensions.Hosting;
 
 namespace ApiGatewayWithPath
 {
     public class Startup
     {
-        private readonly IHostingEnvironment _env;
-        public Startup(IHostingEnvironment env, IConfiguration config)
+        public Startup(IConfiguration config)
         {
-            _env = env;
             Configuration = config;
         }
 
@@ -25,11 +24,10 @@ namespace ApiGatewayWithPath
             services.AddOcelot();
             services.AddSwaggerForOcelot(Configuration);
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UsePathBase("/gateway");
             if (env.IsDevelopment())
@@ -37,9 +35,10 @@ namespace ApiGatewayWithPath
                 app.UseDeveloperExceptionPage();
             }
             app.UseStaticFiles();
-            app.UseSwaggerForOcelotUI(Configuration, opt => {
+            app.UseSwaggerForOcelotUI(Configuration, opt =>
+            {
                 opt.DownstreamSwaggerEndPointBasePath = "/gateway/swagger/docs";
-                opt.PathToSwaggerGenerator= "/swagger/docs";
+                opt.PathToSwaggerGenerator = "/swagger/docs";
             })
             .UseOcelot()
             .Wait();

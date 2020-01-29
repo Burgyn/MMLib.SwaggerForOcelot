@@ -20,7 +20,7 @@ namespace MMLib.SwaggerForOcelot.Tests
         {
             var transformer = new SwaggerJsonTransformer();
 
-            var transformed = transformer.Transform(
+            string transformed = transformer.Transform(
                 testData.DownstreamSwagger.ToString(),
                 testData.ReRoutes,
                 testData.HostOverride);
@@ -30,7 +30,7 @@ namespace MMLib.SwaggerForOcelot.Tests
 
         private static void AreEqual(string transformed, JObject expected)
         {
-            JObject actual = JObject.Parse(transformed);
+            var actual = JObject.Parse(transformed);
 
             if (!JObject.DeepEquals(actual, expected))
             {

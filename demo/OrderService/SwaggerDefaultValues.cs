@@ -20,7 +20,7 @@ namespace OrderService
         /// <param name="context">The current operation filter context.</param>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var apiDescription = context.ApiDescription;
+            ApiDescription apiDescription = context.ApiDescription;
 
             operation.Deprecated = apiDescription.IsDeprecated();
 
@@ -31,9 +31,9 @@ namespace OrderService
 
             // REF: https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/412
             // REF: https://github.com/domaindrivendev/Swashbuckle.AspNetCore/pull/413
-            foreach (var parameter in operation.Parameters.OfType<NonBodyParameter>())
+            foreach (NonBodyParameter parameter in operation.Parameters.OfType<NonBodyParameter>())
             {
-                var description = apiDescription.ParameterDescriptions.First(p => p.Name == parameter.Name);
+                ApiParameterDescription description = apiDescription.ParameterDescriptions.First(p => p.Name == parameter.Name);
 
                 if (parameter.Description == null)
                 {

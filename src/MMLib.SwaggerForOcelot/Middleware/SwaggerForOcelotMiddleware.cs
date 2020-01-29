@@ -18,7 +18,9 @@ namespace MMLib.SwaggerForOcelot.Middleware
     /// </summary>
     public class SwaggerForOcelotMiddleware
     {
+        #pragma warning disable IDE0052
         private readonly RequestDelegate _next;
+        #pragma warning restore IDE0052
 
         private readonly IOptions<List<ReRouteOptions>> _reRoutes;
         private readonly Lazy<Dictionary<string, SwaggerEndPointOptions>> _swaggerEndPoints;
@@ -60,13 +62,13 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// <param name="context">The context.</param>
         public async Task Invoke(HttpContext context)
         {
-            var endPoint = GetEndPoint(context.Request.Path);
-            var httpClient = _httpClientFactory.CreateClient();
+            (string Url, SwaggerEndPointOptions EndPoint) = GetEndPoint(context.Request.Path);
+            HttpClient httpClient = _httpClientFactory.CreateClient();
             AddHeaders(httpClient);
-            var content = await httpClient.GetStringAsync(endPoint.Url);
-            var hostName = endPoint.EndPoint.HostOverride ?? context.Request.Host.Value.RemoveSlashFromEnd();
-            var reRouteOptions = _reRoutes.Value
-                .ExpandConfig(endPoint.EndPoint)
+            string content = await httpClient.GetStringAsync(Url);
+            string hostName = EndPoint.HostOverride ?? context.Request.Host.Value.RemoveSlashFromEnd();
+            IEnumerable<ReRouteOptions> reRouteOptions = _reRoutes.Value
+                .ExpandConfig(EndPoint)
                 .GroupByPaths();
 
             content = _transformer.Transform(content, reRouteOptions, hostName);
@@ -98,8 +100,12 @@ namespace MMLib.SwaggerForOcelot.Middleware
 
         private void AddHeaders(HttpClient httpClient)
         {
-            if (_options.DownstreamSwaggerHeaders == null) return;
-            foreach (var kvp in _options.DownstreamSwaggerHeaders)
+            if (_options.DownstreamSwaggerHeaders == null)
+            {
+                return;
+            }
+
+            foreach (KeyValuePair<string, string> kvp in _options.DownstreamSwaggerHeaders)
             {
                 httpClient.DefaultRequestHeaders.Add(kvp.Key, kvp.Value);
             }
@@ -114,9 +120,9 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// </returns>
         private (string Url, SwaggerEndPointOptions EndPoint) GetEndPoint(string path)
         {
-            var endPointInfo = GetEndPointInfo(path);
-            var endPoint = _swaggerEndPoints.Value[$"/{endPointInfo.Key}"];
-            var url = endPoint.Config.FirstOrDefault(x => x.Version == endPointInfo.Version)?.Url;
+            (string Version, string Key) endPointInfo = GetEndPointInfo(path);
+            SwaggerEndPointOptions endPoint = _swaggerEndPoints.Value[$"/{endPointInfo.Key}"];
+            string url = endPoint.Config.FirstOrDefault(x => x.Version == endPointInfo.Version)?.Url;
             return (url, endPoint);
         }
 
@@ -129,7 +135,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// </returns>
         private (string Version, string Key) GetEndPointInfo(string path)
         {
-            var keys = path.Split('/');
+            string[] keys = path.Split('/');
             return (keys[1], keys[2]);
         }
     }

@@ -37,7 +37,7 @@ namespace MMLib.SwaggerForOcelot.Tests
 
         private string ReadFile(string testFilePath)
         {
-            var resourceStream = _assembly.GetManifestResourceStream(testFilePath);
+            Stream resourceStream = _assembly.GetManifestResourceStream(testFilePath);
 
             using (var reader = new StreamReader(resourceStream, Encoding.UTF8))
             {

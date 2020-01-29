@@ -12,9 +12,9 @@ namespace ProjectService.Controllers
     [ApiController]
     public class ProjectsController : ControllerBase
     {
-        private PersonGenerator _personGenerator = new PersonGenerator();
-        private WordGenerator _wordGenerator = new WordGenerator();
-        private Lazy<List<Project>> _projects = new Lazy<List<Project>>();
+        private readonly PersonGenerator _personGenerator = new PersonGenerator();
+        private readonly WordGenerator _wordGenerator = new WordGenerator();
+        private readonly Lazy<List<Project>> _projects = new Lazy<List<Project>>();
 
         public ProjectsController()
         {
@@ -49,7 +49,7 @@ namespace ProjectService.Controllers
         [ProducesResponseType(404)]
         public IActionResult Get(int id)
         {
-            var project = _projects.Value.FirstOrDefault(p => p.Id == id);
+            Project project = _projects.Value.FirstOrDefault(p => p.Id == id);
 
             if (project != null)
             {

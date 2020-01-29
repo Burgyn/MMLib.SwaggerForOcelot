@@ -30,7 +30,7 @@ namespace MMLib.SwaggerForOcelot.Tests
 
         private IConfiguration GetConfiguration(string jsonConfiguration)
         {
-            var path = "appsettings.json";
+            string path = "appsettings.json";
             File.WriteAllText(path, jsonConfiguration);
             IConfiguration configuration = new ConfigurationBuilder().AddJsonFile(path).Build();
             File.Delete(path);

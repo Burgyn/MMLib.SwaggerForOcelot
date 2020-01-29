@@ -17,7 +17,7 @@ namespace MMLib.SwaggerForOcelot
             => reRouteOptions
             .GroupBy(p => new { p.SwaggerKey, p.UpstreamPathTemplate, p.DownstreamPathTemplate, p.VirtualDirectory})
             .Select(p => {
-                var route = p.First();
+                ReRouteOptions route = p.First();
                 return new ReRouteOptions(
                     p.Key.SwaggerKey,
                     route.UpstreamPathTemplate,
@@ -38,15 +38,17 @@ namespace MMLib.SwaggerForOcelot
             var reRouteOptions = reRoutes.Where(p => p.SwaggerKey == endPoint.Key).ToList();
 
             if (string.IsNullOrWhiteSpace(endPoint.VersionPlaceholder))
+            {
                 return reRouteOptions;
+            }
 
             var versionReRouteOptions = reRouteOptions.Where(x =>
                 x.DownstreamPathTemplate.Contains(endPoint.VersionPlaceholder)
                 || x.UpstreamPathTemplate.Contains(endPoint.VersionPlaceholder)).ToList();
             versionReRouteOptions.ForEach(o => reRouteOptions.Remove(o));
-            foreach (var reRouteOption in versionReRouteOptions)
+            foreach (ReRouteOptions reRouteOption in versionReRouteOptions)
             {
-                var versionMappedReRouteOptions = endPoint.Config.Select(c => new ReRouteOptions()
+                IEnumerable<ReRouteOptions> versionMappedReRouteOptions = endPoint.Config.Select(c => new ReRouteOptions()
                 {
                     SwaggerKey = reRouteOption.SwaggerKey,
                     DownstreamPathTemplate =

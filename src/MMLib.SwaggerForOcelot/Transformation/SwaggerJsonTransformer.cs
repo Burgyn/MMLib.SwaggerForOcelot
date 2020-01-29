@@ -17,7 +17,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
         /// <inheritdoc/>
         public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes, string hostOverride)
         {
-            JObject swagger = JObject.Parse(swaggerJson);
+            var swagger = JObject.Parse(swaggerJson);
 
             if (swagger.ContainsKey("swagger"))
             {
@@ -34,8 +34,8 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
         private string TransformSwagger(JObject swagger, IEnumerable<ReRouteOptions> reRoutes, string hostOverride)
         {
-            var paths = swagger[SwaggerProperties.Paths];
-            var basePath = swagger.ContainsKey(SwaggerProperties.BasePath)
+            JToken paths = swagger[SwaggerProperties.Paths];
+            string basePath = swagger.ContainsKey(SwaggerProperties.BasePath)
                 ? swagger.GetValue(SwaggerProperties.BasePath).ToString()
                 : "";
             basePath = basePath.TrimEnd('/');
@@ -76,22 +76,22 @@ namespace MMLib.SwaggerForOcelot.Transformation
         private string TransformOpenApi(JObject openApi, IEnumerable<ReRouteOptions> reRoutes, string hostOverride = "/")
         {
             // NOTE: Only supporting one server for now.
-            var downstreamBasePath = "";
+            string downstreamBasePath = "";
             if (openApi.ContainsKey(OpenApiProperties.Servers))
             {
-                var firstServerUrl = openApi.GetValue(OpenApiProperties.Servers).First.Value<string>(OpenApiProperties.Url);
+                string firstServerUrl = openApi.GetValue(OpenApiProperties.Servers).First.Value<string>(OpenApiProperties.Url);
                 var downstreamUrl = new Uri(firstServerUrl, UriKind.RelativeOrAbsolute);
                 downstreamBasePath =
                     (downstreamUrl.IsAbsoluteUri ? downstreamUrl.AbsolutePath : downstreamUrl.OriginalString)
                     .RemoveSlashFromEnd();
             }
 
-            var paths = openApi[OpenApiProperties.Paths];
+            JToken paths = openApi[OpenApiProperties.Paths];
             if (paths != null)
             {
                 RenameAndRemovePaths(reRoutes, paths, downstreamBasePath);
 
-                var schemaToken = openApi[OpenApiProperties.Components][OpenApiProperties.Schemas];
+                JToken schemaToken = openApi[OpenApiProperties.Components][OpenApiProperties.Schemas];
                 if (schemaToken != null)
                 {
                     RemoveItems<JProperty>(schemaToken,
@@ -123,7 +123,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
             {
                 var path = paths.ElementAt(i) as JProperty;
                 string downstreamPath = path.Name.RemoveSlashFromEnd();
-                var reRoute = FindReRoute(reRoutes, path.Name.WithShashEnding(), basePath);
+                ReRouteOptions reRoute = FindReRoute(reRoutes, path.Name.WithShashEnding(), basePath);
 
                 if (reRoute != null && RemoveMethods(path, reRoute))
                 {
@@ -135,7 +135,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 }
             }
 
-            foreach (var p in forRemove)
+            foreach (JProperty p in forRemove)
             {
                 p.Remove();
             }
@@ -155,7 +155,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 method = method.Next as JProperty;
             }
 
-            foreach (var m in forRemove)
+            foreach (JProperty m in forRemove)
             {
                 m.Remove();
             }
@@ -177,7 +177,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 CheckSubreferences(token, searchPaths, forRemove);
             }
 
-            foreach (var item in forRemove)
+            foreach (T item in forRemove)
             {
                 if (item is JObject o)
                 {
@@ -211,7 +211,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
         private static ReRouteOptions FindReRoute(IEnumerable<ReRouteOptions> reRoutes, string downstreamPath, string basePath)
         {
-            var downstreamPathWithBasePath = PathHelper.BuildPath(basePath, downstreamPath);
+            string downstreamPathWithBasePath = PathHelper.BuildPath(basePath, downstreamPath);
             return reRoutes.FirstOrDefault(p
                 => p.CanCatchAll
                     ? downstreamPathWithBasePath.StartsWith(p.DownstreamPathWithShash, StringComparison.CurrentCultureIgnoreCase)
@@ -252,9 +252,12 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
         private static void TransformServerPaths(JObject openApi, string hostOverride)
         {
-            if (!openApi.ContainsKey(OpenApiProperties.Servers)) return;
+            if (!openApi.ContainsKey(OpenApiProperties.Servers))
+            {
+                return;
+            }
 
-            foreach (var server in openApi.GetValue(OpenApiProperties.Servers))
+            foreach (JToken server in openApi.GetValue(OpenApiProperties.Servers))
             {
                 if (server[OpenApiProperties.Url] != null)
                 {

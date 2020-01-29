@@ -11,16 +11,16 @@ namespace MMLib.SwaggerForOcelot.Configuration
     public class ReRouteOptions
     {
         private const string CatchAllPlaceHolder = "{everything}";
-        private readonly string[] DefaultMethodsTypes =
+        private readonly string[] _defaultMethodsTypes =
             new string[] { "get", "post", "put", "delete", "options", "patch", "head", "connect", "trace" };
 
-        private Lazy<HashSet<string>> _httpMethods;
+        private readonly Lazy<HashSet<string>> _httpMethods;
 
         public ReRouteOptions()
         {
             _httpMethods = new Lazy<HashSet<string>>(()
                 => new HashSet<string>(
-                    UpstreamHttpMethod?.Count() > 0 ? UpstreamHttpMethod : DefaultMethodsTypes,
+                    UpstreamHttpMethod?.Count() > 0 ? UpstreamHttpMethod : _defaultMethodsTypes,
                     StringComparer.OrdinalIgnoreCase));
         }
 
@@ -91,7 +91,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
 
         internal string DownstreamPathWithShash => DownstreamPathWithVirtualDirectory.WithShashEnding();
 
-        private string _downstreamPathWithVirtualDirectory = null;
+        private readonly string _downstreamPathWithVirtualDirectory = null;
 
         private string DownstreamPathWithVirtualDirectory
         {
@@ -102,7 +102,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
                     return _downstreamPathWithVirtualDirectory;
                 }
 
-                var ret = Replace(DownstreamPathTemplate);
+                string ret = Replace(DownstreamPathTemplate);
                 if (!VirtualDirectory.IsNullOrWhiteSpace()
                     && ret.StartsWith(VirtualDirectory, StringComparison.OrdinalIgnoreCase))
                 {

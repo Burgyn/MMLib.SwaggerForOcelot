@@ -46,7 +46,7 @@ namespace Microsoft.AspNetCore.Builder
             app.UseSwaggerUI(c =>
             {
                 InitUIOption(c, options);
-                var endPoints = GetConfiguration(configuration);
+                IEnumerable<SwaggerEndPointOptions> endPoints = GetConfiguration(configuration);
                 AddSwaggerEndPoints(c, endPoints, options.DownstreamSwaggerEndPointBasePath);
             });
 
@@ -58,9 +58,9 @@ namespace Microsoft.AspNetCore.Builder
 
         private static void AddSwaggerEndPoints(SwaggerUIOptions c, IEnumerable<SwaggerEndPointOptions> endPoints, string basePath)
         {
-            foreach (var endPoint in endPoints)
+            foreach (SwaggerEndPointOptions endPoint in endPoints)
             {
-                foreach (var config in endPoint.Config)
+                foreach (SwaggerEndPointConfig config in endPoint.Config)
                 {
                     c.SwaggerEndpoint($"{basePath}/{config.Version}/{endPoint.KeyToPath}", $"{config.Name} - {config.Version}");
                 }

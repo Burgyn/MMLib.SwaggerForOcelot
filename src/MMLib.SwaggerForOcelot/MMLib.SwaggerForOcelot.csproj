@@ -7,7 +7,7 @@
     <Company>MMLib</Company>
     <Description>Swagger generator for Ocelot downstream services.</Description>
     <PackageProjectUrl>https://github.com/Burgyn/MMLib.SwaggerForOcelot</PackageProjectUrl>
-    <PackageIconUrl>https://lh6.googleusercontent.com/-HTC1Whl2A3A/UqoLh9OpF_I/AAAAAAAAABc/VviX0GTeB7Q/s96-no/1386896927_37130.ico</PackageIconUrl>
+    <PackageIcon>icon.ico</PackageIcon>
     <RepositoryUrl>https://github.com/Burgyn/MMLib.SwaggerForOcelot</RepositoryUrl>
     <PackageTags>swagger;documentation;ocelot</PackageTags>
     <PackageReleaseNotes />
@@ -21,6 +21,10 @@
     <DocumentationFile>bin\Release\MMLib.SwaggerForOcelot.xml</DocumentationFile>
     <OutputPath>bin\Release</OutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="icon.ico" Pack="true" PackagePath="" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Kros.Utils" Version="1.10.1" />

@@ -12,22 +12,10 @@ namespace MMLib.SwaggerForOcelot.Configuration
     /// <seealso cref="Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIOptions" />
     public class SwaggerForOcelotUIOptions : SwaggerUIOptions
     {
-        private string _pathToSwaggerUI = "/swagger/docs";
-
         /// <summary>
         /// The relative path to gateway swagger generator.
         /// </summary>
-        public string PathToSwaggerGenerator
-        {
-            get => !string.IsNullOrWhiteSpace(EndPointBasePath) ? EndPointBasePath : _pathToSwaggerUI;
-            set => _pathToSwaggerUI = value;
-        }
-
-        /// <summary>
-        /// The base path to ocelot gateway swagger UI.
-        /// </summary>
-        [Obsolete("Use the 'PathToSwaggerUI' property.")]
-        public string EndPointBasePath { get; set; }
+        public string PathToSwaggerGenerator { get; set; } = "/swagger/docs";
 
         /// <summary>
         /// The base path to downstream service api swagger generator endpoint.

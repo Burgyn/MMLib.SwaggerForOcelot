@@ -100,7 +100,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
 
         private void AddHeaders(HttpClient httpClient)
         {
-            if (_options.DownstreamSwaggerHeaders == null)
+            if (_options.DownstreamSwaggerHeaders is null)
             {
                 return;
             }

@@ -83,7 +83,7 @@ namespace Microsoft.AspNetCore.Builder
                 configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName)
                 .Get<IEnumerable<SwaggerEndPointOptions>>();
 
-            if (options == null)
+            if (options is null)
             {
                 throw new InvalidOperationException(
                     $"{SwaggerEndPointOptions.ConfigurationSectionName} configuration section is missing or empty.");

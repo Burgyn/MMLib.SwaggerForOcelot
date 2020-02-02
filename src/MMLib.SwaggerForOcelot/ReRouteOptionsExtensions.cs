@@ -46,6 +46,7 @@ namespace MMLib.SwaggerForOcelot
                 x.DownstreamPathTemplate.Contains(endPoint.VersionPlaceholder)
                 || x.UpstreamPathTemplate.Contains(endPoint.VersionPlaceholder)).ToList();
             versionReRouteOptions.ForEach(o => reRouteOptions.Remove(o));
+            
             foreach (ReRouteOptions reRouteOption in versionReRouteOptions)
             {
                 IEnumerable<ReRouteOptions> versionMappedReRouteOptions = endPoint.Config.Select(c => new ReRouteOptions()

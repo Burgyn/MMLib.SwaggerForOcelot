@@ -1,7 +1,5 @@
 ﻿using MMLib.SwaggerForOcelot.Configuration;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MMLib.SwaggerForOcelot.Transformation
 {

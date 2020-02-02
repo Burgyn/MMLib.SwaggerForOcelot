@@ -1,7 +1,7 @@
 ﻿namespace System
 {
     /// <summary>
-    /// String extensions
+    /// String extensions.
     /// </summary>
     internal static class StringExtensions
     {

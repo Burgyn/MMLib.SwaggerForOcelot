@@ -16,6 +16,9 @@ namespace MMLib.SwaggerForOcelot.Configuration
 
         private readonly Lazy<HashSet<string>> _httpMethods;
 
+        /// <summary>
+        /// Ctor.
+        /// </summary>
         public ReRouteOptions()
         {
             _httpMethods = new Lazy<HashSet<string>>(()

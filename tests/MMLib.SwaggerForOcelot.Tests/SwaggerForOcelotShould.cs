@@ -37,7 +37,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                 JToken patch = jdp.Diff(actual, expected);
 
                 throw new XunitException(
-                    $"Transformed upstream swagger is not equal to expected. {Environment.NewLine} Diff: {patch.ToString()}");
+                    $"Transformed upstream swagger is not equal to expected. {Environment.NewLine} Diff: {patch}");
             }
         }
     }

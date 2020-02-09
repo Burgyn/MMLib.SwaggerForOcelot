@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3</TargetFramework>
-    <Version>1.10.5</Version>
+    <Version>1.10.4</Version>
     <Authors>Milan Martiniak</Authors>
     <Company>MMLib</Company>
     <Description>Swagger generator for Ocelot downstream services.</Description>
     <PackageProjectUrl>https://github.com/Burgyn/MMLib.SwaggerForOcelot</PackageProjectUrl>
-    <PackageIcon>icon.pngs</PackageIcon>
+    <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/Burgyn/MMLib.SwaggerForOcelot</RepositoryUrl>
     <PackageTags>swagger;documentation;ocelot</PackageTags>
     <PackageReleaseNotes />

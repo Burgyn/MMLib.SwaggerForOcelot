@@ -31,7 +31,7 @@
             "type": "process",
             "group": {
                 "isDefault": true,
-                "kind": "test"   
+                "kind": "test"
             },
             "args": [
                 "test",
@@ -41,6 +41,19 @@
                 "reveal": "always",
             },
             "problemMatcher": "$msCompile"
-          }
+        },
+        {
+            "label": "run benchmark",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "run",
+                "-p",
+                "${workspaceFolder}/tests/MMLib.SwaggerForOcelot.BenchmarkTests/MMLib.SwaggerForOcelot.BenchmarkTests.csproj",
+                "-c",
+                "Release"
+            ],
+            "problemMatcher": "$msCompile"
+        }
     ]
 }

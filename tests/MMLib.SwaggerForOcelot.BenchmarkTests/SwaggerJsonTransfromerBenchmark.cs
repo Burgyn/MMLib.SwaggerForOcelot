@@ -54,7 +54,6 @@ namespace MMLib.SwaggerForOcelot.BenchmarkTests
                 _swagger,
                 _reRouteOptions,
                 string.Empty);
-
         }
 
         private string ReadFile(string testFilePath)

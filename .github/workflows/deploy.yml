@@ -1,0 +1,27 @@
+name: Publish package
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core if needed
+      uses: actions/setup-dotnet@v1.2.0
+      with:
+        dotnet-version: 3.1.100
+    - name: Build
+      run: dotnet build ./MMLib.SwaggerForOcelot.sln --configuration Release
+    - name: Test
+      run: dotnet test ./MMLib.SwaggerForOcelot.sln --configuration Release
+    - name: Generate nuget package
+      run: dotnet pack  ./MMLib.SwaggerForOcelot.sln --configuration Release -o nupkg
+    - name: Publish nuget package
+      run: find . -name *.nupkg -type f -print0 | xargs -0 -I pkg dotnet nuget push pkg -k $nuget_api_key -s "https://api.nuget.org/v3/index.json" --skip-duplicate
+      env:
+        nuget_api_key: ${{ secrets.NUGET_API_KEY }}
+      working-directory: ./nupkg

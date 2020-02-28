@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -88,7 +88,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                 swaggerJsonTransformerMock.Object);
 
             // Act
-            await swaggerForOcelotMiddleware.Invoke(httpContext);
+            await swaggerForOcelotMiddleware.Invoke(httpContext, DummySwaggerServiceDiscoveryProvider.Default);
             httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
 
             // Assert
@@ -139,7 +139,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                 swaggerJsonTransformer);
 
             // Act
-            await swaggerForOcelotMiddleware.Invoke(httpContext);
+            await swaggerForOcelotMiddleware.Invoke(httpContext, DummySwaggerServiceDiscoveryProvider.Default);
             httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
             string transformedUpstreamSwagger = await new StreamReader(httpContext.Response.Body).ReadToEndAsync();
 
@@ -251,8 +251,8 @@ namespace MMLib.SwaggerForOcelot.Tests
         {
             public TestRequestDelegate(int statusCode = 200)
             {
-                StatusCode = statusCode;                
-            }            
+                StatusCode = statusCode;
+            }
 
             public bool Called => CalledCount > 0;
 

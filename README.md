@@ -8,12 +8,14 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 
 ![SwaggerForOcelot](https://github.com/Burgyn/MMLib.SwaggerForOcelot/blob/master/demo/image.png?raw=true)
 
-# Get Started
+## Get Started
+
 1. Configure SwaggerGen in your downstream services.
    > Follow the [SwashbuckleAspNetCore documentation](https://github.com/domaindrivendev/Swashbuckle.AspNetCore#getting-started).
 2. Install Nuget package into yout ASP.NET Core Ocelot project.
    > dotnet add package MMLib.SwaggerForOcelot
 3. Configure SwaggerForOcelot in `ocelot.json`.
+
 ```Json
  {
   "ReRoutes": [
@@ -88,46 +90,58 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 ```
 
    > `SwaggerEndPoint` is configuration for downstream service swagger generator endpoint. Property `Key` is used to pair with the ReRoute configuration. `Name` is displayed in the combobox. `Url` is downstream service swagger generator endpoint.
-4. In the `ConfigureServices` method of `Startup.cs`, register the SwaggerForOcelot generator.
-   ```CSharp
-   services.AddSwaggerForOcelot(Configuration);
-   ```
-5. In `Configure` method, insert the `SwaggerForOcelot` middleware to expose interactive documentation.
-   ```CSharp
-          app.UseSwaggerForOcelotUI(Configuration, opt => {
-                opt.PathToSwaggerGenerator = "/swagger/docs";
-            })
-   ```
-   You can optionally include headers that your Ocelot Gateway will send when requesting a swagger endpoint. This can be especially useful if your downstream microservices require contents from a header to authenticate.
-   ```CSharp
-        app.UseSwaggerForOcelotUI(Configuration, opt => {
-            opts.DownstreamSwaggerHeaders = new[]
-              {
-                  new KeyValuePair<string, string>("Auth-Key", "AuthValue"),
-              };
-        })
-   ```
-   After swagger for ocelot transforms the downstream swagger to the upstream swagger, you have the ability to alter the upstream swagger if you need to by setting the `ReConfigureUpstreamSwaggerJson` option or `ReConfigureUpstreamSwaggerJsonAsync` option for async methods.
-   ```CSharp
-       public string AlterUpstreamSwaggerJson(HttpContext context, string swaggerJson)
-       {
-            var swagger = JObject.Parse(swaggerJson);
-            // ... alter upstream json
-            return swagger.ToString(Formatting.Indented);
-       }
 
-       app.UseSwaggerForOcelotUI(Configuration, opt => {
-           opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
-       })
-   ```
-6. Show your microservices interactive documentation.
+4. In the `ConfigureServices` method of `Startup.cs`, register the SwaggerForOcelot generator.
+
+```CSharp
+services.AddSwaggerForOcelot(Configuration);
+```
+
+6. In `Configure` method, insert the `SwaggerForOcelot` middleware to expose interactive documentation.
+
+```CSharp
+app.UseSwaggerForOcelotUI(Configuration, opt => {
+  opt.PathToSwaggerGenerator = "/swagger/docs";
+})
+```
+
+   You can optionally include headers that your Ocelot Gateway will send when requesting a swagger endpoint. This can be especially useful if your downstream microservices require contents from a header to authenticate.
+
+  ```CSharp
+app.UseSwaggerForOcelotUI(Configuration, opt => {
+    opts.DownstreamSwaggerHeaders = new[]
+    {
+        new KeyValuePair<string, string>("Auth-Key", "AuthValue"),
+    };
+})
+  ```
+
+  After swagger for ocelot transforms the downstream swagger to the upstream swagger, you have the ability to alter the upstream swagger if you need to by setting the `ReConfigureUpstreamSwaggerJson` option or `ReConfigureUpstreamSwaggerJsonAsync` option for async methods.
+
+  ```CSharp
+public string AlterUpstreamSwaggerJson(HttpContext context, string swaggerJson)
+{
+    var swagger = JObject.Parse(swaggerJson);
+    // ... alter upstream json
+    return swagger.ToString(Formatting.Indented);
+}
+
+app.UseSwaggerForOcelotUI(Configuration, opt => {
+    opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
+})
+  ```
+
+7. Show your microservices interactive documentation.
+
    > `http://ocelotserviceurl/swagger`
 
-# Virtual directory
+## Virtual directory
+
 If you have a `downstream service` hosted in the virtual directory, you probably have a `DownstreamPathTemplate` starting with the name of this virtual directory `/virtualdirectory/api/{everything}`. In order to properly replace the paths, it is necessary to set the property route `"Virtualdirectory":"/virtualdirectory"`.
 
 Example:
-```
+
+``` Json
  {
   "DownstreamPathTemplate": "/project/api/{everything}",
   "DownstreamScheme": "http",
@@ -144,20 +158,39 @@ Example:
 }
 ```
 
-## ToDo:
-- [x] Design.
-- [x] Create demo project.
-- [x] Add swagger endpoints into SwagerUI combobox.
-- [x] Create extension for adding middleware into pipeline.
-- [x] Create `SwaggerForOcelotMiddleware` and replace downstream path.
-- [x] Add capability for confiuragtion SwaggerUI and configure EndpointBasePath.
-- [x] Unit tests
-- [ ] Complex Ocelot configuration.
-  - [x] Add `Petstore` swagger Example.
-  - [x] Group more reroutes with same `SwaggerKey`.
-  - [x] Filter `UpstreamHttpMethod`.
-  - [ ] Query parameters.
-  - [ ] Aggregates.
-- [x] Documentations
-- [x] Continuous delivery
-- [ ] Custom Index.html.
+## Service discovery
+
+If you use [Ocelot Service Discovery Provider](https://ocelot.readthedocs.io/en/latest/features/servicediscovery.html) to find the host and port for the downstream service, then you can use the same service name for swagger configuration.
+
+``` Json
+"ReRoutes": [
+  {
+    "DownstreamPathTemplate": "/api/{everything}",
+    "ServiceName": "projects",
+    "UpstreamPathTemplate": "/api/project/{everything}",
+    "SwaggerKey": "projects",
+  }
+],
+ "SwaggerEndPoints": [
+    {
+      "Key": "projects",
+      "Config": [
+        {
+          "Name": "Projects API",
+          "Version": "v1",
+          "Service": {
+            "Name": "projects",
+            "Path": "/swagger/v1/swagger.json"
+          }
+        }
+      ]
+    }
+  ],
+
+  "GlobalConfiguration": {
+    "ServiceDiscoveryProvider": {
+      "Type": "AppConfiguration",
+      "PollingInterval": 1000
+    }
+  }
+```

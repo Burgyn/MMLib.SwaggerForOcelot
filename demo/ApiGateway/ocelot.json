@@ -2,38 +2,20 @@
   "ReRoutes": [
     {
       "DownstreamPathTemplate": "/api/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5100
-        }
-      ],
+      "ServiceName":  "contacts",
       "UpstreamPathTemplate": "/api/contacts/{everything}",
       "UpstreamHttpMethod": [ "Get" ],
       "SwaggerKey": "contacts"
     },
     {
       "DownstreamPathTemplate": "/api/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5200
-        }
-      ],
+      "ServiceName": "projects",
       "UpstreamPathTemplate": "/api/projects/{everything}",
       "SwaggerKey": "projects"
     },
     {
       "DownstreamPathTemplate": "/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5300
-        }
-      ],
+      "ServiceName": "pets",
       "UpstreamHttpMethod": [ "Get", "Post" ],
       "UpstreamPathTemplate": "/api/pets/{everything}",
       "SwaggerKey": "pets"
@@ -41,12 +23,7 @@
     {
       "DownstreamPathTemplate": "/api/{everything}",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5400
-        }
-      ],
+      "ServiceName": "orders",
       "UpstreamPathTemplate": "/api/orders/{everything}",
       "UpstreamHttpMethod": [],
       "SwaggerKey": "orders"
@@ -59,7 +36,10 @@
         {
           "Name": "Contacts API",
           "Version": "v1",
-          "Url": "http://localhost:5100/swagger/v1/swagger.json"
+          "Service": {
+            "Name": "contacts",
+            "Path": "/swagger/v1/swagger.json"
+          }
         }
       ]
     },
@@ -69,7 +49,10 @@
         {
           "Name": "Projects API",
           "Version": "v1",
-          "Url": "http://localhost:5200/swagger/v1/swagger.json"
+          "Service": {
+            "Name": "projects",
+            "Path": "/swagger/v1/swagger.json"
+          }
         }
       ]
     },
@@ -79,7 +62,10 @@
         {
           "Name": "Pets API",
           "Version": "v1",
-          "Url": "http://localhost:5300/swagger.json"
+          "Service": {
+            "Name": "projects",
+            "Path": "/swagger/v1/swagger.json"
+          }
         }
       ]
     },
@@ -110,6 +96,10 @@
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost"
+    "BaseUrl": "http://localhost",
+    "ServiceDiscoveryProvider": {
+      "Type": "AppConfiguration",
+      "PollingIntervalSeconds": 10000
+    }
   }
 }

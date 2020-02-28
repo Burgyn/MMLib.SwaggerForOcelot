@@ -8,7 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.Extensions;
+using Ocelot.ServiceDiscovery;
+using Ocelot.Configuration.Creator;
+using Ocelot.Configuration.Builder;
+using Ocelot.Configuration.File;
+using MMLib.SwaggerForOcelot.ServiceDiscovery;
 
 namespace MMLib.SwaggerForOcelot.Middleware
 {
@@ -18,9 +22,9 @@ namespace MMLib.SwaggerForOcelot.Middleware
     /// </summary>
     public class SwaggerForOcelotMiddleware
     {
-        #pragma warning disable IDE0052
+#pragma warning disable IDE0052
         private readonly RequestDelegate _next;
-        #pragma warning restore IDE0052
+#pragma warning restore IDE0052
 
         private readonly IOptions<List<ReRouteOptions>> _reRoutes;
         private readonly Lazy<Dictionary<string, SwaggerEndPointOptions>> _swaggerEndPoints;
@@ -60,9 +64,10 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// Invokes the specified context.
         /// </summary>
         /// <param name="context">The context.</param>
-        public async Task Invoke(HttpContext context)
+        /// <param name="serviceDiscovery">The service discovery.</param>
+        public async Task Invoke(HttpContext context, ISwaggerServiceDiscoveryProvider discoveryProvider)
         {
-            (string Url, SwaggerEndPointOptions EndPoint) = GetEndPoint(context.Request.Path);
+            (string Url, SwaggerEndPointOptions EndPoint) = await GetEndPoint(context.Request.Path, discoveryProvider);
             HttpClient httpClient = _httpClientFactory.CreateClient();
             AddHeaders(httpClient);
             string content = await httpClient.GetStringAsync(Url);
@@ -118,11 +123,18 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// <returns>
         /// The Url of a specific version and <see cref="SwaggerEndPointOptions"/>.
         /// </returns>
-        private (string Url, SwaggerEndPointOptions EndPoint) GetEndPoint(string path)
+        private async Task<(string Url, SwaggerEndPointOptions EndPoint)> GetEndPoint(
+            string path,
+            ISwaggerServiceDiscoveryProvider discoveryProvider)
         {
             (string Version, string Key) endPointInfo = GetEndPointInfo(path);
             SwaggerEndPointOptions endPoint = _swaggerEndPoints.Value[$"/{endPointInfo.Key}"];
-            string url = endPoint.Config.FirstOrDefault(x => x.Version == endPointInfo.Version)?.Url;
+            SwaggerEndPointConfig config = endPoint.Config.FirstOrDefault(x => x.Version == endPointInfo.Version);
+
+            string url = (await discoveryProvider
+                .GetSwaggerUriAsync(config, _reRoutes.Value.First(p => p.SwaggerKey == endPoint.Key)))
+                .AbsoluteUri;
+
             return (url, endPoint);
         }
 

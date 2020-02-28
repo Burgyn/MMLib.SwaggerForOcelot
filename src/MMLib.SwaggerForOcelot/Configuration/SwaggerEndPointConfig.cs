@@ -1,4 +1,6 @@
-﻿namespace MMLib.SwaggerForOcelot.Configuration
+﻿using MMLib.SwaggerForOcelot.ServiceDiscovery;
+
+namespace MMLib.SwaggerForOcelot.Configuration
 {
     /// <summary>
     /// Swagger endpoint version configuration.
@@ -19,6 +21,14 @@
         /// Full url to downstream service swagger endpoint.
         /// </summary>
         /// <example>http://localhost:5100/swagger/v1/swagger.json</example>
+        /// <remarks>
+        /// If value is <see langword = "null" />; then <see cref="SwaggerEndPointConfig.Service"/> is used.
+        /// </remarks>
         public string Url { get; set; }
+
+        /// <summary>
+        /// Gets or sets the service.
+        /// </summary>
+        public SwaggerService Service { get; set; }
     }
 }

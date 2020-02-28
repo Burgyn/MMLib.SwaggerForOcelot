@@ -57,6 +57,16 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public string SwaggerKey { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the service.
+        /// </summary>
+        public string ServiceName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the service namespace.
+        /// </summary>
+        public string ServiceNamespace { get; set; }
+
+        /// <summary>
         /// Gets or sets the downstream path template.
         /// </summary>
         public string DownstreamPathTemplate { get; set; }

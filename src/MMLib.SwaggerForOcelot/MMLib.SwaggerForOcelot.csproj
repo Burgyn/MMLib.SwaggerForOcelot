@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Version>1.10.5</Version>
     <Authors>Milan Martiniak</Authors>
     <Company>MMLib</Company>
@@ -29,7 +29,7 @@
   <ItemGroup>
     <PackageReference Include="Kros.Utils" Version="1.10.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="3.0.1" />
-    <PackageReference Include="Ocelot" Version="13.8.0" />
+    <PackageReference Include="Ocelot" Version="14.0.11" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.0.0-rc4" />
   </ItemGroup>
 

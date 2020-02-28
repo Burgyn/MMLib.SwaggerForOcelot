@@ -1,0 +1,17 @@
+name: Pull Request
+
+on: [pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core if needed
+      uses: actions/setup-dotnet@v1.2.0
+      with:
+        dotnet-version: 3.1.100
+    - name: Build
+      run: dotnet build ./MMLib.SwaggerForOcelot.sln --configuration Release
+    - name: Test
+      run: dotnet test ./MMLib.SwaggerForOcelot.sln --configuration Release

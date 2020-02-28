@@ -12,6 +12,10 @@ using System.Threading.Tasks;
 
 namespace MMLib.SwaggerForOcelot.ServiceDiscovery
 {
+    /// <summary>
+    /// Provider for obtaining service uri for getting swagger documentation.
+    /// </summary>
+    /// <seealso cref="MMLib.SwaggerForOcelot.ServiceDiscovery.ISwaggerServiceDiscoveryProvider" />
     public class SwaggerServiceDiscoveryProvider : ISwaggerServiceDiscoveryProvider
     {
         private readonly IServiceDiscoveryProviderFactory _serviceDiscovery;
@@ -28,6 +32,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
             _options = options;
         }
 
+        /// <inheritdoc />
         public async Task<Uri> GetSwaggerUriAsync(SwaggerEndPointConfig endPoint, ReRouteOptions reRoute)
         {
             if (!endPoint.Url.IsNullOrEmpty())
@@ -54,16 +59,14 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
 
             if (serviceProvider.IsError)
             {
-                throw new InvalidOperationException(
-                    $"Service with swagger documentation '{endPoint.Service.Name}' cann't be discovered");
+                throw new InvalidOperationException(GetErrorMessage(endPoint));
             }
 
             ServiceHostAndPort service = (await serviceProvider.Data.Get()).FirstOrDefault()?.HostAndPort;
 
             if (service is null)
             {
-                throw new InvalidOperationException(
-                    $"Service with swagger documentation '{endPoint.Service.Name}' cann't be discovered");
+                throw new InvalidOperationException(GetErrorMessage(endPoint));
             }
 
             var builder = new UriBuilder(service.Scheme, service.DownstreamHost, service.DownstreamPort);
@@ -71,5 +74,8 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
 
             return builder.Uri;
         }
+
+        private static string GetErrorMessage(SwaggerEndPointConfig endPoint)
+            => $"Service with swagger documentation '{endPoint.Service.Name}' cann't be discovered";
     }
 }

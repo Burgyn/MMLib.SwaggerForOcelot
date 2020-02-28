@@ -15,7 +15,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
     /// <summary>
     /// Provider for obtaining service uri for getting swagger documentation.
     /// </summary>
-    /// <seealso cref="MMLib.SwaggerForOcelot.ServiceDiscovery.ISwaggerServiceDiscoveryProvider" />
+    /// <seealso cref="ISwaggerServiceDiscoveryProvider" />
     public class SwaggerServiceDiscoveryProvider : ISwaggerServiceDiscoveryProvider
     {
         private readonly IServiceDiscoveryProviderFactory _serviceDiscovery;

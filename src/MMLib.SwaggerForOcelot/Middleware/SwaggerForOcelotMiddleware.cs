@@ -132,7 +132,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
             SwaggerEndPointConfig config = endPoint.Config.FirstOrDefault(x => x.Version == endPointInfo.Version);
 
             string url = (await discoveryProvider
-                .GetSwaggerUriAsync(config, _reRoutes.Value.First(p => p.SwaggerKey == endPoint.Key)))
+                .GetSwaggerUriAsync(config, _reRoutes.Value.FirstOrDefault(p => p.SwaggerKey == endPoint.Key)))
                 .AbsoluteUri;
 
             return (url, endPoint);

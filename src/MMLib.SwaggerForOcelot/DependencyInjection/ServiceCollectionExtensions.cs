@@ -3,6 +3,7 @@ using MMLib.SwaggerForOcelot.Configuration;
 using MMLib.SwaggerForOcelot.ServiceDiscovery;
 using MMLib.SwaggerForOcelot.Transformation;
 using System.Collections.Generic;
+using MMLib.SwaggerForOcelot.Middleware;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

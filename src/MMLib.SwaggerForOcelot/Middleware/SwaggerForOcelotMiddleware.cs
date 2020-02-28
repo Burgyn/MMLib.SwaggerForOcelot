@@ -8,10 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Ocelot.ServiceDiscovery;
-using Ocelot.Configuration.Creator;
-using Ocelot.Configuration.Builder;
-using Ocelot.Configuration.File;
 using MMLib.SwaggerForOcelot.ServiceDiscovery;
 
 namespace MMLib.SwaggerForOcelot.Middleware
@@ -64,7 +60,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// Invokes the specified context.
         /// </summary>
         /// <param name="context">The context.</param>
-        /// <param name="serviceDiscovery">The service discovery.</param>
+        /// <param name="discoveryProvider">The discovery provider.</param>
         public async Task Invoke(HttpContext context, ISwaggerServiceDiscoveryProvider discoveryProvider)
         {
             (string Url, SwaggerEndPointOptions EndPoint) = await GetEndPoint(context.Request.Path, discoveryProvider);

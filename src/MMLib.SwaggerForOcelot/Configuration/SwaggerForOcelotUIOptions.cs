@@ -19,11 +19,9 @@ namespace MMLib.SwaggerForOcelot.Configuration
 
         /// <summary>
         /// The base path to downstream service api swagger generator endpoint.
-        /// Final path is:
-        /// <see cref="EndPointBasePath"/> + <see cref="SwaggerEndPointConfig.Version"/> + <see cref="SwaggerEndPointOptions.Key"/>
         /// </summary>
         public string DownstreamSwaggerEndPointBasePath { get; set; } = "/swagger/docs";
-        
+
         /// <summary>
         /// Headers to include when requesting a downstream swagger endpoint.
         /// </summary>

@@ -1,13 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MMLib.SwaggerForOcelot.ServiceDiscovery
+﻿namespace MMLib.SwaggerForOcelot.ServiceDiscovery
 {
+    /// <summary>
+    /// Swagger service definition.
+    /// </summary>
     public class SwaggerService
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Gets or sets the path.
+        /// </summary>
         public string Path { get; set; } = "/swagger/v1/swagger.json";
     }
 }

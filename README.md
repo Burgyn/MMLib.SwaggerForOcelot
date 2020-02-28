@@ -100,36 +100,36 @@ services.AddSwaggerForOcelot(Configuration);
 6. In `Configure` method, insert the `SwaggerForOcelot` middleware to expose interactive documentation.
 
 ```CSharp
-      app.UseSwaggerForOcelotUI(Configuration, opt => {
-            opt.PathToSwaggerGenerator = "/swagger/docs";
-        })
+app.UseSwaggerForOcelotUI(Configuration, opt => {
+  opt.PathToSwaggerGenerator = "/swagger/docs";
+})
 ```
 
    You can optionally include headers that your Ocelot Gateway will send when requesting a swagger endpoint. This can be especially useful if your downstream microservices require contents from a header to authenticate.
 
-   ```CSharp
-        app.UseSwaggerForOcelotUI(Configuration, opt => {
-            opts.DownstreamSwaggerHeaders = new[]
-              {
-                  new KeyValuePair<string, string>("Auth-Key", "AuthValue"),
-              };
-        })
-   ```
+  ```CSharp
+app.UseSwaggerForOcelotUI(Configuration, opt => {
+    opts.DownstreamSwaggerHeaders = new[]
+    {
+        new KeyValuePair<string, string>("Auth-Key", "AuthValue"),
+    };
+})
+  ```
 
-   After swagger for ocelot transforms the downstream swagger to the upstream swagger, you have the ability to alter the upstream swagger if you need to by setting the `ReConfigureUpstreamSwaggerJson` option or `ReConfigureUpstreamSwaggerJsonAsync` option for async methods.
+  After swagger for ocelot transforms the downstream swagger to the upstream swagger, you have the ability to alter the upstream swagger if you need to by setting the `ReConfigureUpstreamSwaggerJson` option or `ReConfigureUpstreamSwaggerJsonAsync` option for async methods.
 
-   ```CSharp
-       public string AlterUpstreamSwaggerJson(HttpContext context, string swaggerJson)
-       {
-            var swagger = JObject.Parse(swaggerJson);
-            // ... alter upstream json
-            return swagger.ToString(Formatting.Indented);
-       }
+  ```CSharp
+public string AlterUpstreamSwaggerJson(HttpContext context, string swaggerJson)
+{
+    var swagger = JObject.Parse(swaggerJson);
+    // ... alter upstream json
+    return swagger.ToString(Formatting.Indented);
+}
 
-       app.UseSwaggerForOcelotUI(Configuration, opt => {
-           opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
-       })
-   ```
+app.UseSwaggerForOcelotUI(Configuration, opt => {
+    opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
+})
+  ```
 
 7. Show your microservices interactive documentation.
 

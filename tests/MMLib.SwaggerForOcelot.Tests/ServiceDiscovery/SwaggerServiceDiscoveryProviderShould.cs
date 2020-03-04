@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
 using MMLib.SwaggerForOcelot.ServiceDiscovery;
@@ -47,6 +47,23 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
             uri.AbsoluteUri.Should().Be("http://localhost:5000/swagger/v1/json");
         }
 
+        [Theory]
+        [InlineData(80, "http")]
+        [InlineData(443, "https")]
+        public async Task UseCorrectSchemeByPort(int port, string expectedSchema)
+        {
+            SwaggerServiceDiscoveryProvider provider = CreateProvider(CreateService("Projects", "localhost", port, string.Empty));
+
+            Uri uri = await provider.GetSwaggerUriAsync(
+                new SwaggerEndPointConfig()
+                {
+                    Service = new SwaggerService() { Name = "Projects", Path = "/swagger/v1/json" }
+                },
+                new Configuration.ReRouteOptions());
+
+            uri.Scheme.Should().Be(expectedSchema);
+        }
+
         private static SwaggerServiceDiscoveryProvider CreateProvider(Service service = null)
         {
             IServiceDiscoveryProviderFactory serviceDiscovery = Substitute.For<IServiceDiscoveryProviderFactory>();
@@ -65,9 +82,9 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
             return provider;
         }
 
-        private Service CreateService(string serviceName, string host, int port)
+        private Service CreateService(string serviceName, string host, int port, string scheme = "http")
             => new Service(serviceName,
-                new ServiceHostAndPort(host, port, "http"),
+                new ServiceHostAndPort(host, port, scheme),
                 string.Empty,
                 string.Empty,
                 Enumerable.Empty<string>());

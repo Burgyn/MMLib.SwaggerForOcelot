@@ -1,4 +1,4 @@
-﻿using Kros.Extensions;
+using Kros.Extensions;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
 using Ocelot.Configuration.Builder;
@@ -69,11 +69,20 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
                 throw new InvalidOperationException(GetErrorMessage(endPoint));
             }
 
-            var builder = new UriBuilder(service.Scheme, service.DownstreamHost, service.DownstreamPort);
+            var builder = new UriBuilder(GetScheme(service), service.DownstreamHost, service.DownstreamPort);
             builder.Path = endPoint.Service.Path;
 
             return builder.Uri;
         }
+
+        private string GetScheme(ServiceHostAndPort service) =>
+          !service.Scheme.IsNullOrEmpty() 
+          ? service.Scheme
+          : service.DownstreamPort switch {
+              443 => Uri.UriSchemeHttps,
+              80  => Uri.UriSchemeHttp,
+              _   => string.Empty,
+          };
 
         private static string GetErrorMessage(SwaggerEndPointConfig endPoint)
             => $"Service with swagger documentation '{endPoint.Service.Name}' cann't be discovered";

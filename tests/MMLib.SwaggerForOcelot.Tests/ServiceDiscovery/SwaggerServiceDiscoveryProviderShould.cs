@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
@@ -10,10 +14,6 @@ using Ocelot.Responses;
 using Ocelot.ServiceDiscovery;
 using Ocelot.ServiceDiscovery.Providers;
 using Ocelot.Values;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
@@ -50,9 +50,9 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
         [Theory]
         [InlineData(80, "http")]
         [InlineData(443, "https")]
-        public async Task UseCorrectSchemeByPort(int port, string expectedSchema)
+        public async Task UseCorrectSchemeByPort(int port, string expectedScheme)
         {
-            SwaggerServiceDiscoveryProvider provider = CreateProvider(CreateService("Projects", "localhost", port, string.Empty));
+            SwaggerServiceDiscoveryProvider provider = CreateProvider(CreateService("Projects", "localhost", port, null));
 
             Uri uri = await provider.GetSwaggerUriAsync(
                 new SwaggerEndPointConfig()
@@ -61,7 +61,24 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
                 },
                 new Configuration.ReRouteOptions());
 
-            uri.Scheme.Should().Be(expectedSchema);
+            uri.Scheme.Should().Be(expectedScheme);
+        }
+
+        [Theory]
+        [InlineData("http")]
+        [InlineData("https")]
+        public async Task UseCorrectSchemeByDownstreamScheme(string expectedScheme)
+        {
+            SwaggerServiceDiscoveryProvider provider = CreateProvider(CreateService("Projects", "localhost", 5000, null));
+
+            Uri uri = await provider.GetSwaggerUriAsync(
+                new SwaggerEndPointConfig()
+                {
+                    Service = new SwaggerService() { Name = "Projects", Path = "/swagger/v1/json" }
+                },
+                new Configuration.ReRouteOptions() { DownstreamScheme = expectedScheme });
+
+            uri.Scheme.Should().Be(expectedScheme);
         }
 
         private static SwaggerServiceDiscoveryProvider CreateProvider(Service service = null)
@@ -82,11 +99,10 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
             return provider;
         }
 
-        private Service CreateService(string serviceName, string host, int port, string scheme = "http")
-            => new Service(serviceName,
-                new ServiceHostAndPort(host, port, scheme),
-                string.Empty,
-                string.Empty,
-                Enumerable.Empty<string>());
+        private Service CreateService(string serviceName, string host, int port, string scheme = "http") => new Service(serviceName,
+            new ServiceHostAndPort(host, port, scheme),
+            string.Empty,
+            string.Empty,
+            Enumerable.Empty<string>());
     }
 }

@@ -69,16 +69,16 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
                 throw new InvalidOperationException(GetErrorMessage(endPoint));
             }
 
-            var builder = new UriBuilder(GetScheme(service), service.DownstreamHost, service.DownstreamPort);
+            var builder = new UriBuilder(GetScheme(service, reRoute), service.DownstreamHost, service.DownstreamPort);
             builder.Path = endPoint.Service.Path;
 
             return builder.Uri;
         }
 
-        private string GetScheme(ServiceHostAndPort service) =>
-          !service.Scheme.IsNullOrEmpty() 
-          ? service.Scheme
-          : service.DownstreamPort switch {
+        private string GetScheme(ServiceHostAndPort service, ReRouteOptions reRoute) =>
+          reRoute.DownstreamScheme ?? service.Scheme
+          ??
+          service.DownstreamPort switch {
               443 => Uri.UriSchemeHttps,
               80  => Uri.UriSchemeHttp,
               _   => string.Empty,

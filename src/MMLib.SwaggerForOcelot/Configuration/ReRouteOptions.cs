@@ -1,7 +1,7 @@
-﻿using Kros.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Kros.Extensions;
 
 namespace MMLib.SwaggerForOcelot.Configuration
 {
@@ -21,10 +21,9 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// </summary>
         public ReRouteOptions()
         {
-            _httpMethods = new Lazy<HashSet<string>>(()
-                => new HashSet<string>(
-                    UpstreamHttpMethod?.Count() > 0 ? UpstreamHttpMethod : _defaultMethodsTypes,
-                    StringComparer.OrdinalIgnoreCase));
+            _httpMethods = new Lazy<HashSet<string>>(() => new HashSet<string>(
+                UpstreamHttpMethod?.Count() > 0 ? UpstreamHttpMethod : _defaultMethodsTypes,
+                StringComparer.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -40,8 +39,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
             string upstreamPathTemplate,
             string downstreamPathTemplate,
             string virtualDirectory,
-            IEnumerable<string> upstreamMethods)
-            : this()
+            IEnumerable<string> upstreamMethods) : this()
         {
             SwaggerKey = swaggerKey;
             UpstreamPathTemplate = upstreamPathTemplate;
@@ -77,6 +75,11 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public string UpstreamPathTemplate { get; set; }
 
         /// <summary>
+        /// Downstream scheme.
+        /// </summary>
+        public string DownstreamScheme { get; set; }
+
+        /// <summary>
         /// Gets or sets the upstream HTTP method.
         /// </summary>
         public IEnumerable<string> UpstreamHttpMethod { get; set; }
@@ -88,8 +91,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// <returns>
         ///   <c>true</c> if [contains HTTP method] [the specified method type]; otherwise, <c>false</c>.
         /// </returns>
-        internal bool ContainsHttpMethod(string methodType)
-            => _httpMethods.Value.Contains(methodType);
+        internal bool ContainsHttpMethod(string methodType) => _httpMethods.Value.Contains(methodType);
 
         /// <summary>
         /// Gets or sets the virtual directory, where is host service.
@@ -145,7 +147,6 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// <returns>
         /// A <see cref="string" /> that represents this instance.
         /// </returns>
-        public override string ToString()
-            => $"{UpstreamPathTemplate} => {DownstreamPathTemplate} | ({UpstreamPath} => {DownstreamPath})";
+        public override string ToString() => $"{UpstreamPathTemplate} => {DownstreamPathTemplate} | ({UpstreamPath} => {DownstreamPath})";
     }
 }

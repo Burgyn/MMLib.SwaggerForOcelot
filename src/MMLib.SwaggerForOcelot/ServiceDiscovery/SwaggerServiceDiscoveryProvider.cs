@@ -1,4 +1,7 @@
-﻿using Kros.Extensions;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Kros.Extensions;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
 using Ocelot.Configuration.Builder;
@@ -6,9 +9,6 @@ using Ocelot.Configuration.Creator;
 using Ocelot.Configuration.File;
 using Ocelot.ServiceDiscovery;
 using Ocelot.Values;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MMLib.SwaggerForOcelot.ServiceDiscovery
 {
@@ -69,13 +69,25 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
                 throw new InvalidOperationException(GetErrorMessage(endPoint));
             }
 
-            var builder = new UriBuilder(service.Scheme, service.DownstreamHost, service.DownstreamPort);
+            var builder = new UriBuilder(GetScheme(service, reRoute), service.DownstreamHost, service.DownstreamPort);
             builder.Path = endPoint.Service.Path;
 
             return builder.Uri;
         }
 
-        private static string GetErrorMessage(SwaggerEndPointConfig endPoint)
-            => $"Service with swagger documentation '{endPoint.Service.Name}' cann't be discovered";
+        private string GetScheme(ServiceHostAndPort service, ReRouteOptions reRoute) 
+            => !reRoute.DownstreamScheme.IsNullOrEmpty()
+            ? reRoute.DownstreamScheme
+            : !service.Scheme.IsNullOrEmpty()
+            ? service.Scheme
+            : service.DownstreamPort
+        switch
+        {
+            443 => Uri.UriSchemeHttps,
+            80 => Uri.UriSchemeHttp,
+            _ => string.Empty,
+        };
+
+        private static string GetErrorMessage(SwaggerEndPointConfig endPoint) => $"Service with swagger documentation '{endPoint.Service.Name}' cann't be discovered";
     }
 }

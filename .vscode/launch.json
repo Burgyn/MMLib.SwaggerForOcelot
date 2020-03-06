@@ -61,7 +61,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/demo/ApiGateway/bin/Debug/netcoreapp3.0/ApiGateway.dll",
+            "program": "${workspaceFolder}/demo/ApiGateway/bin/Debug/netcoreapp3.1/ApiGateway.dll",
             "args": [],
             "cwd": "${workspaceFolder}/demo/ApiGateway",
             "stopAtEntry": false,            

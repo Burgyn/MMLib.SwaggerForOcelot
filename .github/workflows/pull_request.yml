@@ -8,7 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core if needed
-      uses: actions/setup-dotnet@v1.2.0
+      uses: actions/setup-dotnet@v1.4.0
       with:
         dotnet-version: 3.1.100
     - name: Build

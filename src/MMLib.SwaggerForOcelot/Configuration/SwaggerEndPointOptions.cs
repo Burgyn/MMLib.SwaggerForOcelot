@@ -36,5 +36,13 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// This host url is use used to overwrite the host of the upstream service.
         /// </summary>
         public string HostOverride { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether documentation will be transform by ocelot configuration.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [transform by ocelot configuration]; otherwise, <c>false</c>.
+        /// </value>
+        public bool TransformByOcelotConfig { get; set; } = true;
     }
 }

@@ -2,7 +2,7 @@
   "ReRoutes": [
     {
       "DownstreamPathTemplate": "/api/{everything}",
-      "ServiceName":  "contacts",
+      "ServiceName": "contacts",
       "UpstreamPathTemplate": "/api/contacts/{everything}",
       "UpstreamHttpMethod": [ "Get" ],
       "SwaggerKey": "contacts"
@@ -40,6 +40,17 @@
             "Name": "contacts",
             "Path": "/swagger/v1/swagger.json"
           }
+        }
+      ]
+    },
+    {
+      "Key": "gateway",
+      "TransformByOcelotConfig": false,
+      "Config": [
+        {
+          "Name": "Gateway",
+          "Version": "v1",
+          "Url": "http://localhost:5000/swagger/v1/swagger.json"
         }
       ]
     },

@@ -194,3 +194,46 @@ If you use [Ocelot Service Discovery Provider](https://ocelot.readthedocs.io/en/
     }
   }
 ```
+
+## The Gateway documentation itself
+
+There are several real scenarios when you need to have a controller directly in your gateway. For example: specific aggregation of results from multiple services / legacy part of your system / ...
+
+If you need to, you can also add documentation.
+
+1. Configure SwaggerGen in your Ocelot API Gateway services.
+   > Follow the [SwashbuckleAspNetCore documentation](https://github.com/domaindrivendev/Swashbuckle.AspNetCore#getting-started).
+
+`ConfigureServices`
+
+```csharp
+services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API Gateway", Version = "v1" });
+});
+```
+
+`Configure`
+```csharp
+app.UseSwagger();
+```
+
+2. Add `SwaggerEndPoint` into ocelot json configuration.
+
+```json
+{
+  "Key": "gateway",
+  "TransformByOcelotConfig": false,
+  "Config": [
+    {
+      "Name": "Gateway",
+      "Version": "v1",
+      "Url": "http://localhost:5000/swagger/v1/swagger.json"
+    }
+  ]
+}
+```
+
+The key is to set it up property `TransformByOcelotConfig` to `false`, because in this case you do not need to transform the documentation according to the ocelot configuration.
+
+![ocelot docs](./demo/ocelotdocs.png)

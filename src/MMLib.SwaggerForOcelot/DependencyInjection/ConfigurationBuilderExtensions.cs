@@ -67,6 +67,5 @@ namespace MMLib.SwaggerForOcelot.DependencyInjection
 
             return builder;
         }
-
     }
 }

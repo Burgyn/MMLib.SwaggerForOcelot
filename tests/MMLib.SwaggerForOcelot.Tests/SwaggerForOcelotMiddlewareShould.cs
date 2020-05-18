@@ -73,12 +73,14 @@ namespace MMLib.SwaggerForOcelot.Tests
                 .Setup(x => x.Transform(
                     It.IsAny<string>(),
                     It.IsAny<IEnumerable<ReRouteOptions>>(),
+                    It.IsAny<bool>(),
                     It.IsAny<string>()))
                 .Returns((
                     string swaggerJson,
                     IEnumerable<ReRouteOptions> reRouteOptions,
+                    bool userServer,
                     string hostOverride) => new SwaggerJsonTransformer()
-                    .Transform(swaggerJson,reRouteOptions,hostOverride));
+                    .Transform(swaggerJson,reRouteOptions, userServer, hostOverride));
             var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
                 next.Invoke,
                 swaggerForOcelotOptions,
@@ -100,6 +102,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             swaggerJsonTransformerMock.Verify(x => x.Transform(
                 It.IsAny<string>(),
                 It.IsAny<IEnumerable<ReRouteOptions>>(),
+                It.IsAny<bool>(),
                 It.IsAny<string>()), Times.Once);
         }
 
@@ -320,7 +323,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                 _transformedJson = transformedJson;
             }
 
-            public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes, string hostOverride)
+            public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes, bool useServer, string hostOverride)
             {
                 return _transformedJson;
             }

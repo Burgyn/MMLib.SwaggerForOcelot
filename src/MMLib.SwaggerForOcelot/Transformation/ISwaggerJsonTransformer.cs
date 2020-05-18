@@ -17,6 +17,6 @@ namespace MMLib.SwaggerForOcelot.Transformation
         /// <returns>
         /// Transformed swagger json.
         /// </returns>
-        string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes, string hostOverride);
+        string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes, bool useServer, string hostOverride);
     }
 }

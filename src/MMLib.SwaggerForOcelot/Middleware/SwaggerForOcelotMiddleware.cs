@@ -74,7 +74,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
 
             if (EndPoint.TransformByOcelotConfig)
             {
-                content = _transformer.Transform(content, reRouteOptions, hostName);
+                content = _transformer.Transform(content, reRouteOptions, _options.UseServerSwagger, hostName);
             }
             content = await ReconfigureUpstreamSwagger(context, content);
 

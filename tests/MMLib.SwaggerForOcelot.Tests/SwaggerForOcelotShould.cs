@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JsonDiffPatchDotNet;
 using MMLib.SwaggerForOcelot.Transformation;
 using Newtonsoft.Json.Linq;
@@ -22,6 +22,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             string transformed = transformer.Transform(
                 testData.DownstreamSwagger.ToString(),
                 testData.ReRoutes,
+                true,
                 testData.HostOverride);
 
             AreEqual(transformed, testData.ExpectedTransformedSwagger);

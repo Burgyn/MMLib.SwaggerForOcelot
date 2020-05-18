@@ -36,5 +36,10 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// Alter swagger/openApi json after it has been transformed
         /// </summary>
         public Func<HttpContext, string, Task<string>> ReConfigureUpstreamSwaggerJsonAsync { get; set; }
+
+        /// <summary>
+        /// Configure if use Server of swagger or not
+        /// </summary>
+        public bool UseServerSwagger { get; set; } = true;
     }
 }

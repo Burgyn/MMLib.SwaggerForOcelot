@@ -59,7 +59,8 @@ namespace ApiGateway
                         new KeyValuePair<string, string>("Key", "Value"),
                         new KeyValuePair<string, string>("Key2", "Value2"),
                     };
-                    opt.UseServerSwagger = false;
+
+                    opt.ServerOcelot = "/siteName/apigateway" ;
                 })
                 .UseOcelot()
                 .Wait();

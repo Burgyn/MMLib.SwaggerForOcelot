@@ -40,6 +40,6 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// <summary>
         /// Configure if use Server of swagger or not
         /// </summary>
-        public bool UseServerSwagger { get; set; } = true;
+        public string ServerOcelot { get; set; }
     }
 }

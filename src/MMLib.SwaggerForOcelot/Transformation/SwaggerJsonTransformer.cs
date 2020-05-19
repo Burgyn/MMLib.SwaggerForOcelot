@@ -15,18 +15,18 @@ namespace MMLib.SwaggerForOcelot.Transformation
     public class SwaggerJsonTransformer : ISwaggerJsonTransformer
     {
         /// <inheritdoc/>
-        public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes, bool useServer, string hostOverride)
+        public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes, string serverOverride)
         {
             var swagger = JObject.Parse(swaggerJson);
 
             if (swagger.ContainsKey("swagger"))
             {
-                return TransformSwagger(swagger, reRoutes, hostOverride);
+                return TransformSwagger(swagger, reRoutes, serverOverride);
             }
 
             if (swagger.ContainsKey("openapi"))
             {
-                return TransformOpenApi(swagger, reRoutes, useServer, hostOverride);
+                return TransformOpenApi(swagger, reRoutes, serverOverride);
             }
 
             throw new InvalidOperationException("Unknown swagger/openapi version");
@@ -73,7 +73,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
             return swagger.ToString(Formatting.Indented);
         }
 
-        private string TransformOpenApi(JObject openApi, IEnumerable<ReRouteOptions> reRoutes, bool useServer, string hostOverride = "/")
+        private string TransformOpenApi(JObject openApi, IEnumerable<ReRouteOptions> reRoutes, string serverOverride = null)
         {
             // NOTE: Only supporting one server for now.
             string downstreamBasePath = "";
@@ -110,7 +110,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 }
             }
 
-            TransformServerPaths(openApi, useServer, hostOverride);
+            TransformServerPaths(openApi, serverOverride);
 
             return openApi.ToString(Formatting.Indented);
         }
@@ -252,24 +252,18 @@ namespace MMLib.SwaggerForOcelot.Transformation
             property.Replace(newProperty);
         }
 
-        private static void TransformServerPaths(JObject openApi, bool userServer, string hostOverride)
+        private static void TransformServerPaths(JObject openApi, string serverOverride)
         {
             if (!openApi.ContainsKey(OpenApiProperties.Servers))
             {
                 return;
             }
-            else if (!userServer)
+
+            foreach (JToken server in openApi.GetValue(OpenApiProperties.Servers))
             {
-                openApi.Remove(OpenApiProperties.Servers);
-            }
-            else
-            {
-                foreach (JToken server in openApi.GetValue(OpenApiProperties.Servers))
+                if (server[OpenApiProperties.Url] != null)
                 {
-                    if (server[OpenApiProperties.Url] != null)
-                    {
-                        server[OpenApiProperties.Url] = hostOverride.RemoveSlashFromEnd();
-                    }
+                    server[OpenApiProperties.Url] = serverOverride;
                 }
             }
         }

@@ -38,7 +38,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public Func<HttpContext, string, Task<string>> ReConfigureUpstreamSwaggerJsonAsync { get; set; }
 
         /// <summary>
-        /// Configure if use Server of swagger or not
+        /// Configure route of server of swagger in ocelot
         /// </summary>
         public string ServerOcelot { get; set; }
     }

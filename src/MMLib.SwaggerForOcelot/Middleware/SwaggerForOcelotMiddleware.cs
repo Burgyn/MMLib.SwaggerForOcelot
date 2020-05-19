@@ -69,9 +69,13 @@ namespace MMLib.SwaggerForOcelot.Middleware
             string content = await httpClient.GetStringAsync(Url);
             string serverName;
             if (string.IsNullOrWhiteSpace(_options.ServerOcelot))
+            {
                 serverName = EndPoint.HostOverride ?? context.Request.Host.Value.RemoveSlashFromEnd();
+            }
             else
+            {
                 serverName = _options.ServerOcelot;
+            }
 
             IEnumerable<ReRouteOptions> reRouteOptions = _reRoutes.Value
                 .ExpandConfig(EndPoint)

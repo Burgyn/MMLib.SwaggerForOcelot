@@ -130,6 +130,13 @@ app.UseSwaggerForOcelotUI(Configuration, opt => {
     opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
 })
   ```
+You can optionally customize the swagger server prior to calling the endpoints of the microservices as follows:
+```CSharp
+app.UseSwaggerForOcelotUI(Configuration, opt => {
+    opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
+	opts.ServerOcelot = "/siteName/apigateway" ;
+})
+  ```
 
 7. Show your microservices interactive documentation.
 

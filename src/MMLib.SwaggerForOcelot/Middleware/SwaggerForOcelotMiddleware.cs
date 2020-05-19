@@ -67,14 +67,23 @@ namespace MMLib.SwaggerForOcelot.Middleware
             HttpClient httpClient = _httpClientFactory.CreateClient();
             AddHeaders(httpClient);
             string content = await httpClient.GetStringAsync(Url);
-            string hostName = EndPoint.HostOverride ?? context.Request.Host.Value.RemoveSlashFromEnd();
+            string serverName;
+            if (string.IsNullOrWhiteSpace(_options.ServerOcelot))
+            {
+                serverName = EndPoint.HostOverride ?? context.Request.Host.Value.RemoveSlashFromEnd();
+            }
+            else
+            {
+                serverName = _options.ServerOcelot;
+            }
+
             IEnumerable<ReRouteOptions> reRouteOptions = _reRoutes.Value
                 .ExpandConfig(EndPoint)
                 .GroupByPaths();
 
             if (EndPoint.TransformByOcelotConfig)
             {
-                content = _transformer.Transform(content, reRouteOptions, hostName);
+                content = _transformer.Transform(content, reRouteOptions, serverName);
             }
             content = await ReconfigureUpstreamSwagger(context, content);
 

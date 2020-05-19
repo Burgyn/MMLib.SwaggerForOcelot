@@ -28,13 +28,18 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public IEnumerable<KeyValuePair<string, string>> DownstreamSwaggerHeaders { get; set; }
 
         /// <summary>
-        /// Alter swagger/openApi json after it has been transformed
+        /// Alter swagger/openApi json after it has been transformed.
         /// </summary>
         public Func<HttpContext, string, string> ReConfigureUpstreamSwaggerJson { get; set; }
 
         /// <summary>
-        /// Alter swagger/openApi json after it has been transformed
+        /// Alter swagger/openApi json after it has been transformed.
         /// </summary>
         public Func<HttpContext, string, Task<string>> ReConfigureUpstreamSwaggerJsonAsync { get; set; }
+
+        /// <summary>
+        /// Configure route of server of swagger in ocelot.
+        /// </summary>
+        public string ServerOcelot { get; set; }
     }
 }

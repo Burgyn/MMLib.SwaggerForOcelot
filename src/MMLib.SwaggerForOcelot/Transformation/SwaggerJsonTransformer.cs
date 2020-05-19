@@ -1,4 +1,4 @@
-using Kros.IO;
+﻿using Kros.IO;
 using MMLib.SwaggerForOcelot.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
@@ -15,18 +15,18 @@ namespace MMLib.SwaggerForOcelot.Transformation
     public class SwaggerJsonTransformer : ISwaggerJsonTransformer
     {
         /// <inheritdoc/>
-        public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes, string hostOverride)
+        public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes, string serverOverride)
         {
             var swagger = JObject.Parse(swaggerJson);
 
             if (swagger.ContainsKey("swagger"))
             {
-                return TransformSwagger(swagger, reRoutes, hostOverride);
+                return TransformSwagger(swagger, reRoutes, serverOverride);
             }
 
             if (swagger.ContainsKey("openapi"))
             {
-                return TransformOpenApi(swagger, reRoutes, hostOverride);
+                return TransformOpenApi(swagger, reRoutes, serverOverride);
             }
 
             throw new InvalidOperationException("Unknown swagger/openapi version");
@@ -73,7 +73,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
             return swagger.ToString(Formatting.Indented);
         }
 
-        private string TransformOpenApi(JObject openApi, IEnumerable<ReRouteOptions> reRoutes, string hostOverride = "/")
+        private string TransformOpenApi(JObject openApi, IEnumerable<ReRouteOptions> reRoutes, string serverOverride = "/")
         {
             // NOTE: Only supporting one server for now.
             string downstreamBasePath = "";
@@ -110,7 +110,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 }
             }
 
-            TransformServerPaths(openApi, hostOverride);
+            TransformServerPaths(openApi, serverOverride);
 
             return openApi.ToString(Formatting.Indented);
         }
@@ -252,7 +252,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
             property.Replace(newProperty);
         }
 
-        private static void TransformServerPaths(JObject openApi, string hostOverride)
+        private static void TransformServerPaths(JObject openApi, string serverOverride)
         {
             if (!openApi.ContainsKey(OpenApiProperties.Servers))
             {
@@ -263,7 +263,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
             {
                 if (server[OpenApiProperties.Url] != null)
                 {
-                    server[OpenApiProperties.Url] = hostOverride.RemoveSlashFromEnd();
+                    server[OpenApiProperties.Url] = serverOverride.RemoveSlashFromEnd();
                 }
             }
         }

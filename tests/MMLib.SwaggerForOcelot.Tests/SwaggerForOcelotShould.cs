@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JsonDiffPatchDotNet;
 using MMLib.SwaggerForOcelot.Transformation;
 using Newtonsoft.Json.Linq;

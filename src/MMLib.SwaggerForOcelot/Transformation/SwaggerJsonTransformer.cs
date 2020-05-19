@@ -73,7 +73,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
             return swagger.ToString(Formatting.Indented);
         }
 
-        private string TransformOpenApi(JObject openApi, IEnumerable<ReRouteOptions> reRoutes, string serverOverride = null)
+        private string TransformOpenApi(JObject openApi, IEnumerable<ReRouteOptions> reRoutes, string serverOverride = "/")
         {
             // NOTE: Only supporting one server for now.
             string downstreamBasePath = "";
@@ -263,7 +263,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
             {
                 if (server[OpenApiProperties.Url] != null)
                 {
-                    server[OpenApiProperties.Url] = serverOverride;
+                    server[OpenApiProperties.Url] = serverOverride.RemoveSlashFromEnd();
                 }
             }
         }

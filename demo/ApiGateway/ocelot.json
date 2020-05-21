@@ -74,8 +74,8 @@
           "Name": "Pets API",
           "Version": "v1",
           "Service": {
-            "Name": "projects",
-            "Path": "/swagger/v1/swagger.json"
+            "Name": "pets",
+            "Path": "/swagger.json"
           }
         }
       ]

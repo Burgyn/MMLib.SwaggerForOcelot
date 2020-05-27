@@ -9,7 +9,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
     <PackageReference Include="MMLib.Ocelot.Provider.AppConfiguration" Version="1.0.0" />
-    <PackageReference Include="Ocelot" Version="14.0.11" />
+    <PackageReference Include="Ocelot" Version="16.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
   </ItemGroup>
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Kros.Extensions;
@@ -49,7 +49,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
         {
             var conf = _configurationCreator.Create(_options.CurrentValue.GlobalConfiguration);
 
-            var downstreamReroute = new DownstreamReRouteBuilder()
+            var downstreamReroute = new DownstreamRouteBuilder()
                 .WithUseServiceDiscovery(true)
                 .WithServiceName(endPoint.Service.Name)
                 .WithServiceNamespace(reRoute.ServiceNamespace)
@@ -75,7 +75,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
             return builder.Uri;
         }
 
-        private string GetScheme(ServiceHostAndPort service, ReRouteOptions reRoute) 
+        private string GetScheme(ServiceHostAndPort service, ReRouteOptions reRoute)
             => !reRoute.DownstreamScheme.IsNullOrEmpty()
             ? reRoute.DownstreamScheme
             : !service.Scheme.IsNullOrEmpty()

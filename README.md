@@ -18,7 +18,7 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 
 ```Json
  {
-  "ReRoutes": [
+  "Routes": [
     {
       "DownstreamPathTemplate": "/api/{everything}",
       "DownstreamScheme": "http",
@@ -89,7 +89,7 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 }
 ```
 
-   > `SwaggerEndPoint` is configuration for downstream service swagger generator endpoint. Property `Key` is used to pair with the ReRoute configuration. `Name` is displayed in the combobox. `Url` is downstream service swagger generator endpoint.
+   > `SwaggerEndPoint` is configuration for downstream service swagger generator endpoint. Property `Key` is used to pair with the Route configuration. `Name` is displayed in the combobox. `Url` is downstream service swagger generator endpoint.
 
 4. In the `ConfigureServices` method of `Startup.cs`, register the SwaggerForOcelot generator.
 
@@ -170,7 +170,7 @@ Example:
 If you use [Ocelot Service Discovery Provider](https://ocelot.readthedocs.io/en/latest/features/servicediscovery.html) to find the host and port for the downstream service, then you can use the same service name for swagger configuration.
 
 ``` Json
-"ReRoutes": [
+"Routes": [
   {
     "DownstreamPathTemplate": "/api/{everything}",
     "ServiceName": "projects",

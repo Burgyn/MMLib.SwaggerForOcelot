@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -93,7 +93,7 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
             serviceProvider.Get().Returns(new List<Service>() { service });
             var response = new OkResponse<IServiceDiscoveryProvider>(serviceProvider);
 
-            serviceDiscovery.Get(Arg.Any<ServiceProviderConfiguration>(), Arg.Any<DownstreamReRoute>()).Returns(response);
+            serviceDiscovery.Get(Arg.Any<ServiceProviderConfiguration>(), Arg.Any<DownstreamRoute>()).Returns(response);
 
             var provider = new SwaggerServiceDiscoveryProvider(serviceDiscovery, configurationCreator, options);
             return provider;

@@ -70,7 +70,8 @@ namespace MMLib.SwaggerForOcelot.Middleware
             string serverName;
             if (string.IsNullOrWhiteSpace(_options.ServerOcelot))
             {
-                serverName = EndPoint.HostOverride ?? context.Request.Host.Value.RemoveSlashFromEnd();
+                serverName = EndPoint.HostOverride
+                    ?? $"{context.Request.Scheme}://{context.Request.Host.Value.RemoveSlashFromEnd()}";
             }
             else
             {

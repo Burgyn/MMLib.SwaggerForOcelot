@@ -244,3 +244,12 @@ app.UseSwagger();
 The key is to set it up property `TransformByOcelotConfig` to `false`, because in this case you do not need to transform the documentation according to the ocelot configuration.
 
 ![ocelot docs](./demo/ocelotdocs.png)
+
+## Limitation
+
+- Now, this library support only `{everything}` as a wildcard in routing definition. #68
+- This package unfortunately does not support parameter translating between upstream and downstream path template. #59
+
+## Version 2.0.0
+
+This version is breaking change. Because support Ocelot 16.0.0, which rename `ReRoutes` to `Routes`. See Ocelot [v16.0.0](https://github.com/ThreeMammals/Ocelot/releases/tag/16.0.0).

@@ -52,7 +52,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
             var downstreamReroute = new DownstreamRouteBuilder()
                 .WithUseServiceDiscovery(true)
                 .WithServiceName(endPoint.Service.Name)
-                .WithServiceNamespace(reRoute.ServiceNamespace)
+                .WithServiceNamespace(reRoute?.ServiceNamespace)
                 .Build();
 
             var serviceProvider = _serviceDiscovery.Get(conf, downstreamReroute);
@@ -76,17 +76,17 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
         }
 
         private string GetScheme(ServiceHostAndPort service, ReRouteOptions reRoute)
-            => !reRoute.DownstreamScheme.IsNullOrEmpty()
+            => (reRoute != null && !reRoute.DownstreamScheme.IsNullOrEmpty())
             ? reRoute.DownstreamScheme
             : !service.Scheme.IsNullOrEmpty()
             ? service.Scheme
             : service.DownstreamPort
-        switch
-        {
-            443 => Uri.UriSchemeHttps,
-            80 => Uri.UriSchemeHttp,
-            _ => string.Empty,
-        };
+            switch
+            {
+                443 => Uri.UriSchemeHttps,
+                80 => Uri.UriSchemeHttp,
+                _ => string.Empty,
+            };
 
         private static string GetErrorMessage(SwaggerEndPointConfig endPoint) => $"Service with swagger documentation '{endPoint.Service.Name}' cann't be discovered";
     }

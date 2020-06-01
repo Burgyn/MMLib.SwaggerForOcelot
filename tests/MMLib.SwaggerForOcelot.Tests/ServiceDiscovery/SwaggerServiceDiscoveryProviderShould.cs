@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
 using MMLib.SwaggerForOcelot.ServiceDiscovery;
@@ -14,6 +10,10 @@ using Ocelot.Responses;
 using Ocelot.ServiceDiscovery;
 using Ocelot.ServiceDiscovery.Providers;
 using Ocelot.Values;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
@@ -27,7 +27,7 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
 
             Uri uri = await provider.GetSwaggerUriAsync(
                 new SwaggerEndPointConfig() { Url = "http://localhost:5000/swagger" },
-                new Configuration.ReRouteOptions());
+                new ReRouteOptions());
 
             uri.AbsoluteUri.Should().Be("http://localhost:5000/swagger");
         }
@@ -42,7 +42,21 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
                 {
                     Service = new SwaggerService() { Name = "Projects", Path = "/swagger/v1/json" }
                 },
-                new Configuration.ReRouteOptions());
+                new ReRouteOptions());
+
+            uri.AbsoluteUri.Should().Be("http://localhost:5000/swagger/v1/json");
+        }
+
+        [Fact]
+        public async Task ReturnUriFromServiceDiscoveryWhenRouteDoesntExist()
+        {
+            SwaggerServiceDiscoveryProvider provider = CreateProvider(CreateService("Projects", "localhost", 5000));
+
+            Uri uri = await provider.GetSwaggerUriAsync(
+                new SwaggerEndPointConfig()
+                {
+                    Service = new SwaggerService() { Name = "Projects", Path = "/swagger/v1/json" }
+                }, null);
 
             uri.AbsoluteUri.Should().Be("http://localhost:5000/swagger/v1/json");
         }
@@ -59,7 +73,7 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
                 {
                     Service = new SwaggerService() { Name = "Projects", Path = "/swagger/v1/json" }
                 },
-                new Configuration.ReRouteOptions());
+                new ReRouteOptions());
 
             uri.Scheme.Should().Be(expectedScheme);
         }
@@ -76,7 +90,7 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
                 {
                     Service = new SwaggerService() { Name = "Projects", Path = "/swagger/v1/json" }
                 },
-                new Configuration.ReRouteOptions() { DownstreamScheme = expectedScheme });
+                new ReRouteOptions() { DownstreamScheme = expectedScheme });
 
             uri.Scheme.Should().Be(expectedScheme);
         }

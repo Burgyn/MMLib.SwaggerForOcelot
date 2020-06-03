@@ -100,7 +100,7 @@ services.AddSwaggerForOcelot(Configuration);
 6. In `Configure` method, insert the `SwaggerForOcelot` middleware to expose interactive documentation.
 
 ```CSharp
-app.UseSwaggerForOcelotUI(Configuration, opt => {
+app.UseSwaggerForOcelotUI(opt => {
   opt.PathToSwaggerGenerator = "/swagger/docs";
 })
 ```
@@ -108,7 +108,7 @@ app.UseSwaggerForOcelotUI(Configuration, opt => {
    You can optionally include headers that your Ocelot Gateway will send when requesting a swagger endpoint. This can be especially useful if your downstream microservices require contents from a header to authenticate.
 
   ```CSharp
-app.UseSwaggerForOcelotUI(Configuration, opt => {
+app.UseSwaggerForOcelotUI(opt => {
     opts.DownstreamSwaggerHeaders = new[]
     {
         new KeyValuePair<string, string>("Auth-Key", "AuthValue"),
@@ -126,13 +126,13 @@ public string AlterUpstreamSwaggerJson(HttpContext context, string swaggerJson)
     return swagger.ToString(Formatting.Indented);
 }
 
-app.UseSwaggerForOcelotUI(Configuration, opt => {
+app.UseSwaggerForOcelotUI(opt => {
     opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
 })
   ```
 You can optionally customize the swagger server prior to calling the endpoints of the microservices as follows:
 ```CSharp
-app.UseSwaggerForOcelotUI(Configuration, opt => {
+app.UseSwaggerForOcelotUI(opt => {
     opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
 	opts.ServerOcelot = "/siteName/apigateway" ;
 })

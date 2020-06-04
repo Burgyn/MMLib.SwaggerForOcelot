@@ -52,7 +52,7 @@ namespace ApiGateway
                 endpoints.MapControllers();
             });
             app.UseStaticFiles();
-            app.UseSwaggerForOcelotUI(Configuration,  opt =>
+            app.UseSwaggerForOcelotUI(opt =>
                 {
                     opt.DownstreamSwaggerHeaders = new[]
                     {

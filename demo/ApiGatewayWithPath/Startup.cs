@@ -35,7 +35,7 @@ namespace ApiGatewayWithPath
                 app.UseDeveloperExceptionPage();
             }
             app.UseStaticFiles();
-            app.UseSwaggerForOcelotUI(Configuration, opt =>
+            app.UseSwaggerForOcelotUI(opt =>
             {
                 opt.DownstreamSwaggerEndPointBasePath = "/gateway/swagger/docs";
                 opt.PathToSwaggerGenerator = "/swagger/docs";

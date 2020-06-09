@@ -80,6 +80,11 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public string DownstreamScheme { get; set; }
 
         /// <summary>
+        /// Downstream Http Version.
+        /// </summary>
+        public string DownstreamHttpVersion { get; set; }
+
+        /// <summary>
         /// Gets or sets the upstream HTTP method.
         /// </summary>
         public IEnumerable<string> UpstreamHttpMethod { get; set; }

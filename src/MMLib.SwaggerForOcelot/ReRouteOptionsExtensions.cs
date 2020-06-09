@@ -23,7 +23,10 @@ namespace MMLib.SwaggerForOcelot
                     route.UpstreamPathTemplate,
                     route.DownstreamPathTemplate,
                     p.Key.VirtualDirectory,
-                    p.Where(r => r.UpstreamHttpMethod != null).SelectMany(r => r.UpstreamHttpMethod));
+                    p.Where(r => r.UpstreamHttpMethod != null).SelectMany(r => r.UpstreamHttpMethod))
+                {
+                    DownstreamHttpVersion = route.DownstreamHttpVersion
+                };
             });
 
         /// <summary>
@@ -58,7 +61,8 @@ namespace MMLib.SwaggerForOcelot
                     UpstreamPathTemplate =
                         reRouteOption.UpstreamPathTemplate.Replace(endPoint.VersionPlaceholder,
                             c.Version),
-                    VirtualDirectory = reRouteOption.VirtualDirectory
+                    VirtualDirectory = reRouteOption.VirtualDirectory,
+                    DownstreamHttpVersion = reRouteOption.DownstreamHttpVersion
                 });
                 reRouteOptions.AddRange(versionMappedReRouteOptions);
             }

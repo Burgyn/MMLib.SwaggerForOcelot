@@ -64,7 +64,13 @@ namespace MMLib.SwaggerForOcelot.Middleware
         public async Task Invoke(HttpContext context, ISwaggerServiceDiscoveryProvider discoveryProvider)
         {
             (string Url, SwaggerEndPointOptions EndPoint) = await GetEndPoint(context.Request.Path, discoveryProvider);
+
+            IEnumerable<ReRouteOptions> reRouteOptions = _reRoutes.Value
+                .ExpandConfig(EndPoint)
+                .GroupByPaths();
+
             HttpClient httpClient = _httpClientFactory.CreateClient();
+            SetHttpVersion(httpClient, reRouteOptions);
             AddHeaders(httpClient);
             string content = await httpClient.GetStringAsync(Url);
             string serverName;
@@ -77,10 +83,6 @@ namespace MMLib.SwaggerForOcelot.Middleware
             {
                 serverName = _options.ServerOcelot;
             }
-
-            IEnumerable<ReRouteOptions> reRouteOptions = _reRoutes.Value
-                .ExpandConfig(EndPoint)
-                .GroupByPaths();
 
             if (EndPoint.TransformByOcelotConfig)
             {
@@ -122,6 +124,16 @@ namespace MMLib.SwaggerForOcelot.Middleware
             foreach (KeyValuePair<string, string> kvp in _options.DownstreamSwaggerHeaders)
             {
                 httpClient.DefaultRequestHeaders.Add(kvp.Key, kvp.Value);
+            }
+        }
+
+        private void SetHttpVersion(HttpClient httpClient, IEnumerable<ReRouteOptions> reRouteOptions)
+        {
+            string downstreamHttpVersion = reRouteOptions.FirstOrDefault()?.DownstreamHttpVersion;
+            if (downstreamHttpVersion != null)
+            {
+                int[] version = downstreamHttpVersion.Split('.').Select(int.Parse).ToArray();
+                httpClient.DefaultRequestVersion = new Version(version[0], version[1]);
             }
         }
 

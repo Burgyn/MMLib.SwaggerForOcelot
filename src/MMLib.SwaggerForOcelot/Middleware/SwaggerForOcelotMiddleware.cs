@@ -70,12 +70,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
                 .GroupByPaths();
 
             HttpClient httpClient = _httpClientFactory.CreateClient();
-            string downstreamHttpVersion = reRouteOptions.FirstOrDefault()?.DownstreamHttpVersion;
-            if (downstreamHttpVersion != null)
-            {
-                int[] version = downstreamHttpVersion.Split('.').Select(int.Parse).ToArray();
-                httpClient.DefaultRequestVersion = new Version(version[0], version[1]);
-            }
+            SetHttpVersion(httpClient, reRouteOptions);
             AddHeaders(httpClient);
             string content = await httpClient.GetStringAsync(Url);
             string serverName;
@@ -129,6 +124,16 @@ namespace MMLib.SwaggerForOcelot.Middleware
             foreach (KeyValuePair<string, string> kvp in _options.DownstreamSwaggerHeaders)
             {
                 httpClient.DefaultRequestHeaders.Add(kvp.Key, kvp.Value);
+            }
+        }
+
+        private void SetHttpVersion(HttpClient httpClient, IEnumerable<ReRouteOptions> reRouteOptions)
+        {
+            string downstreamHttpVersion = reRouteOptions.FirstOrDefault()?.DownstreamHttpVersion;
+            if (downstreamHttpVersion != null)
+            {
+                int[] version = downstreamHttpVersion.Split('.').Select(int.Parse).ToArray();
+                httpClient.DefaultRequestVersion = new Version(version[0], version[1]);
             }
         }
 

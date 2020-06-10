@@ -1,8 +1,8 @@
 {
     "name": "Ocelot configuration is split to some parts.",
-    "description": "One service is split to more Ocelot's reroutes configurations. Contains only same actions.",
+    "description": "One service is split to more Ocelot's routes configurations. Contains only same actions.",
     "hostOverride": "",
-    "reRoutes": [
+    "routes": [
         {
             "DownstreamPathTemplate": "/v2/pet/{everything}",
             "UpstreamPathTemplate": "/v2/api/pets/pet/{everything}",

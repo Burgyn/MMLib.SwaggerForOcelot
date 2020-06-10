@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using MMLib.SwaggerForOcelot.DependencyInjection;
 
 namespace ApiGateway
 {
@@ -21,7 +22,7 @@ namespace ApiGateway
                         .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json",
                             optional: true, reloadOnChange: true)
                         .AddJsonFile($"appsettings.local.json", optional: true, reloadOnChange: true)
-                        .AddJsonFile("ocelot.json")
+                        .AddOcelotWithSwaggerSupport(folder: "Configuration")
                         .AddEnvironmentVariables();
                 })
                 .UseStartup<Startup>();

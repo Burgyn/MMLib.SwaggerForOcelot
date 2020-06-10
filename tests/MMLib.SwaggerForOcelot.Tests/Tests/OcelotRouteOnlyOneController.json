@@ -2,7 +2,7 @@
     "name": "Ocelot route only one controller.",
     "description": "Ocelot configuration contains routing for only one controller.",
     "hostOverride": "",
-    "reRoutes": [
+    "routes": [
         {
             "DownstreamPathTemplate": "/v2/store/{everything}",
             "UpstreamPathTemplate": "/v2/api/store/{everything}",

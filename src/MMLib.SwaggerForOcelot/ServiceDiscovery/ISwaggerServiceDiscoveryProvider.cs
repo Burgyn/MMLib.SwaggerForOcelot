@@ -13,7 +13,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
         /// Gets the swagger URI asynchronous.
         /// </summary>
         /// <param name="endPoint">The endPoint.</param>
-        /// <param name="reRoute">The reRoute.</param>
-        Task<Uri> GetSwaggerUriAsync(SwaggerEndPointConfig endPoint, ReRouteOptions reRoute);
+        /// <param name="route">The route.</param>
+        Task<Uri> GetSwaggerUriAsync(SwaggerEndPointConfig endPoint, RouteOptions route);
     }
 }

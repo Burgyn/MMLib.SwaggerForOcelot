@@ -2,7 +2,7 @@
     "name": "Swagger with base path.",
     "description": "Testing swagger with setting base path.",
     "hostOverride": "",
-    "reRoutes": [
+    "routes": [
         {
             "DownstreamPathTemplate": "/api/{everything}",
             "UpstreamPathTemplate": "/api/projects/{everything}",

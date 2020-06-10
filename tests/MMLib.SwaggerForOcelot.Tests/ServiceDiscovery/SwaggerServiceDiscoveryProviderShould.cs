@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,7 +27,7 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
 
             Uri uri = await provider.GetSwaggerUriAsync(
                 new SwaggerEndPointConfig() { Url = "http://localhost:5000/swagger" },
-                new Configuration.ReRouteOptions());
+                new Configuration.RouteOptions());
 
             uri.AbsoluteUri.Should().Be("http://localhost:5000/swagger");
         }
@@ -42,7 +42,7 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
                 {
                     Service = new SwaggerService() { Name = "Projects", Path = "/swagger/v1/json" }
                 },
-                new Configuration.ReRouteOptions());
+                new Configuration.RouteOptions());
 
             uri.AbsoluteUri.Should().Be("http://localhost:5000/swagger/v1/json");
         }
@@ -59,7 +59,7 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
                 {
                     Service = new SwaggerService() { Name = "Projects", Path = "/swagger/v1/json" }
                 },
-                new Configuration.ReRouteOptions());
+                new Configuration.RouteOptions());
 
             uri.Scheme.Should().Be(expectedScheme);
         }
@@ -76,7 +76,7 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
                 {
                     Service = new SwaggerService() { Name = "Projects", Path = "/swagger/v1/json" }
                 },
-                new Configuration.ReRouteOptions() { DownstreamScheme = expectedScheme });
+                new Configuration.RouteOptions() { DownstreamScheme = expectedScheme });
 
             uri.Scheme.Should().Be(expectedScheme);
         }
@@ -93,7 +93,7 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
             serviceProvider.Get().Returns(new List<Service>() { service });
             var response = new OkResponse<IServiceDiscoveryProvider>(serviceProvider);
 
-            serviceDiscovery.Get(Arg.Any<ServiceProviderConfiguration>(), Arg.Any<DownstreamReRoute>()).Returns(response);
+            serviceDiscovery.Get(Arg.Any<ServiceProviderConfiguration>(), Arg.Any<DownstreamRoute>()).Returns(response);
 
             var provider = new SwaggerServiceDiscoveryProvider(serviceDiscovery, configurationCreator, options);
             return provider;

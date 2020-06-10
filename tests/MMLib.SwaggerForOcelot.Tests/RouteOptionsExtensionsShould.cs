@@ -6,42 +6,42 @@ using Xunit;
 
 namespace MMLib.SwaggerForOcelot.Tests
 {
-    public class ReRouteOptionsExtensionsShould
+    public class RouteOptionsExtensionsShould
     {
         [Fact]
-        public void GroupReRoutesByPaths()
+        public void GroupRoutesByPaths()
         {
-            IEnumerable<ReRouteOptions> reRouteOptions = new List<ReRouteOptions>()
+            IEnumerable<RouteOptions> routeOptions = new List<RouteOptions>()
             {
-                new ReRouteOptions(){
+                new RouteOptions(){
                      DownstreamPathTemplate= "/api/masterdatatype",
                      UpstreamPathTemplate = "/masterdatatype",
                      UpstreamHttpMethod = new HashSet<string>(){ "Get"}
                 },
-                new ReRouteOptions(){
+                new RouteOptions(){
                      DownstreamPathTemplate= "/api/masterdatatype",
                      UpstreamPathTemplate = "/masterdatatype",
                      UpstreamHttpMethod = new HashSet<string>(){ "Post"}
                 },
-                new ReRouteOptions(){
+                new RouteOptions(){
                      DownstreamPathTemplate= "/api/masterdatatype/{everything}",
                      UpstreamPathTemplate = "/masterdatatype/{everything}",
                      UpstreamHttpMethod = new HashSet<string>(){ "Delete"}
                 },
-                new ReRouteOptions(){
+                new RouteOptions(){
                      DownstreamPathTemplate= "/api/masterdatatype/{everything}",
                      UpstreamPathTemplate = "/masterdatatype/{everything}",
                      UpstreamHttpMethod = new HashSet<string>(){ "Delete"},
                      VirtualDirectory = "something"
                 },
-                new ReRouteOptions(){
+                new RouteOptions(){
                      DownstreamPathTemplate= "/api/masterdata",
                      UpstreamPathTemplate = "/masterdata",
                      UpstreamHttpMethod = new HashSet<string>(){ "Delete"}
                 },
             };
 
-            IEnumerable<ReRouteOptions> actual = reRouteOptions.GroupByPaths();
+            IEnumerable<RouteOptions> actual = routeOptions.GroupByPaths();
 
             actual
                 .Should()

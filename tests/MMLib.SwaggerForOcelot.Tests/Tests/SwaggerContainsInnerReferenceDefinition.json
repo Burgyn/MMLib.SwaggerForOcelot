@@ -2,7 +2,7 @@
     "name": "Swagger contains inner reference definition.",
     "description": "Same definition has inner references.",
     "hostOverride": "",
-    "reRoutes": [
+    "routes": [
         {
             "DownstreamPathTemplate": "/api/{everything}",
             "UpstreamPathTemplate": "/api/admin/{everything}",

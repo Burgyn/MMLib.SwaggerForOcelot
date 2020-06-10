@@ -2,7 +2,7 @@
     "name": "Ocelot configuration contains only POST methods.",
     "description": "Ocelot filter only POST methods.",
     "hostOverride": "",
-    "reRoutes": [
+    "routes": [
         {
             "DownstreamPathTemplate": "/v2/{everything}",
             "UpstreamPathTemplate": "/v2/api/pets/{everything}",

@@ -22,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
             => services
             .AddTransient<ISwaggerServiceDiscoveryProvider, SwaggerServiceDiscoveryProvider>()
             .AddTransient<ISwaggerJsonTransformer, SwaggerJsonTransformer>()
-            .Configure<List<ReRouteOptions>>(options => configuration.GetSection("ReRoutes").Bind(options))
+            .Configure<List<RouteOptions>>(options => configuration.GetSection("Routes").Bind(options))
             .Configure<List<SwaggerEndPointOptions>>(options
                 => configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName).Bind(options))
             .AddHttpClient();

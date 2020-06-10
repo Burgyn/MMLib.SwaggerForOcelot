@@ -22,7 +22,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         private readonly RequestDelegate _next;
 #pragma warning restore IDE0052
 
-        private readonly IOptions<List<ReRouteOptions>> _reRoutes;
+        private readonly IOptions<List<RouteOptions>> _routes;
         private readonly Lazy<Dictionary<string, SwaggerEndPointOptions>> _swaggerEndPoints;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ISwaggerJsonTransformer _transformer;
@@ -33,21 +33,21 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// </summary>
         /// <param name="next">The next delegate.</param>
         /// <param name="options">The options.</param>
-        /// <param name="reRoutes">The Ocelot ReRoutes configuration.</param>
+        /// <param name="routes">The Ocelot Routes configuration.</param>
         /// <param name="swaggerEndPoints">The swagger end points.</param>
         /// <param name="httpClientFactory">The HTTP client factory.</param>
         /// <param name="transformer">The SwaggerJsonTransformer</param>
         public SwaggerForOcelotMiddleware(
             RequestDelegate next,
             SwaggerForOcelotUIOptions options,
-            IOptions<List<ReRouteOptions>> reRoutes,
+            IOptions<List<RouteOptions>> routes,
             IOptions<List<SwaggerEndPointOptions>> swaggerEndPoints,
             IHttpClientFactory httpClientFactory,
             ISwaggerJsonTransformer transformer)
         {
             _transformer = Check.NotNull(transformer, nameof(transformer));
             _next = Check.NotNull(next, nameof(next));
-            _reRoutes = Check.NotNull(reRoutes, nameof(reRoutes));
+            _routes = Check.NotNull(routes, nameof(routes));
             Check.NotNull(swaggerEndPoints, nameof(swaggerEndPoints));
             _httpClientFactory = Check.NotNull(httpClientFactory, nameof(httpClientFactory));
             _options = options;
@@ -77,13 +77,13 @@ namespace MMLib.SwaggerForOcelot.Middleware
                 serverName = _options.ServerOcelot;
             }
 
-            IEnumerable<ReRouteOptions> reRouteOptions = _reRoutes.Value
+            IEnumerable<RouteOptions> routeOptions = _routes.Value
                 .ExpandConfig(EndPoint)
                 .GroupByPaths();
 
             if (EndPoint.TransformByOcelotConfig)
             {
-                content = _transformer.Transform(content, reRouteOptions, serverName);
+                content = _transformer.Transform(content, routeOptions, serverName);
             }
             content = await ReconfigureUpstreamSwagger(context, content);
 
@@ -140,7 +140,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
             SwaggerEndPointConfig config = endPoint.Config.FirstOrDefault(x => x.Version == endPointInfo.Version);
 
             string url = (await discoveryProvider
-                .GetSwaggerUriAsync(config, _reRoutes.Value.FirstOrDefault(p => p.SwaggerKey == endPoint.Key)))
+                .GetSwaggerUriAsync(config, _routes.Value.FirstOrDefault(p => p.SwaggerKey == endPoint.Key)))
                 .AbsoluteUri;
 
             return (url, endPoint);

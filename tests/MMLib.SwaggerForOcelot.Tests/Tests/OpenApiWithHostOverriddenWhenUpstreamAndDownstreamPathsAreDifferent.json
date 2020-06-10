@@ -1,7 +1,7 @@
 {
     "name": "Open Api with host overridden when upstream and downstream paths are different.",
     "hostOverride": "http://service.api.io",
-    "reRoutes": [
+    "routes": [
         {
             "DownstreamPathTemplate": "/api/{everything}",
             "UpstreamPathTemplate": "/prefix/api/projects/{everything}",

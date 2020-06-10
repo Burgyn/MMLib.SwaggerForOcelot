@@ -15,24 +15,24 @@ namespace MMLib.SwaggerForOcelot.Transformation
     public class SwaggerJsonTransformer : ISwaggerJsonTransformer
     {
         /// <inheritdoc/>
-        public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes, string serverOverride)
+        public string Transform(string swaggerJson, IEnumerable<RouteOptions> routes, string serverOverride)
         {
             var swagger = JObject.Parse(swaggerJson);
 
             if (swagger.ContainsKey("swagger"))
             {
-                return TransformSwagger(swagger, reRoutes, serverOverride);
+                return TransformSwagger(swagger, routes, serverOverride);
             }
 
             if (swagger.ContainsKey("openapi"))
             {
-                return TransformOpenApi(swagger, reRoutes, serverOverride);
+                return TransformOpenApi(swagger, routes, serverOverride);
             }
 
             throw new InvalidOperationException("Unknown swagger/openapi version");
         }
 
-        private string TransformSwagger(JObject swagger, IEnumerable<ReRouteOptions> reRoutes, string hostOverride)
+        private string TransformSwagger(JObject swagger, IEnumerable<RouteOptions> routes, string hostOverride)
         {
             JToken paths = swagger[SwaggerProperties.Paths];
             string basePath = swagger.ContainsKey(SwaggerProperties.BasePath)
@@ -48,7 +48,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
             if (paths != null)
             {
-                RenameAndRemovePaths(reRoutes, paths, basePath);
+                RenameAndRemovePaths(routes, paths, basePath);
 
                 RemoveItems<JProperty>(
                     swagger[SwaggerProperties.Definitions],
@@ -73,7 +73,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
             return swagger.ToString(Formatting.Indented);
         }
 
-        private string TransformOpenApi(JObject openApi, IEnumerable<ReRouteOptions> reRoutes, string serverOverride = "/")
+        private string TransformOpenApi(JObject openApi, IEnumerable<RouteOptions> routes, string serverOverride = "/")
         {
             // NOTE: Only supporting one server for now.
             string downstreamBasePath = "";
@@ -89,7 +89,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
             JToken paths = openApi[OpenApiProperties.Paths];
             if (paths != null)
             {
-                RenameAndRemovePaths(reRoutes, paths, downstreamBasePath);
+                RenameAndRemovePaths(routes, paths, downstreamBasePath);
 
                 JToken schemaToken = openApi[OpenApiProperties.Components][OpenApiProperties.Schemas];
                 if (schemaToken != null)
@@ -115,7 +115,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
             return openApi.ToString(Formatting.Indented);
         }
 
-        private void RenameAndRemovePaths(IEnumerable<ReRouteOptions> reRoutes, JToken paths, string basePath)
+        private void RenameAndRemovePaths(IEnumerable<RouteOptions> routes, JToken paths, string basePath)
         {
             var forRemove = new List<JProperty>();
 
@@ -123,11 +123,11 @@ namespace MMLib.SwaggerForOcelot.Transformation
             {
                 var path = paths.ElementAt(i) as JProperty;
                 string downstreamPath = path.Name.RemoveSlashFromEnd();
-                ReRouteOptions reRoute = FindReRoute(reRoutes, path.Name.WithShashEnding(), basePath);
+                RouteOptions route = FindRoute(routes, path.Name.WithShashEnding(), basePath);
 
-                if (reRoute != null && RemoveMethods(path, reRoute))
+                if (route != null && RemoveMethods(path, route))
                 {
-                    RenameToken(path, ConvertDownstreamPathToUpstreamPath(downstreamPath, reRoute.DownstreamPath, reRoute.UpstreamPath, basePath));
+                    RenameToken(path, ConvertDownstreamPathToUpstreamPath(downstreamPath, route.DownstreamPath, route.UpstreamPath, basePath));
                 }
                 else
                 {
@@ -141,14 +141,14 @@ namespace MMLib.SwaggerForOcelot.Transformation
             }
         }
 
-        private bool RemoveMethods(JProperty path, ReRouteOptions reRoute)
+        private bool RemoveMethods(JProperty path, RouteOptions route)
         {
             var forRemove = new List<JProperty>();
             var method = path.First.First as JProperty;
 
             while (method != null)
             {
-                if (!reRoute.ContainsHttpMethod(method.Name))
+                if (!route.ContainsHttpMethod(method.Name))
                 {
                     forRemove.Add(method);
                 }
@@ -211,10 +211,10 @@ namespace MMLib.SwaggerForOcelot.Transformation
             }
         }
 
-        private static ReRouteOptions FindReRoute(IEnumerable<ReRouteOptions> reRoutes, string downstreamPath, string basePath)
+        private static RouteOptions FindRoute(IEnumerable<RouteOptions> routes, string downstreamPath, string basePath)
         {
             string downstreamPathWithBasePath = PathHelper.BuildPath(basePath, downstreamPath);
-            return reRoutes.FirstOrDefault(p
+            return routes.FirstOrDefault(p
                 => p.CanCatchAll
                     ? downstreamPathWithBasePath.StartsWith(p.DownstreamPathWithShash, StringComparison.CurrentCultureIgnoreCase)
                     : p.DownstreamPathWithShash.Equals(downstreamPathWithBasePath, StringComparison.CurrentCultureIgnoreCase));

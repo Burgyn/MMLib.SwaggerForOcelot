@@ -6,9 +6,9 @@ using Kros.Extensions;
 namespace MMLib.SwaggerForOcelot.Configuration
 {
     /// <summary>
-    /// Ocelot ReRoute configuration.
+    /// Ocelot Route configuration.
     /// </summary>
-    public class ReRouteOptions
+    public class RouteOptions
     {
         private const string CatchAllPlaceHolder = "{everything}";
         private readonly string[] _defaultMethodsTypes =
@@ -19,7 +19,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// <summary>
         /// Ctor.
         /// </summary>
-        public ReRouteOptions()
+        public RouteOptions()
         {
             _httpMethods = new Lazy<HashSet<string>>(() => new HashSet<string>(
                 UpstreamHttpMethod?.Count() > 0 ? UpstreamHttpMethod : _defaultMethodsTypes,
@@ -27,14 +27,14 @@ namespace MMLib.SwaggerForOcelot.Configuration
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ReRouteOptions"/> class.
+        /// Initializes a new instance of the <see cref="RouteOptions"/> class.
         /// </summary>
         /// <param name="swaggerKey">The swagger key.</param>
         /// <param name="upstreamPathTemplate">The upstream path template.</param>
         /// <param name="downstreamPathTemplate">The downstream path template.</param>
         /// <param name="virtualDirectory">The virtual directory.</param>
         /// <param name="upstreamMethods">The upstream methods.</param>
-        public ReRouteOptions(
+        public RouteOptions(
             string swaggerKey,
             string upstreamPathTemplate,
             string downstreamPathTemplate,

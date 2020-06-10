@@ -2,7 +2,7 @@
     "name": "Open Api format with servers.",
     "description": "Open Api contains servers.",
     "hostOverride": "",
-    "reRoutes": [
+    "routes": [
         {
             "DownstreamPathTemplate": "/api/{everything}",
             "UpstreamPathTemplate": "/api/projects/{everything}",

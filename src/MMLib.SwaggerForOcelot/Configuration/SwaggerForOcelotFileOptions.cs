@@ -1,5 +1,4 @@
-﻿
-namespace MMLib.SwaggerForOcelot.Configuration
+﻿namespace MMLib.SwaggerForOcelot.Configuration
 {
     /// <summary>
     /// Class of constans of configuration of ocelot

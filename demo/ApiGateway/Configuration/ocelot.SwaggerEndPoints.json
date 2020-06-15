@@ -1,0 +1,49 @@
+{
+  "SwaggerEndPoints": [
+    {
+      "Key": "contacts",
+      "Config": [
+        {
+          "Name": "Contacts API",
+          "Version": "v1",
+          "Url": "https://localhost:44359/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "projects",
+      "Config": [
+        {
+          "Name": "Projects API",
+          "Version": "v1",
+          "Url": "https://localhost:44304/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "orders",
+      "Config": [
+        {
+          "Name": "Orders API",
+          "Version": "v0.9",
+          "Url": "https://localhost:44343/swagger/v0.9/swagger.json"
+        },
+        {
+          "Name": "Orders API",
+          "Version": "v1",
+          "Url": "https://localhost:44343/swagger/v1/swagger.json"
+        },
+        {
+          "Name": "Orders API",
+          "Version": "v2",
+          "Url": "https://localhost:44343/swagger/v2/swagger.json"
+        },
+        {
+          "Name": "Orders API",
+          "Version": "v3",
+          "Url": "https://localhost:44343/swagger/v3/swagger.json"
+        }
+      ]
+    }
+  ]
+}

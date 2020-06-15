@@ -76,17 +76,17 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
         }
 
         private string GetScheme(ServiceHostAndPort service, RouteOptions route) 
-            => !route.DownstreamScheme.IsNullOrEmpty()
+            => (route != null && !route.DownstreamScheme.IsNullOrEmpty())
             ? route.DownstreamScheme
             : !service.Scheme.IsNullOrEmpty()
             ? service.Scheme
             : service.DownstreamPort
-        switch
-        {
-            443 => Uri.UriSchemeHttps,
-            80 => Uri.UriSchemeHttp,
-            _ => string.Empty,
-        };
+            switch
+            {
+                443 => Uri.UriSchemeHttps,
+                80 => Uri.UriSchemeHttp,
+                _ => string.Empty,
+            };
 
         private static string GetErrorMessage(SwaggerEndPointConfig endPoint) => $"Service with swagger documentation '{endPoint.Service.Name}' cann't be discovered";
     }

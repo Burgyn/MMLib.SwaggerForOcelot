@@ -52,7 +52,7 @@ namespace ApiGateway
                 endpoints.MapControllers();
             });
             app.UseStaticFiles();
-            app.UseSwaggerForOcelotUI(Configuration,  opt =>
+            app.UseSwaggerForOcelotUI(opt =>
                 {
                     opt.DownstreamSwaggerHeaders = new[]
                     {
@@ -60,7 +60,7 @@ namespace ApiGateway
                         new KeyValuePair<string, string>("Key2", "Value2"),
                     };
 
-                    //opt.ServerOcelot = "/siteName/apigateway" ;
+                    opt.ServerOcelot = "/siteName/apigateway" ;
                 })
                 .UseOcelot()
                 .Wait();

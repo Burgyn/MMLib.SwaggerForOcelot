@@ -4,6 +4,8 @@ using MMLib.SwaggerForOcelot.Middleware;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -16,48 +18,54 @@ namespace Microsoft.AspNetCore.Builder
         /// Add Swagger generator for downstream services and UI into application pipeline.
         /// </summary>
         /// <param name="app">The application builder.</param>
-        /// <param name="configuration">The configuration.</param>
-        /// <returns>
-        /// <see cref="IApplicationBuilder"/>.
-        /// </returns>
-        public static IApplicationBuilder UseSwaggerForOcelotUI(
-            this IApplicationBuilder app,
-            IConfiguration configuration)
-            => app.UseSwaggerForOcelotUI(configuration, null);
-
-        /// <summary>
-        /// Add Swagger generator for downstream services and UI into application pipeline.
-        /// </summary>
-        /// <param name="app">The application builder.</param>
-        /// <param name="configuration">The configuration.</param>
         /// <param name="setupAction">Setup <see cref="SwaggerForOcelotUIOptions"/></param>
         /// <returns>
         /// <see cref="IApplicationBuilder"/>.
         /// </returns>
         public static IApplicationBuilder UseSwaggerForOcelotUI(
             this IApplicationBuilder app,
-            IConfiguration configuration,
-            Action<SwaggerForOcelotUIOptions> setupAction)
+            Action<SwaggerForOcelotUIOptions> setupAction = null)
         {
-            var options = new SwaggerForOcelotUIOptions();
+            SwaggerForOcelotUIOptions options = app.ApplicationServices.GetService<IOptions<SwaggerForOcelotUIOptions>>().Value;
             setupAction?.Invoke(options);
             UseSwaggerForOcelot(app, options);
 
             app.UseSwaggerUI(c =>
             {
                 InitUIOption(c, options);
-                IEnumerable<SwaggerEndPointOptions> endPoints = GetConfiguration(configuration);
+                IReadOnlyList<SwaggerEndPointOptions> endPoints = app.ApplicationServices.GetService<IOptions<List<SwaggerEndPointOptions>>>().Value;
                 AddSwaggerEndPoints(c, endPoints, options.DownstreamSwaggerEndPointBasePath);
             });
 
             return app;
         }
 
+        /// <inheritdoc cref="UseSwaggerForOcelotUI(IApplicationBuilder,Action{SwaggerForOcelotUIOptions})"/>
+        [Obsolete("Use app.UseSwaggerForOcelotUI() instead.")]
+        public static IApplicationBuilder UseSwaggerForOcelotUI(
+            this IApplicationBuilder app,
+            IConfiguration configuration)
+            => app.UseSwaggerForOcelotUI();
+
+        /// <inheritdoc cref="UseSwaggerForOcelotUI(IApplicationBuilder,Action{SwaggerForOcelotUIOptions})"/>
+        [Obsolete("Use app.UseSwaggerForOcelotUI(setupAction) instead.")]
+        public static IApplicationBuilder UseSwaggerForOcelotUI(
+            this IApplicationBuilder app,
+            IConfiguration configuration,
+            Action<SwaggerForOcelotUIOptions> setupAction)
+            => app.UseSwaggerForOcelotUI(setupAction);
+
         private static void UseSwaggerForOcelot(IApplicationBuilder app, SwaggerForOcelotUIOptions options)
             => app.Map(options.PathToSwaggerGenerator, builder => builder.UseMiddleware<SwaggerForOcelotMiddleware>(options));
 
-        private static void AddSwaggerEndPoints(SwaggerUIOptions c, IEnumerable<SwaggerEndPointOptions> endPoints, string basePath)
+        private static void AddSwaggerEndPoints(SwaggerUIOptions c, IReadOnlyList<SwaggerEndPointOptions> endPoints, string basePath)
         {
+            if (endPoints is null || endPoints.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    $"{SwaggerEndPointOptions.ConfigurationSectionName} configuration section is missing or empty.");
+            }
+
             foreach (SwaggerEndPointOptions endPoint in endPoints)
             {
                 foreach (SwaggerEndPointConfig config in endPoint.Config)
@@ -75,21 +83,6 @@ namespace Microsoft.AspNetCore.Builder
             c.IndexStream = options.IndexStream;
             c.OAuthConfigObject = options.OAuthConfigObject;
             c.RoutePrefix = options.RoutePrefix;
-        }
-
-        private static IEnumerable<SwaggerEndPointOptions> GetConfiguration(IConfiguration configuration)
-        {
-            IEnumerable<SwaggerEndPointOptions> options =
-                configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName)
-                .Get<IEnumerable<SwaggerEndPointOptions>>();
-
-            if (options is null)
-            {
-                throw new InvalidOperationException(
-                    $"{SwaggerEndPointOptions.ConfigurationSectionName} configuration section is missing or empty.");
-            }
-
-            return options;
         }
     }
 }

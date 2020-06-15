@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
 using MMLib.SwaggerForOcelot.ServiceDiscovery;
@@ -14,6 +10,10 @@ using Ocelot.Responses;
 using Ocelot.ServiceDiscovery;
 using Ocelot.ServiceDiscovery.Providers;
 using Ocelot.Values;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
@@ -43,6 +43,20 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
                     Service = new SwaggerService() { Name = "Projects", Path = "/swagger/v1/json" }
                 },
                 new Configuration.RouteOptions());
+
+            uri.AbsoluteUri.Should().Be("http://localhost:5000/swagger/v1/json");
+        }
+
+        [Fact]
+        public async Task ReturnUriFromServiceDiscoveryWhenRouteDoesntExist()
+        {
+            SwaggerServiceDiscoveryProvider provider = CreateProvider(CreateService("Projects", "localhost", 5000));
+
+            Uri uri = await provider.GetSwaggerUriAsync(
+                new SwaggerEndPointConfig()
+                {
+                    Service = new SwaggerService() { Name = "Projects", Path = "/swagger/v1/json" }
+                }, null);
 
             uri.AbsoluteUri.Should().Be("http://localhost:5000/swagger/v1/json");
         }

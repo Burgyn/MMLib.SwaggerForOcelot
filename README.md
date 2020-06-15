@@ -18,7 +18,7 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 
 ```Json
  {
-  "ReRoutes": [
+  "Routes": [
     {
       "DownstreamPathTemplate": "/api/{everything}",
       "DownstreamScheme": "http",
@@ -89,7 +89,7 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 }
 ```
 
-   > `SwaggerEndPoint` is configuration for downstream service swagger generator endpoint. Property `Key` is used to pair with the ReRoute configuration. `Name` is displayed in the combobox. `Url` is downstream service swagger generator endpoint.
+   > `SwaggerEndPoint` is configuration for downstream service swagger generator endpoint. Property `Key` is used to pair with the Route configuration. `Name` is displayed in the combobox. `Url` is downstream service swagger generator endpoint.
 
 4. In the `ConfigureServices` method of `Startup.cs`, register the SwaggerForOcelot generator.
 
@@ -100,7 +100,7 @@ services.AddSwaggerForOcelot(Configuration);
 6. In `Configure` method, insert the `SwaggerForOcelot` middleware to expose interactive documentation.
 
 ```CSharp
-app.UseSwaggerForOcelotUI(Configuration, opt => {
+app.UseSwaggerForOcelotUI(opt => {
   opt.PathToSwaggerGenerator = "/swagger/docs";
 })
 ```
@@ -108,7 +108,7 @@ app.UseSwaggerForOcelotUI(Configuration, opt => {
    You can optionally include headers that your Ocelot Gateway will send when requesting a swagger endpoint. This can be especially useful if your downstream microservices require contents from a header to authenticate.
 
   ```CSharp
-app.UseSwaggerForOcelotUI(Configuration, opt => {
+app.UseSwaggerForOcelotUI(opt => {
     opts.DownstreamSwaggerHeaders = new[]
     {
         new KeyValuePair<string, string>("Auth-Key", "AuthValue"),
@@ -126,13 +126,13 @@ public string AlterUpstreamSwaggerJson(HttpContext context, string swaggerJson)
     return swagger.ToString(Formatting.Indented);
 }
 
-app.UseSwaggerForOcelotUI(Configuration, opt => {
+app.UseSwaggerForOcelotUI(opt => {
     opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
 })
   ```
 You can optionally customize the swagger server prior to calling the endpoints of the microservices as follows:
 ```CSharp
-app.UseSwaggerForOcelotUI(Configuration, opt => {
+app.UseSwaggerForOcelotUI(opt => {
     opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
 	opts.ServerOcelot = "/siteName/apigateway" ;
 })
@@ -170,7 +170,7 @@ Example:
 If you use [Ocelot Service Discovery Provider](https://ocelot.readthedocs.io/en/latest/features/servicediscovery.html) to find the host and port for the downstream service, then you can use the same service name for swagger configuration.
 
 ``` Json
-"ReRoutes": [
+"Routes": [
   {
     "DownstreamPathTemplate": "/api/{everything}",
     "ServiceName": "projects",
@@ -244,3 +244,12 @@ app.UseSwagger();
 The key is to set it up property `TransformByOcelotConfig` to `false`, because in this case you do not need to transform the documentation according to the ocelot configuration.
 
 ![ocelot docs](./demo/ocelotdocs.png)
+
+## Limitation
+
+- Now, this library support only `{everything}` as a wildcard in routing definition. #68
+- This package unfortunately does not support parameter translating between upstream and downstream path template. #59
+
+## Version 2.0.0
+
+This version is breaking change. Because support Ocelot 16.0.0, which rename `ReRoutes` to `Routes`. See Ocelot [v16.0.0](https://github.com/ThreeMammals/Ocelot/releases/tag/16.0.0).

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using MMLib.SwaggerForOcelot.ServiceDiscovery;
+using Kros.Extensions;
 
 namespace MMLib.SwaggerForOcelot.Middleware
 {
@@ -64,22 +65,25 @@ namespace MMLib.SwaggerForOcelot.Middleware
         public async Task Invoke(HttpContext context, ISwaggerServiceDiscoveryProvider discoveryProvider)
         {
             (string Url, SwaggerEndPointOptions EndPoint) = await GetEndPoint(context.Request.Path, discoveryProvider);
+
+            IEnumerable<RouteOptions> routeOptions = _routes.Value
+                .ExpandConfig(EndPoint)
+                .GroupByPaths();
+
             HttpClient httpClient = _httpClientFactory.CreateClient();
+            SetHttpVersion(httpClient, routeOptions);
             AddHeaders(httpClient);
             string content = await httpClient.GetStringAsync(Url);
             string serverName;
             if (string.IsNullOrWhiteSpace(_options.ServerOcelot))
             {
-                serverName = EndPoint.HostOverride ?? context.Request.Host.Value.RemoveSlashFromEnd();
+                serverName = EndPoint.HostOverride
+                    ?? $"{context.Request.Scheme}://{context.Request.Host.Value.RemoveSlashFromEnd()}";
             }
             else
             {
                 serverName = _options.ServerOcelot;
             }
-
-            IEnumerable<RouteOptions> routeOptions = _routes.Value
-                .ExpandConfig(EndPoint)
-                .GroupByPaths();
 
             if (EndPoint.TransformByOcelotConfig)
             {
@@ -121,6 +125,16 @@ namespace MMLib.SwaggerForOcelot.Middleware
             foreach (KeyValuePair<string, string> kvp in _options.DownstreamSwaggerHeaders)
             {
                 httpClient.DefaultRequestHeaders.Add(kvp.Key, kvp.Value);
+            }
+        }
+
+        private void SetHttpVersion(HttpClient httpClient, IEnumerable<RouteOptions> routeOptions)
+        {
+            string downstreamHttpVersion = routeOptions.FirstOrDefault()?.DownstreamHttpVersion;
+            if (downstreamHttpVersion != null && downstreamHttpVersion != string.Empty)
+            {
+                int[] version = downstreamHttpVersion.Split('.').Select(int.Parse).ToArray();
+                httpClient.DefaultRequestVersion = new Version(version[0], version[1]);
             }
         }
 

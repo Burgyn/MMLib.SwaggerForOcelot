@@ -147,6 +147,62 @@ namespace MMLib.SwaggerForOcelot.Tests
             AreEqual(transformedUpstreamSwagger, upstreamSwagger);
         }
 
+        [Fact]
+        public async Task RespectDownstreamHttpVersionRouteSetting()
+        {
+            // Arrange
+            const string version = "v1";
+            const string key = "projects";
+            HttpContext httpContext = GetHttpContext(requestPath: $"/{version}/{key}");
+
+            var next = new TestRequestDelegate();
+
+            // What is being tested
+            var swaggerForOcelotOptions = new SwaggerForOcelotUIOptions();
+            TestSwaggerEndpointOptions swaggerEndpointOptions = CreateSwaggerEndpointOptions(key,version);
+            var routeOptions = new TestRouteOptions(new List<RouteOptions>
+            {
+                new RouteOptions
+                {
+                    SwaggerKey = "projects",
+                    UpstreamPathTemplate = "/api/projects/Projects",
+                    DownstreamPathTemplate = "/api/Projects",
+                    DownstreamHttpVersion = "2.0",
+                }
+            });
+
+            // downstreamSwagger is returned when client.GetStringAsync is called by the middleware.
+            string downstreamSwagger = await GetBaseOpenApi("OpenApiWithVersionPlaceholderBase");
+            HttpClient httClientMock = GetHttpClient(downstreamSwagger);
+            var httpClientFactory = new TestHttpClientFactory(httClientMock);
+
+            var swaggerJsonTransformerMock = new Mock<ISwaggerJsonTransformer>();
+            swaggerJsonTransformerMock
+                .Setup(x => x.Transform(
+                    It.IsAny<string>(),
+                    It.IsAny<IEnumerable<RouteOptions>>(),
+                    It.IsAny<string>()))
+                .Returns((
+                    string swaggerJson,
+                    IEnumerable<RouteOptions> routeOptions,
+                    string serverOverride) => new SwaggerJsonTransformer()
+                    .Transform(swaggerJson, routeOptions, serverOverride));
+            var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
+                next.Invoke,
+                swaggerForOcelotOptions,
+                routeOptions,
+                swaggerEndpointOptions,
+                httpClientFactory,
+                swaggerJsonTransformerMock.Object);
+
+            // Act
+            await swaggerForOcelotMiddleware.Invoke(httpContext, DummySwaggerServiceDiscoveryProvider.Default);
+            httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
+
+            // Assert
+            httClientMock.DefaultRequestVersion.Should().BeEquivalentTo(new Version(2, 0));
+        }
+
         private TestSwaggerEndpointOptions CreateSwaggerEndpointOptions(string key, string version)
             => new TestSwaggerEndpointOptions(
                 new List<SwaggerEndPointOptions>()

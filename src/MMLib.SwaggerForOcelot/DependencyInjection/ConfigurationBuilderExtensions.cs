@@ -11,15 +11,18 @@ using System.Text.RegularExpressions;
 
 namespace MMLib.SwaggerForOcelot.DependencyInjection
 {
+    /// <summary>
+    /// Extension for compatibility of multiple ocelot configuration files with SwaggerForOcelot
+    /// </summary>
     public static class ConfigurationBuilderExtensions
     {
         /// <summary>
         /// Extension for compatibility of functionality multifile of ocelot
         /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="environment"></param>
-        /// <param name="folder"></param>
-        /// <param name="fileOfSwaggerEndPoints"></param>
+        /// <param name="builder">builder of net core for call this extension</param>
+        /// <param name="environment">environment of net core app</param>
+        /// <param name="folder">folder of files of configuration of ocelot</param>
+        /// <param name="fileOfSwaggerEndPoints">name of file of configuration SwaggerForOcelot without .json extension</param>
         /// <returns>a Object IConfigurationBuilder</returns>
         public static IConfigurationBuilder AddOcelotWithSwaggerSupport(
             this IConfigurationBuilder builder,
@@ -27,7 +30,7 @@ namespace MMLib.SwaggerForOcelot.DependencyInjection
             string folder = "/",
             string fileOfSwaggerEndPoints = SwaggerForOcelotFileOptions.SwaggerEndPointsConfigFile)
         {
-            List <FileInfo> files = GetListOfOcelotFiles(folder, environment?.EnvironmentName);
+            List<FileInfo> files = GetListOfOcelotFiles(folder, environment?.EnvironmentName);
 
             SwaggerFileConfiguration fileConfigurationMerged = MergeFilesOfOcelotConfiguration(files, fileOfSwaggerEndPoints, environment?.EnvironmentName);
 
@@ -56,7 +59,9 @@ namespace MMLib.SwaggerForOcelot.DependencyInjection
             IEnumerable<FileInfo> ocelotFiles = new DirectoryInfo(folder).EnumerateFiles()
                                                                          .Where(fi => reg.IsMatch(fi.Name));
             if (!nameEnvirotment.IsNullOrWhiteSpace())
+            {
                 ocelotFiles = ocelotFiles.Where(fi => fi.Name.Contains(nameEnvirotment));
+            }
 
             return ocelotFiles.ToList();
         }

@@ -16,8 +16,4 @@
     <ProjectReference Include="..\..\src\MMLib.SwaggerForOcelot\MMLib.SwaggerForOcelot.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="NewFolder\" />
-  </ItemGroup>
-
 </Project>

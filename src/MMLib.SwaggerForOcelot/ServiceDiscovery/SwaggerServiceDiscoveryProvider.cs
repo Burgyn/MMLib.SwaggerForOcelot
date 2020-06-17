@@ -52,7 +52,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
             var downstreamRoute = new DownstreamRouteBuilder()
                 .WithUseServiceDiscovery(true)
                 .WithServiceName(endPoint.Service.Name)
-                .WithServiceNamespace(route.ServiceNamespace)
+                .WithServiceNamespace(route?.ServiceNamespace)
                 .Build();
 
             var serviceProvider = _serviceDiscovery.Get(conf, downstreamRoute);

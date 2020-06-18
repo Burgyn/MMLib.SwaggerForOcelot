@@ -131,7 +131,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         private void SetHttpVersion(HttpClient httpClient, IEnumerable<RouteOptions> routeOptions)
         {
             string downstreamHttpVersion = routeOptions.FirstOrDefault()?.DownstreamHttpVersion;
-            if (downstreamHttpVersion != null && downstreamHttpVersion != string.Empty)
+            if (!downstreamHttpVersion.IsNullOrEmpty())
             {
                 int[] version = downstreamHttpVersion.Split('.').Select(int.Parse).ToArray();
                 httpClient.DefaultRequestVersion = new Version(version[0], version[1]);

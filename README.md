@@ -91,50 +91,13 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 
    > `SwaggerEndPoint` is configuration for downstream service swagger generator endpoint. Property `Key` is used to pair with the Route configuration. `Name` is displayed in the combobox. `Url` is downstream service swagger generator endpoint.
 
-Optionally you can use the ocelot utility to load the apigateway configuration into multiple configuration files named as follows: ocelot.exampleName.json, but to activate this feature you need to use the following extension:
-```CSharp
- WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                    config.AddOcelotWithSwaggerSupport();
-                })
-                .UseStartup<Startup>();
-```
-using this extension the swagger path settings must be in a file called: "ocelot.SwaggerEndPoints.json", if instead you want to use another name for this file you could set the name as follows (without the .json extension):
-```CSharp
- WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                     .AddOcelotWithSwaggerSupport(fileOfSwaggerEndPoints: "ocelot.swagger")
-                })
-                .UseStartup<Startup>(folder: "Configuration");
-```
-Optionally you can put the configuration files in a folder, and for that you have to set the extension as follows:
-```CSharp
- WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                    config.AddOcelotWithSwaggerSupport();
-                })
-                .UseStartup<Startup>(folder: "Configuration");
-```
-Optionally you can also add configuration files with the format ocelot.exampleName.json per environment, to use this functionality you must configure the extension as follows:
-```CSharp
- WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                    .AddOcelotWithSwaggerSupport(environment: hostingContext.HostingEnvironment);
-                })
-                .UseStartup<Startup>(folder: "Configuration");
-```
-
 4. In the `ConfigureServices` method of `Startup.cs`, register the SwaggerForOcelot generator.
 
 ```CSharp
 services.AddSwaggerForOcelot(Configuration);
 ```
 
-6. In `Configure` method, insert the `SwaggerForOcelot` middleware to expose interactive documentation.
+5. In `Configure` method, insert the `SwaggerForOcelot` middleware to expose interactive documentation.
 
 ```CSharp
 app.UseSwaggerForOcelotUI(opt => {
@@ -175,7 +138,7 @@ app.UseSwaggerForOcelotUI(opt => {
 })
   ```
 
-7. Show your microservices interactive documentation.
+6. Show your microservices interactive documentation.
 
    > `http://ocelotserviceurl/swagger`
 
@@ -281,6 +244,52 @@ app.UseSwagger();
 The key is to set it up property `TransformByOcelotConfig` to `false`, because in this case you do not need to transform the documentation according to the ocelot configuration.
 
 ![ocelot docs](./demo/ocelotdocs.png)
+
+## Merging configuration files
+
+Optionally you can use the Ocelot feature [Merging configuration files](https://ocelot.readthedocs.io/en/latest/features/configuration.html#merging-configuration-files) to load the apigateway configuration from multiple configuration files named as follows: `ocelot.exampleName.json`. To activate this feature you need to use the following extension:
+
+```CSharp
+WebHost.CreateDefaultBuilder(args)
+  .ConfigureAppConfiguration((hostingContext, config) =>
+  {
+      config.AddOcelotWithSwaggerSupport();
+  })
+  .UseStartup<Startup>();
+```
+
+Using this extension the swagger path settings must be in a file called: `ocelot.SwaggerEndPoints.json`. If instead you want to use another name for this file you could set the name as follows _(without the .json extension)_:
+
+```CSharp
+WebHost.CreateDefaultBuilder(args)
+  .ConfigureAppConfiguration((hostingContext, config) =>
+  {
+     config.AddOcelotWithSwaggerSupport(fileOfSwaggerEndPoints: "ocelot.swagger")
+  })
+  .UseStartup<Startup>();
+```
+
+Optionally you can put the configuration files in a folder, and for that you have to set the extension as follows:
+
+```CSharp
+WebHost.CreateDefaultBuilder(args)
+  .ConfigureAppConfiguration((hostingContext, config) =>
+  {
+    config.AddOcelotWithSwaggerSupport();
+  })
+  .UseStartup<Startup>(folder: "Configuration");
+```
+
+Optionally you can also add configuration files with the format `ocelot.exampleName.json` per environment, to use this functionality you must configure the extension as follows:
+
+```CSharp
+WebHost.CreateDefaultBuilder(args)
+  .ConfigureAppConfiguration((hostingContext, config) =>
+  {
+    config.AddOcelotWithSwaggerSupport(environment: hostingContext.HostingEnvironment);
+  })
+  .UseStartup<Startup>(folder: "Configuration");
+```
 
 ## Limitation
 

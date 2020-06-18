@@ -1,6 +1,7 @@
 ﻿using Kros.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using MMLib.SwaggerForOcelot.Configuration;
 using Newtonsoft.Json;
 using System;
@@ -28,7 +29,7 @@ namespace MMLib.SwaggerForOcelot.DependencyInjection
         /// <returns>a Object IConfigurationBuilder</returns>
         public static IConfigurationBuilder AddOcelotWithSwaggerSupport(
             this IConfigurationBuilder builder,
-            IWebHostEnvironment environment = null,
+            IHostEnvironment environment = null,
             string folder = "/",
             string fileOfSwaggerEndPoints = SwaggerForOcelotFileOptions.SwaggerEndPointsConfigFile)
         {

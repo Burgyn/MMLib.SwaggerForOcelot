@@ -2,7 +2,7 @@
     "name": "Open Api version with host overriden.",
     "description": "Configuration has overridden host.",
     "hostOverride": "http://override.host.it",
-    "reRoutes": [
+    "routes": [
         {
             "DownstreamPathTemplate": "/api/{everything}",
             "UpstreamPathTemplate": "/api/projects/{everything}",

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using MMLib.SwaggerForOcelot.ServiceDiscovery;
+using Kros.Extensions;
 
 namespace MMLib.SwaggerForOcelot.Middleware
 {
@@ -22,7 +23,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         private readonly RequestDelegate _next;
 #pragma warning restore IDE0052
 
-        private readonly IOptions<List<ReRouteOptions>> _reRoutes;
+        private readonly IOptions<List<RouteOptions>> _routes;
         private readonly Lazy<Dictionary<string, SwaggerEndPointOptions>> _swaggerEndPoints;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ISwaggerJsonTransformer _transformer;
@@ -33,21 +34,21 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// </summary>
         /// <param name="next">The next delegate.</param>
         /// <param name="options">The options.</param>
-        /// <param name="reRoutes">The Ocelot ReRoutes configuration.</param>
+        /// <param name="routes">The Ocelot Routes configuration.</param>
         /// <param name="swaggerEndPoints">The swagger end points.</param>
         /// <param name="httpClientFactory">The HTTP client factory.</param>
         /// <param name="transformer">The SwaggerJsonTransformer</param>
         public SwaggerForOcelotMiddleware(
             RequestDelegate next,
             SwaggerForOcelotUIOptions options,
-            IOptions<List<ReRouteOptions>> reRoutes,
+            IOptions<List<RouteOptions>> routes,
             IOptions<List<SwaggerEndPointOptions>> swaggerEndPoints,
             IHttpClientFactory httpClientFactory,
             ISwaggerJsonTransformer transformer)
         {
             _transformer = Check.NotNull(transformer, nameof(transformer));
             _next = Check.NotNull(next, nameof(next));
-            _reRoutes = Check.NotNull(reRoutes, nameof(reRoutes));
+            _routes = Check.NotNull(routes, nameof(routes));
             Check.NotNull(swaggerEndPoints, nameof(swaggerEndPoints));
             _httpClientFactory = Check.NotNull(httpClientFactory, nameof(httpClientFactory));
             _options = options;
@@ -65,12 +66,12 @@ namespace MMLib.SwaggerForOcelot.Middleware
         {
             (string Url, SwaggerEndPointOptions EndPoint) = await GetEndPoint(context.Request.Path, discoveryProvider);
 
-            IEnumerable<ReRouteOptions> reRouteOptions = _reRoutes.Value
+            IEnumerable<RouteOptions> routeOptions = _routes.Value
                 .ExpandConfig(EndPoint)
                 .GroupByPaths();
 
             HttpClient httpClient = _httpClientFactory.CreateClient();
-            SetHttpVersion(httpClient, reRouteOptions);
+            SetHttpVersion(httpClient, routeOptions);
             AddHeaders(httpClient);
             string content = await httpClient.GetStringAsync(Url);
             string serverName;
@@ -86,7 +87,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
 
             if (EndPoint.TransformByOcelotConfig)
             {
-                content = _transformer.Transform(content, reRouteOptions, serverName);
+                content = _transformer.Transform(content, routeOptions, serverName);
             }
             content = await ReconfigureUpstreamSwagger(context, content);
 
@@ -127,10 +128,10 @@ namespace MMLib.SwaggerForOcelot.Middleware
             }
         }
 
-        private void SetHttpVersion(HttpClient httpClient, IEnumerable<ReRouteOptions> reRouteOptions)
+        private void SetHttpVersion(HttpClient httpClient, IEnumerable<RouteOptions> routeOptions)
         {
-            string downstreamHttpVersion = reRouteOptions.FirstOrDefault()?.DownstreamHttpVersion;
-            if (downstreamHttpVersion != null)
+            string downstreamHttpVersion = routeOptions.FirstOrDefault()?.DownstreamHttpVersion;
+            if (!downstreamHttpVersion.IsNullOrEmpty())
             {
                 int[] version = downstreamHttpVersion.Split('.').Select(int.Parse).ToArray();
                 httpClient.DefaultRequestVersion = new Version(version[0], version[1]);
@@ -153,7 +154,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
             SwaggerEndPointConfig config = endPoint.Config.FirstOrDefault(x => x.Version == endPointInfo.Version);
 
             string url = (await discoveryProvider
-                .GetSwaggerUriAsync(config, _reRoutes.Value.FirstOrDefault(p => p.SwaggerKey == endPoint.Key)))
+                .GetSwaggerUriAsync(config, _routes.Value.FirstOrDefault(p => p.SwaggerKey == endPoint.Key)))
                 .AbsoluteUri;
 
             return (url, endPoint);

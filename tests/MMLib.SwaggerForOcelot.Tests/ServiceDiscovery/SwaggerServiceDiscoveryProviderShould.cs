@@ -27,7 +27,7 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
 
             Uri uri = await provider.GetSwaggerUriAsync(
                 new SwaggerEndPointConfig() { Url = "http://localhost:5000/swagger" },
-                new ReRouteOptions());
+                new Configuration.RouteOptions());
 
             uri.AbsoluteUri.Should().Be("http://localhost:5000/swagger");
         }
@@ -42,7 +42,7 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
                 {
                     Service = new SwaggerService() { Name = "Projects", Path = "/swagger/v1/json" }
                 },
-                new ReRouteOptions());
+                new Configuration.RouteOptions());
 
             uri.AbsoluteUri.Should().Be("http://localhost:5000/swagger/v1/json");
         }
@@ -73,7 +73,7 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
                 {
                     Service = new SwaggerService() { Name = "Projects", Path = "/swagger/v1/json" }
                 },
-                new ReRouteOptions());
+                new Configuration.RouteOptions());
 
             uri.Scheme.Should().Be(expectedScheme);
         }
@@ -90,7 +90,7 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
                 {
                     Service = new SwaggerService() { Name = "Projects", Path = "/swagger/v1/json" }
                 },
-                new ReRouteOptions() { DownstreamScheme = expectedScheme });
+                new Configuration.RouteOptions() { DownstreamScheme = expectedScheme });
 
             uri.Scheme.Should().Be(expectedScheme);
         }

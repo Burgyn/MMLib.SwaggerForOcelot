@@ -38,21 +38,21 @@ namespace MMLib.SwaggerForOcelot.Tests
             // What is being tested
             var swaggerForOcelotOptions = new SwaggerForOcelotUIOptions();
             TestSwaggerEndpointOptions swaggerEndpointOptions = CreateSwaggerEndpointOptions(key,version);
-            var rerouteOptions = new TestReRouteOptions(new List<ReRouteOptions>
+            var routeOptions = new TestRouteOptions(new List<RouteOptions>
             {
-                new ReRouteOptions
+                new RouteOptions
                 {
                     SwaggerKey = "projects",
                     UpstreamPathTemplate ="/api/{version}/projects/Values/{everything}",
                     DownstreamPathTemplate ="/api/{version}/Values/{everything}",
                 },
-                new ReRouteOptions
+                new RouteOptions
                 {
                     SwaggerKey = "projects",
                     UpstreamPathTemplate = "/api/projects/Projects",
                     DownstreamPathTemplate = "/api/Projects",
                 },
-                new ReRouteOptions
+                new RouteOptions
                 {
                     SwaggerKey = "projects",
                     UpstreamPathTemplate = "/api/projects/Projects/{everything}",
@@ -72,17 +72,17 @@ namespace MMLib.SwaggerForOcelot.Tests
             swaggerJsonTransformerMock
                 .Setup(x => x.Transform(
                     It.IsAny<string>(),
-                    It.IsAny<IEnumerable<ReRouteOptions>>(),
+                    It.IsAny<IEnumerable<RouteOptions>>(),
                     It.IsAny<string>()))
                 .Returns((
                     string swaggerJson,
-                    IEnumerable<ReRouteOptions> reRouteOptions,
+                    IEnumerable<RouteOptions> routeOptions,
                     string serverOverride) => new SwaggerJsonTransformer()
-                    .Transform(swaggerJson,reRouteOptions, serverOverride));
+                    .Transform(swaggerJson,routeOptions, serverOverride));
             var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
                 next.Invoke,
                 swaggerForOcelotOptions,
-                rerouteOptions,
+                routeOptions,
                 swaggerEndpointOptions,
                 httpClientFactory,
                 swaggerJsonTransformerMock.Object);
@@ -99,7 +99,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             }
             swaggerJsonTransformerMock.Verify(x => x.Transform(
                 It.IsAny<string>(),
-                It.IsAny<IEnumerable<ReRouteOptions>>(),
+                It.IsAny<IEnumerable<RouteOptions>>(),
                 It.IsAny<string>()), Times.Once);
         }
 
@@ -119,7 +119,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                 ReConfigureUpstreamSwaggerJson = ExampleUserDefinedUpstreamTransformer
             };
             TestSwaggerEndpointOptions testSwaggerEndpointOptions = CreateSwaggerEndpointOptions(key,version);
-            var rerouteOptions = new TestReRouteOptions();
+            var routeOptions = new TestRouteOptions();
 
             // downstreamSwagger is returned when client.GetStringAsync is called by the middleware.
             string downstreamSwagger = await GetBaseOpenApi("OpenApiBase");
@@ -133,7 +133,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
                 next.Invoke,
                 swaggerForOcelotOptions,
-                rerouteOptions,
+                routeOptions,
                 testSwaggerEndpointOptions,
                 httpClientFactory,
                 swaggerJsonTransformer);
@@ -160,9 +160,9 @@ namespace MMLib.SwaggerForOcelot.Tests
             // What is being tested
             var swaggerForOcelotOptions = new SwaggerForOcelotUIOptions();
             TestSwaggerEndpointOptions swaggerEndpointOptions = CreateSwaggerEndpointOptions(key,version);
-            var rerouteOptions = new TestReRouteOptions(new List<ReRouteOptions>
+            var routeOptions = new TestRouteOptions(new List<RouteOptions>
             {
-                new ReRouteOptions
+                new RouteOptions
                 {
                     SwaggerKey = "projects",
                     UpstreamPathTemplate = "/api/projects/Projects",
@@ -180,17 +180,17 @@ namespace MMLib.SwaggerForOcelot.Tests
             swaggerJsonTransformerMock
                 .Setup(x => x.Transform(
                     It.IsAny<string>(),
-                    It.IsAny<IEnumerable<ReRouteOptions>>(),
+                    It.IsAny<IEnumerable<RouteOptions>>(),
                     It.IsAny<string>()))
                 .Returns((
                     string swaggerJson,
-                    IEnumerable<ReRouteOptions> reRouteOptions,
+                    IEnumerable<RouteOptions> routeOptions,
                     string serverOverride) => new SwaggerJsonTransformer()
-                    .Transform(swaggerJson,reRouteOptions, serverOverride));
+                    .Transform(swaggerJson, routeOptions, serverOverride));
             var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
                 next.Invoke,
                 swaggerForOcelotOptions,
-                rerouteOptions,
+                routeOptions,
                 swaggerEndpointOptions,
                 httpClientFactory,
                 swaggerJsonTransformerMock.Object);
@@ -343,19 +343,19 @@ namespace MMLib.SwaggerForOcelot.Tests
             }
         }
 
-        private class TestReRouteOptions : IOptions<List<ReRouteOptions>>
+        private class TestRouteOptions : IOptions<List<RouteOptions>>
         {
-            public TestReRouteOptions()
+            public TestRouteOptions()
             {
-                Value = new List<ReRouteOptions>();
+                Value = new List<RouteOptions>();
             }
 
-            public TestReRouteOptions(List<ReRouteOptions> value)
+            public TestRouteOptions(List<RouteOptions> value)
             {
                 Value = value;
             }
 
-            public List<ReRouteOptions> Value { get; }
+            public List<RouteOptions> Value { get; }
         }
 
         private class TestSwaggerEndpointOptions : IOptions<List<SwaggerEndPointOptions>>
@@ -376,7 +376,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                 _transformedJson = transformedJson;
             }
 
-            public string Transform(string swaggerJson, IEnumerable<ReRouteOptions> reRoutes, string serverOverride)
+            public string Transform(string swaggerJson, IEnumerable<RouteOptions> routes, string serverOverride)
             {
                 return _transformedJson;
             }

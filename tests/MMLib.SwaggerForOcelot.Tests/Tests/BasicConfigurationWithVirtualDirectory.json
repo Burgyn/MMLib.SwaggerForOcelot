@@ -1,7 +1,7 @@
 {
     "name": "Basic configuration with virtual directory.",
     "hostOverride": "localhost:8000",
-    "reRoutes": [
+    "routes": [
         {
             "DownstreamPathTemplate": "/api/{everything}",
             "UpstreamPathTemplate": "/api/projects/{everything}",

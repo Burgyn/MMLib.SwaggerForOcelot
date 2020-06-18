@@ -33,7 +33,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
         }
 
         /// <inheritdoc />
-        public async Task<Uri> GetSwaggerUriAsync(SwaggerEndPointConfig endPoint, ReRouteOptions reRoute)
+        public async Task<Uri> GetSwaggerUriAsync(SwaggerEndPointConfig endPoint, RouteOptions route)
         {
             if (!endPoint.Url.IsNullOrEmpty())
             {
@@ -41,21 +41,21 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
             }
             else
             {
-                return await GetSwaggerUri(endPoint, reRoute);
+                return await GetSwaggerUri(endPoint, route);
             }
         }
 
-        private async Task<Uri> GetSwaggerUri(SwaggerEndPointConfig endPoint, ReRouteOptions reRoute)
+        private async Task<Uri> GetSwaggerUri(SwaggerEndPointConfig endPoint, RouteOptions route)
         {
             var conf = _configurationCreator.Create(_options.CurrentValue.GlobalConfiguration);
 
-            var downstreamReroute = new DownstreamRouteBuilder()
+            var downstreamRoute = new DownstreamRouteBuilder()
                 .WithUseServiceDiscovery(true)
                 .WithServiceName(endPoint.Service.Name)
-                .WithServiceNamespace(reRoute?.ServiceNamespace)
+                .WithServiceNamespace(route?.ServiceNamespace)
                 .Build();
 
-            var serviceProvider = _serviceDiscovery.Get(conf, downstreamReroute);
+            var serviceProvider = _serviceDiscovery.Get(conf, downstreamRoute);
 
             if (serviceProvider.IsError)
             {
@@ -69,15 +69,15 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
                 throw new InvalidOperationException(GetErrorMessage(endPoint));
             }
 
-            var builder = new UriBuilder(GetScheme(service, reRoute), service.DownstreamHost, service.DownstreamPort);
+            var builder = new UriBuilder(GetScheme(service, route), service.DownstreamHost, service.DownstreamPort);
             builder.Path = endPoint.Service.Path;
 
             return builder.Uri;
         }
 
-        private string GetScheme(ServiceHostAndPort service, ReRouteOptions reRoute)
-            => (reRoute != null && !reRoute.DownstreamScheme.IsNullOrEmpty())
-            ? reRoute.DownstreamScheme
+        private string GetScheme(ServiceHostAndPort service, RouteOptions route) 
+            => (route != null && !route.DownstreamScheme.IsNullOrEmpty())
+            ? route.DownstreamScheme
             : !service.Scheme.IsNullOrEmpty()
             ? service.Scheme
             : service.DownstreamPort

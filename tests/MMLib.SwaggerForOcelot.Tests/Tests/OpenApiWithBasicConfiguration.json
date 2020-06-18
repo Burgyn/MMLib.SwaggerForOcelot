@@ -2,7 +2,7 @@
     "name": "Open api version with basic configuration.",
     "description": "Test open api format with basic configuration.",
     "hostOverride": "localhost:8000",
-    "reRoutes": [
+    "routes": [
         {
             "DownstreamPathTemplate": "/api/{everything}",
             "UpstreamPathTemplate": "/api/projects/{everything}",

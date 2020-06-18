@@ -7,7 +7,7 @@ namespace MMLib.SwaggerForOcelot.Tests
 {
     internal class DummySwaggerServiceDiscoveryProvider : ISwaggerServiceDiscoveryProvider
     {
-        public Task<Uri> GetSwaggerUriAsync(SwaggerEndPointConfig endPoint, ReRouteOptions reRoute) =>
+        public Task<Uri> GetSwaggerUriAsync(SwaggerEndPointConfig endPoint, RouteOptions route) =>
             Task.FromResult(new Uri(endPoint.Url));
 
         public static ISwaggerServiceDiscoveryProvider Default => new DummySwaggerServiceDiscoveryProvider();

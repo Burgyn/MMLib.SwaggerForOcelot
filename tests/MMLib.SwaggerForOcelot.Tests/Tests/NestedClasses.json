@@ -1,7 +1,7 @@
 {
     "name": "Nested classes",
     "hostOverride": "",
-    "reRoutes": [
+    "routes": [
         {
             "DownstreamPathTemplate": "/api/{everything}",
             "UpstreamPathTemplate": "/api/r/{everything}",

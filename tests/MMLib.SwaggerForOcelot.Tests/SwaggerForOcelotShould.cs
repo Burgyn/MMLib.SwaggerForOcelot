@@ -21,7 +21,7 @@ namespace MMLib.SwaggerForOcelot.Tests
 
             string transformed = transformer.Transform(
                 testData.DownstreamSwagger.ToString(),
-                testData.ReRoutes,
+                testData.Routes,
                 testData.HostOverride);
 
             AreEqual(transformed, testData.ExpectedTransformedSwagger);

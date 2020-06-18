@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MMLib.SwaggerForOcelot.Configuration;
 using Newtonsoft.Json.Linq;
 
@@ -25,9 +25,9 @@ namespace MMLib.SwaggerForOcelot.Tests
         public string HostOverride { get; set; }
 
         /// <summary>
-        /// Ocelot ReRoutes configuration.
+        /// Ocelot Routes configuration.
         /// </summary>
-        public IEnumerable<ReRouteOptions> ReRoutes { get; set; }
+        public IEnumerable<RouteOptions> Routes { get; set; }
 
         /// <summary>
         /// Source downstream swagger to transformation.

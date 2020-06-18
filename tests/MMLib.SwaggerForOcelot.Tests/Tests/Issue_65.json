@@ -2,7 +2,7 @@
   "name": "GitHub issue #65",
   "description": "Confusion in the interpretation of the routes. https://github.com/Burgyn/MMLib.SwaggerForOcelot/issues/65",
   "hostOverride": "",
-  "reRoutes": [
+  "routes": [
     {
       "DownstreamPathTemplate": "/api/companies",
       "DownstreamScheme": "https",

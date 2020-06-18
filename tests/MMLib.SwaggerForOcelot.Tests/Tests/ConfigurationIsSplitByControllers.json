@@ -1,8 +1,8 @@
 {
     "name": "Ocelot configuration is split by controllers.",
-    "description": "One service is split to more Ocelot's reroutes configurations by controllers.",
+    "description": "One service is split to more Ocelot's routes configurations by controllers.",
     "hostOverride": "",
-    "reRoutes": [
+    "routes": [
         {
             "DownstreamPathTemplate": "/v2/pet/findByStatus",
             "UpstreamPathTemplate": "/v2/api/pets/pet/findByStatus",

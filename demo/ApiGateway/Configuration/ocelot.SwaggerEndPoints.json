@@ -6,7 +6,10 @@
         {
           "Name": "Contacts API",
           "Version": "v1",
-          "Url": "https://localhost:44359/swagger/v1/swagger.json"
+          "Service": {
+            "Name": "contacts",
+            "Path": "/swagger/v1/swagger.json"
+          }
         }
       ]
     },
@@ -16,7 +19,10 @@
         {
           "Name": "Projects API",
           "Version": "v1",
-          "Url": "https://localhost:44304/swagger/v1/swagger.json"
+          "Service": {
+            "Name": "projects",
+            "Path": "/swagger/v1/swagger.json"
+          }
         }
       ]
     },
@@ -26,22 +32,34 @@
         {
           "Name": "Orders API",
           "Version": "v0.9",
-          "Url": "https://localhost:44343/swagger/v0.9/swagger.json"
+          "Service": {
+            "Name": "orders",
+            "Path": "/swagger/v0.9/swagger.json"
+          }
         },
         {
           "Name": "Orders API",
           "Version": "v1",
-          "Url": "https://localhost:44343/swagger/v1/swagger.json"
+          "Service": {
+            "Name": "orders",
+            "Path": "/swagger/v1/swagger.json"
+          }
         },
         {
           "Name": "Orders API",
           "Version": "v2",
-          "Url": "https://localhost:44343/swagger/v2/swagger.json"
+          "Service": {
+            "Name": "orders",
+            "Path": "/swagger/v2/swagger.json"
+          }
         },
         {
           "Name": "Orders API",
           "Version": "v3",
-          "Url": "https://localhost:44343/swagger/v3/swagger.json"
+          "Service": {
+            "Name": "orders",
+            "Path": "/swagger/v3/swagger.json"
+          }
         }
       ]
     }

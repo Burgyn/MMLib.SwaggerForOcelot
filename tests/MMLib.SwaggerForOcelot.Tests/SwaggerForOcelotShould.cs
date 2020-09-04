@@ -1,7 +1,7 @@
-﻿using System;
-using JsonDiffPatchDotNet;
+﻿using JsonDiffPatchDotNet;
 using MMLib.SwaggerForOcelot.Transformation;
 using Newtonsoft.Json.Linq;
+using System;
 using Xunit;
 using Xunit.Sdk;
 
@@ -24,10 +24,10 @@ namespace MMLib.SwaggerForOcelot.Tests
                 testData.Routes,
                 testData.HostOverride);
 
-            AreEqual(transformed, testData.ExpectedTransformedSwagger);
+            AreEqual(transformed, testData.ExpectedTransformedSwagger, testData.FileName);
         }
 
-        private static void AreEqual(string transformed, JObject expected)
+        private static void AreEqual(string transformed, JObject expected, string filename)
         {
             var actual = JObject.Parse(transformed);
 
@@ -37,7 +37,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                 JToken patch = jdp.Diff(actual, expected);
 
                 throw new XunitException(
-                    $"Transformed upstream swagger is not equal to expected. {Environment.NewLine} Diff: {patch}");
+                    $"Transformed upstream swagger is not equal to expected.{Environment.NewLine}File: {filename}. {Environment.NewLine}Diff: {patch}");
             }
         }
     }

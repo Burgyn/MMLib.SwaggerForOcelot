@@ -4,6 +4,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Tests\BasicConfigurationWithSchemaInHostOverride.json" />
     <None Remove="Tests\Issue_65.json" />
   </ItemGroup>
   <ItemGroup>
@@ -11,6 +12,7 @@
     <EmbeddedResource Include="Resources\OpenApiWithVersionPlaceholderBaseTransformed.json" />
     <EmbeddedResource Include="Resources\OpenApiBase.json" />
     <EmbeddedResource Include="Resources\OpenApiBaseTransformed.json" />
+    <EmbeddedResource Include="Tests\BasicConfigurationWithSchemaInHostOverride.json" />
 
     <EmbeddedResource Include="Tests\BasicConfiguration.json" />
 

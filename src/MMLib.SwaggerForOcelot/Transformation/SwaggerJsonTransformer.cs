@@ -1,10 +1,10 @@
 ﻿using Kros.IO;
 using MMLib.SwaggerForOcelot.Configuration;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 
 namespace MMLib.SwaggerForOcelot.Transformation
 {
@@ -222,6 +222,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
         private static void AddHost(JObject swagger, string swaggerHost)
         {
+            swaggerHost = swaggerHost.Contains(Uri.SchemeDelimiter) ? new Uri(swaggerHost).Authority : swaggerHost;
             swagger.Add(SwaggerProperties.Host, swaggerHost);
         }
 

@@ -9,7 +9,7 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 ![SwaggerForOcelot](https://github.com/Burgyn/MMLib.SwaggerForOcelot/blob/master/demo/image.png?raw=true)
 
 ---
-Did this library help you? Buy me a beer 😎🍺
+Did this project help you? Buy me a beer 😎🍺
 
 <a href="https://www.buymeacoffee.com/0dQ7tNG" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Beer" height="41" width="174"></a>
 

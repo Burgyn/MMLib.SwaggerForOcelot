@@ -23,7 +23,9 @@ namespace ApiGateway
                         .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json",
                             optional: true, reloadOnChange: true)
                         .AddJsonFile($"appsettings.local.json", optional: true, reloadOnChange: true)
-                        .AddOcelotWithSwaggerSupport(folder: "Configuration")
+                        .AddOcelotWithSwaggerSupport((o)=> {
+                            o.Folder = "Configuration";
+                        })
                         .AddEnvironmentVariables();
                 })
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());

@@ -1,5 +1,4 @@
 ﻿using Kros.Extensions;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using MMLib.SwaggerForOcelot.Configuration;
@@ -20,27 +19,45 @@ namespace MMLib.SwaggerForOcelot.DependencyInjection
         private const string OcelotFilePattern = @"^ocelot\.(.*?)\.json$";
 
         /// <summary>
-        /// Extension for compatibility of functionality multifile of ocelot
+        /// Extension for compatibility of functionality multifile of ocelot.
         /// </summary>
-        /// <param name="builder">builder of net core for call this extension</param>
-        /// <param name="environment">environment of net core app</param>
-        /// <param name="folder">folder of files of configuration of ocelot</param>
-        /// <param name="fileOfSwaggerEndPoints">name of file of configuration SwaggerForOcelot without .json extension</param>
-        /// <returns>a Object IConfigurationBuilder</returns>
+        /// <param name="builder">Builder of net core for call this extension.</param>
+        /// <param name="environment">Environment of net core app.</param>
+        /// <param name="folder">Folder of files of configuration of ocelot.</param>
+        /// <param name="fileOfSwaggerEndPoints">Name of file of configuration SwaggerForOcelot without .json extension.</param>
         public static IConfigurationBuilder AddOcelotWithSwaggerSupport(
             this IConfigurationBuilder builder,
             IHostEnvironment environment = null,
             string folder = "/",
             string fileOfSwaggerEndPoints = SwaggerForOcelotFileOptions.SwaggerEndPointsConfigFile)
+            => AddOcelotWithSwaggerSupport(builder, (o) =>
+            {
+                o.Folder = folder;
+                o.FileOfSwaggerEndPoints = fileOfSwaggerEndPoints;
+                o.HostEnvironment = environment;
+            });
+
+        /// <summary>
+        /// Extension for compatibility of functionality multifile of ocelot.
+        /// </summary>
+        /// <param name="builder">Builder of net core for call this extension.</param>
+        /// <param name="action">Configuration action.</param>
+        public static IConfigurationBuilder AddOcelotWithSwaggerSupport(
+            this IConfigurationBuilder builder,
+            Action<OcelotWithSwaggerOptions> action = null)
         {
-            List<FileInfo> files = GetListOfOcelotFiles(folder, environment?.EnvironmentName);
+            var options = new OcelotWithSwaggerOptions();
+
+            action?.Invoke(options);
+
+            List<FileInfo> files = GetListOfOcelotFiles(options.Folder, options.HostEnvironment?.EnvironmentName);
             SwaggerFileConfiguration fileConfigurationMerged =
-                MergeFilesOfOcelotConfiguration(files, fileOfSwaggerEndPoints, environment?.EnvironmentName);
+                MergeFilesOfOcelotConfiguration(files, options.FileOfSwaggerEndPoints, options.HostEnvironment?.EnvironmentName);
             string jsonFileConfiguration = JsonConvert.SerializeObject(fileConfigurationMerged);
 
-            File.WriteAllText(SwaggerForOcelotFileOptions.PrimaryOcelotConfigFile, jsonFileConfiguration);
+            File.WriteAllText(options.PrimaryOcelotConfigFileName, jsonFileConfiguration);
 
-            builder.AddJsonFile(SwaggerForOcelotFileOptions.PrimaryOcelotConfigFile, optional: false, reloadOnChange: false);
+            builder.AddJsonFile(options.PrimaryOcelotConfigFileName, optional: false, reloadOnChange: false);
 
             return builder;
         }
@@ -48,10 +65,10 @@ namespace MMLib.SwaggerForOcelot.DependencyInjection
         #region Private Methods
 
         /// <summary>
-        /// Get files of ocelot Configuration with a filter of envirotment
+        /// Get files of ocelot Configuration with a filter of envirotment.
         /// </summary>
         /// <param name="folder"></param>
-        /// <returns>a var of type List<FileInfo> with the list of files of configuration of ocelot</returns>
+        /// <returns>A var of type List<FileInfo> with the list of files of configuration of ocelot.</returns>
         private static List<FileInfo> GetListOfOcelotFiles(string folder, string nameEnvirotment)
         {
             var reg = new Regex(OcelotFilePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
@@ -68,13 +85,6 @@ namespace MMLib.SwaggerForOcelot.DependencyInjection
             return ocelotFiles.ToList();
         }
 
-        /// <summary>
-        /// Merge a list of files of configuration of Ocelot with options SwaggerEnpoints
-        /// </summary>
-        /// <param name="files"></param>
-        /// <param name="fileOfSwaggerEndPoints"></param>
-        /// <param name="environmentName"></param>
-        /// <returns>a object SwaggerFileConfiguration with the configuration of file</returns>
         private static SwaggerFileConfiguration MergeFilesOfOcelotConfiguration(
             List<FileInfo> files,
             string fileOfSwaggerEndPoints,

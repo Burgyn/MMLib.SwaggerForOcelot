@@ -267,7 +267,9 @@ Using this extension the swagger path settings must be in a file called: `ocelot
 WebHost.CreateDefaultBuilder(args)
   .ConfigureAppConfiguration((hostingContext, config) =>
   {
-     config.AddOcelotWithSwaggerSupport(fileOfSwaggerEndPoints: "ocelot.swagger")
+     config.AddOcelotWithSwaggerSupport((o) => {
+       o.FileOfSwaggerEndPoints = "ocelot.swagger";
+     })
   })
   .UseStartup<Startup>();
 ```
@@ -278,9 +280,11 @@ Optionally you can put the configuration files in a folder, and for that you hav
 WebHost.CreateDefaultBuilder(args)
   .ConfigureAppConfiguration((hostingContext, config) =>
   {
-    config.AddOcelotWithSwaggerSupport();
+    config.AddOcelotWithSwaggerSupport((o) => {
+      o.Folder = "Configuration";
+    });
   })
-  .UseStartup<Startup>(folder: "Configuration");
+  .UseStartup<Startup>();
 ```
 
 Optionally you can also add configuration files with the format `ocelot.exampleName.json` per environment, to use this functionality you must configure the extension as follows:
@@ -289,9 +293,25 @@ Optionally you can also add configuration files with the format `ocelot.exampleN
 WebHost.CreateDefaultBuilder(args)
   .ConfigureAppConfiguration((hostingContext, config) =>
   {
-    config.AddOcelotWithSwaggerSupport(environment: hostingContext.HostingEnvironment);
+    config.AddOcelotWithSwaggerSupport((o) => {
+      o.Folder = "Configuration";
+      o.Environment = hostingContext.HostingEnvironment;
+    });
   })
-  .UseStartup<Startup>(folder: "Configuration");
+  .UseStartup<Startup>();
+```
+
+To save the primary Ocelot config file under a name other than `ocelot.json then use the following:
+
+```CSharp
+WebHost.CreateDefaultBuilder(args)
+  .ConfigureAppConfiguration((hostingContext, config) =>
+  {
+    config.AddOcelotWithSwaggerSupport((o) => {
+      o.PrimaryOcelotConfigFile = "myOcelot.json";
+    });
+  })
+  .UseStartup<Startup>();
 ```
 
 ## Limitation

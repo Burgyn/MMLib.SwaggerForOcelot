@@ -30,8 +30,7 @@ namespace MMLib.SwaggerForOcelot.DependencyInjection
             IHostEnvironment environment = null,
             string folder = "/",
             string fileOfSwaggerEndPoints = SwaggerForOcelotFileOptions.SwaggerEndPointsConfigFile)
-            => AddOcelotWithSwaggerSupport(builder, (o) =>
-            {
+            => AddOcelotWithSwaggerSupport(builder, (o) => {
 
                 o.Folder = folder;
                 o.FileOfSwaggerEndPoints = fileOfSwaggerEndPoints;

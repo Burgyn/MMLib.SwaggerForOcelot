@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Tests\BasicConfigurationWithSchemaInHostOverride.json" />
+    <None Remove="Tests\Issue_128.json" />
     <None Remove="Tests\Issue_65.json" />
   </ItemGroup>
   <ItemGroup>
@@ -17,6 +18,8 @@
     <EmbeddedResource Include="Tests\BasicConfiguration.json" />
 
     <EmbeddedResource Include="Tests\Issue_65.json" />
+
+    <EmbeddedResource Include="Tests\Issue_128.json" />
     <EmbeddedResource Include="Tests\SwaggerWithBasePath.json" />
     <EmbeddedResource Include="Tests\OcelotRouteOnlyOneController.json" />
     <EmbeddedResource Include="Tests\BasicConfigurationWithVirtualDirectory.json" />

@@ -1,0 +1,107 @@
+{
+  "name": "GitHub issue #128",
+  "description": "Testing for types that are derived from other types.",
+  "hostOverride": "",
+  "routes": [
+    {
+      "DownstreamPathTemplate": "/api/v1/foo",
+      "UpstreamPathTemplate": "/api/v1/foo",
+      "SwaggerKey": "data"
+    }
+  ],
+  "downstreamSwagger": {
+    "swagger": "2.0",
+    "info": {
+      "title": "Test",
+      "version": "1"
+    },
+    "paths": {
+      "/api/v1/foo": {
+        "get": {
+          "responses": {
+            "200": {
+              "x-nullable": false,
+              "description": "Success.",
+              "schema": {
+                "$ref": "#/definitions/Foo"
+              }
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "Foo": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/Bar"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "propTest": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "Bar": {
+        "type": "object",
+        "properties": {
+          "anotherProp": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+
+  "expectedTransformedSwagger": {
+    "swagger": "2.0",
+    "info": {
+      "title": "Test",
+      "version": "1"
+    },
+    "paths": {
+      "/api/v1/foo": {
+        "get": {
+          "responses": {
+            "200": {
+              "x-nullable": false,
+              "description": "Success.",
+              "schema": {
+                "$ref": "#/definitions/Foo"
+              }
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "Foo": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/Bar"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "propTest": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "Bar": {
+        "type": "object",
+        "properties": {
+          "anotherProp": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

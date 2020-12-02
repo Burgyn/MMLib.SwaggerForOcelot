@@ -30,5 +30,11 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// Gets or sets the service.
         /// </summary>
         public SwaggerService Service { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is gateway it self.
+        /// </summary>
+        internal bool IsGatewayItSelf
+            => Version == OcelotSwaggerGenOptions.AggregatesKey || Version == OcelotSwaggerGenOptions.GatewayKey;
     }
 }

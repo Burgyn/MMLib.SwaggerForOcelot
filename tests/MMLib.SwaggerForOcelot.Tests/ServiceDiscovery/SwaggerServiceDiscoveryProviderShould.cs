@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
 using MMLib.SwaggerForOcelot.ServiceDiscovery;
@@ -10,6 +11,7 @@ using Ocelot.Responses;
 using Ocelot.ServiceDiscovery;
 using Ocelot.ServiceDiscovery.Providers;
 using Ocelot.Values;
+using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,6 +102,8 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
             IServiceDiscoveryProviderFactory serviceDiscovery = Substitute.For<IServiceDiscoveryProviderFactory>();
             IServiceProviderConfigurationCreator configurationCreator = Substitute.For<IServiceProviderConfigurationCreator>();
             IOptionsMonitor<FileConfiguration> options = Substitute.For<IOptionsMonitor<FileConfiguration>>();
+            IHttpContextAccessor httpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            IOptions<SwaggerOptions> swaggerOptions = Substitute.For<IOptions<SwaggerOptions>>();
 
             options.CurrentValue.Returns(new FileConfiguration());
 
@@ -109,7 +113,8 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
 
             serviceDiscovery.Get(Arg.Any<ServiceProviderConfiguration>(), Arg.Any<DownstreamRoute>()).Returns(response);
 
-            var provider = new SwaggerServiceDiscoveryProvider(serviceDiscovery, configurationCreator, options);
+            var provider = new SwaggerServiceDiscoveryProvider(
+                serviceDiscovery, configurationCreator, options, httpContextAccessor, swaggerOptions);
             return provider;
         }
 

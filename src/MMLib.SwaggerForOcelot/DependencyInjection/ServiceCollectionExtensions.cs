@@ -4,6 +4,10 @@ using MMLib.SwaggerForOcelot.ServiceDiscovery;
 using MMLib.SwaggerForOcelot.Transformation;
 using System.Collections.Generic;
 using MMLib.SwaggerForOcelot.Middleware;
+using System;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.OpenApi.Models;
+using MMLib.SwaggerForOcelot.Repositories;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -17,14 +21,87 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services">The services.</param>
         /// <param name="configuration">The configuration.</param>
+        /// <param name="ocelotSwaggerSetup">Setup action for configraution thios package.</param>
+        /// <param name="swaggerSetup">Setup acton for configuration of swagger generator.</param>
         /// <returns><see cref="IServiceCollection"/></returns>
-        public static IServiceCollection AddSwaggerForOcelot(this IServiceCollection services, IConfiguration configuration)
-            => services
-            .AddTransient<ISwaggerServiceDiscoveryProvider, SwaggerServiceDiscoveryProvider>()
-            .AddTransient<ISwaggerJsonTransformer, SwaggerJsonTransformer>()
-            .Configure<List<RouteOptions>>(options => configuration.GetSection("Routes").Bind(options))
-            .Configure<List<SwaggerEndPointOptions>>(options
-                => configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName).Bind(options))
-            .AddHttpClient();
+        public static IServiceCollection AddSwaggerForOcelot(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            Action<OcelotSwaggerGenOptions> ocelotSwaggerSetup = null,
+            Action<SwaggerGenOptions> swaggerSetup = null)
+        {
+            services
+                .AddTransient<ISwaggerServiceDiscoveryProvider, SwaggerServiceDiscoveryProvider>()
+                .AddTransient<ISwaggerJsonTransformer, SwaggerJsonTransformer>()
+                .Configure<List<RouteOptions>>(options => configuration.GetSection("Routes").Bind(options))
+                .Configure<List<SwaggerEndPointOptions>>(options
+                    => configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName).Bind(options))
+                .AddHttpClient()
+                .AddSingleton<ISwaggerEndPointRepository, SwaggerEndPointRepository>();
+
+            var options = new OcelotSwaggerGenOptions();
+            ocelotSwaggerSetup?.Invoke(options);
+            services.AddSingleton(options);
+
+            services.AddSwaggerGen(c =>
+            {
+                swaggerSetup(c);
+
+                AddAggregatesDocs(c, options);
+                AddGatewayItSelfDocs(c, options);
+            });
+
+            return services;
+        }
+
+        private static void AddGatewayItSelfDocs(SwaggerGenOptions c, OcelotSwaggerGenOptions options)
+        {
+            if (options.GenerateDocsForGatewayItSelf)
+            {
+                c.SwaggerDoc(OcelotSwaggerGenOptions.GatewayKey, new OpenApiInfo
+                {
+                    Title = "Gateway",
+                    Version = OcelotSwaggerGenOptions.GatewayKey,
+                });
+            }
+        }
+
+        private static void AddAggregatesDocs(SwaggerGenOptions c, OcelotSwaggerGenOptions options)
+        {
+            if (options.GenerateDocsForAggregates)
+            {
+                c.SwaggerDoc(OcelotSwaggerGenOptions.AggregatesKey, new OpenApiInfo
+                {
+                    Title = "Aggregates",
+                    Version = OcelotSwaggerGenOptions.AggregatesKey
+                });
+                c.DocumentFilter<XXX>();
+            }
+        }
+    }
+
+    public class XXX : IDocumentFilter
+    {
+        public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+        {
+            if (swaggerDoc?.Info?.Version != "aggregates")
+            {
+                return;
+            }
+            Dictionary<OperationType, OpenApiOperation> operations = new Dictionary<OperationType, OpenApiOperation>()
+            {
+                { OperationType.Get, new OpenApiOperation(){
+                    Tags = new List<OpenApiTag>(){ new OpenApiTag() { Name = "Aggregates" } } ,
+                    Summary = "fffffffffffer"
+                } }
+            };
+            swaggerDoc.Paths.Clear();
+            swaggerDoc.Components.Schemas.Clear();
+            swaggerDoc.Paths.Add("/testing", new OpenApiPathItem()
+            {
+                Description = "fds fdsf sdfsd",
+                Operations = operations
+            });
+        }
     }
 }

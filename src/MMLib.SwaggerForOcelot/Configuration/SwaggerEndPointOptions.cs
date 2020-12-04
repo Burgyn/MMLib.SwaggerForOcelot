@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MMLib.SwaggerForOcelot.Configuration
 {
@@ -44,5 +45,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         ///   <c>true</c> if [transform by ocelot configuration]; otherwise, <c>false</c>.
         /// </value>
         public bool TransformByOcelotConfig { get; set; } = true;
+
+        internal bool IsGatewayItSelf => Config != null && Config.Any(c => c.IsGatewayItSelf);
     }
 }

@@ -33,6 +33,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<SwaggerGenOptions> swaggerSetup = null)
         {
             services
+                .AddTransient<IDownstreamSwaggerDocsRepository, DownstreamSwaggerDocsRepository>()
                 .AddTransient<ISwaggerServiceDiscoveryProvider, SwaggerServiceDiscoveryProvider>()
                 .AddTransient<ISwaggerJsonTransformer, SwaggerJsonTransformer>()
                 .Configure<List<RouteOptions>>(options => configuration.GetSection("Routes").Bind(options))

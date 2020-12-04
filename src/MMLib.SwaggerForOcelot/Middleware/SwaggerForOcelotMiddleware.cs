@@ -6,10 +6,7 @@ using MMLib.SwaggerForOcelot.Transformation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using MMLib.SwaggerForOcelot.ServiceDiscovery;
-using Kros.Extensions;
 using MMLib.SwaggerForOcelot.Repositories;
 
 namespace MMLib.SwaggerForOcelot.Middleware
@@ -25,7 +22,6 @@ namespace MMLib.SwaggerForOcelot.Middleware
 #pragma warning restore IDE0052
 
         private readonly IOptions<List<RouteOptions>> _routes;
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ISwaggerJsonTransformer _transformer;
         private readonly SwaggerForOcelotUIOptions _options;
 
@@ -42,13 +38,11 @@ namespace MMLib.SwaggerForOcelot.Middleware
             RequestDelegate next,
             SwaggerForOcelotUIOptions options,
             IOptions<List<RouteOptions>> routes,
-            IHttpClientFactory httpClientFactory,
             ISwaggerJsonTransformer transformer)
         {
             _transformer = Check.NotNull(transformer, nameof(transformer));
             _next = Check.NotNull(next, nameof(next));
             _routes = Check.NotNull(routes, nameof(routes));
-            _httpClientFactory = Check.NotNull(httpClientFactory, nameof(httpClientFactory));
             _options = options;
         }
 
@@ -57,26 +51,37 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="discoveryProvider">The discovery provider.</param>
-        /// <param name="swaggerEndPointRepository">Swagger endpoint repository</param>
+        /// <param name="swaggerEndPointRepository">Swagger endpoint repository.</param>
+        /// <param name="downstreamSwaggerDocs">Repository for obtaining downstream swagger docs.</param>
         public async Task Invoke(HttpContext context,
-            ISwaggerServiceDiscoveryProvider discoveryProvider,
-            ISwaggerEndPointRepository swaggerEndPointRepository)
+            ISwaggerEndPointRepository swaggerEndPointRepository,
+            IDownstreamSwaggerDocsRepository downstreamSwaggerDocs)
         {
-            (string Url, SwaggerEndPointOptions EndPoint) =
-                await GetEndPoint(context.Request.Path, discoveryProvider, swaggerEndPointRepository);
+            (string version, SwaggerEndPointOptions endPoint) = GetEndPoint(context.Request.Path, swaggerEndPointRepository);
 
             IEnumerable<RouteOptions> routeOptions = _routes.Value
-                .ExpandConfig(EndPoint)
+                .ExpandConfig(endPoint)
                 .GroupByPaths();
 
-            HttpClient httpClient = _httpClientFactory.CreateClient();
-            SetHttpVersion(httpClient, routeOptions);
-            AddHeaders(httpClient);
-            string content = await httpClient.GetStringAsync(Url);
+            RouteOptions route = routeOptions.FirstOrDefault(r => r.SwaggerKey == endPoint.Key);
+
+            string content = await downstreamSwaggerDocs.GetSwaggerJsonAsync(route, endPoint, version);
+
+            if (endPoint.TransformByOcelotConfig)
+            {
+                content = _transformer.Transform(content, routeOptions, GetServerName(context, endPoint));
+            }
+            content = await ReconfigureUpstreamSwagger(context, content);
+
+            await context.Response.WriteAsync(content);
+        }
+
+        private string GetServerName(HttpContext context, SwaggerEndPointOptions endPoint)
+        {
             string serverName;
             if (string.IsNullOrWhiteSpace(_options.ServerOcelot))
             {
-                serverName = EndPoint.HostOverride
+                serverName = endPoint.HostOverride
                     ?? $"{context.Request.Scheme}://{context.Request.Host.Value.RemoveSlashFromEnd()}";
             }
             else
@@ -84,13 +89,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
                 serverName = _options.ServerOcelot;
             }
 
-            if (EndPoint.TransformByOcelotConfig)
-            {
-                content = _transformer.Transform(content, routeOptions, serverName);
-            }
-            content = await ReconfigureUpstreamSwagger(context, content);
-
-            await context.Response.WriteAsync(content);
+            return serverName;
         }
 
         private async Task<string> ReconfigureUpstreamSwagger(HttpContext context, string swaggerJson)
@@ -114,50 +113,14 @@ namespace MMLib.SwaggerForOcelot.Middleware
             return swaggerJson;
         }
 
-        private void AddHeaders(HttpClient httpClient)
-        {
-            if (_options.DownstreamSwaggerHeaders is null)
-            {
-                return;
-            }
-
-            foreach (KeyValuePair<string, string> kvp in _options.DownstreamSwaggerHeaders)
-            {
-                httpClient.DefaultRequestHeaders.Add(kvp.Key, kvp.Value);
-            }
-        }
-
-        private void SetHttpVersion(HttpClient httpClient, IEnumerable<RouteOptions> routeOptions)
-        {
-            string downstreamHttpVersion = routeOptions.FirstOrDefault()?.DownstreamHttpVersion;
-            if (!downstreamHttpVersion.IsNullOrEmpty())
-            {
-                int[] version = downstreamHttpVersion.Split('.').Select(int.Parse).ToArray();
-                httpClient.DefaultRequestVersion = new Version(version[0], version[1]);
-            }
-        }
-
-        /// <summary>
-        /// Get Url and Endpoint from path
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns>
-        /// The Url of a specific version and <see cref="SwaggerEndPointOptions"/>.
-        /// </returns>
-        private async Task<(string Url, SwaggerEndPointOptions EndPoint)> GetEndPoint(
+        private (string version, SwaggerEndPointOptions endpoint) GetEndPoint(
             string path,
-            ISwaggerServiceDiscoveryProvider discoveryProvider,
             ISwaggerEndPointRepository swaggerEndPointRepository)
         {
             (string Version, string Key) endPointInfo = GetEndPointInfo(path);
             SwaggerEndPointOptions endPoint = swaggerEndPointRepository.GetByKey(endPointInfo.Key);
-            SwaggerEndPointConfig config = endPoint.Config.FirstOrDefault(x => x.Version == endPointInfo.Version);
 
-            string url = (await discoveryProvider
-                .GetSwaggerUriAsync(config, _routes.Value.FirstOrDefault(p => p.SwaggerKey == endPoint.Key)))
-                .AbsoluteUri;
-
-            return (url, endPoint);
+            return (endPointInfo.Version, endPoint);
         }
 
         /// <summary>
@@ -165,7 +128,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// </summary>
         /// <param name="path"></param>
         /// <returns>
-        /// Version and the key of End point
+        /// Version and the key of End point.
         /// </returns>
         private (string Version, string Key) GetEndPointInfo(string path)
         {

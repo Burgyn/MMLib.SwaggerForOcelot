@@ -8,6 +8,8 @@ using System;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.OpenApi.Models;
 using MMLib.SwaggerForOcelot.Repositories;
+using Microsoft.Extensions.DocumentFilters;
+using Ocelot.Configuration.File;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -43,6 +45,11 @@ namespace Microsoft.Extensions.DependencyInjection
             ocelotSwaggerSetup?.Invoke(options);
             services.AddSingleton(options);
 
+            if (options.GenerateDocsForAggregates)
+            {
+                services.Configure<List<FileAggregateRoute>>(options => configuration.GetSection("Aggregates").Bind(options));
+            }
+
             services.AddSwaggerGen(c =>
             {
                 swaggerSetup(c);
@@ -75,33 +82,8 @@ namespace Microsoft.Extensions.DependencyInjection
                     Title = "Aggregates",
                     Version = OcelotSwaggerGenOptions.AggregatesKey
                 });
-                c.DocumentFilter<XXX>();
+                c.DocumentFilter<AggregatesDocumentFilter>();
             }
-        }
-    }
-
-    public class XXX : IDocumentFilter
-    {
-        public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
-        {
-            if (swaggerDoc?.Info?.Version != "aggregates")
-            {
-                return;
-            }
-            Dictionary<OperationType, OpenApiOperation> operations = new Dictionary<OperationType, OpenApiOperation>()
-            {
-                { OperationType.Get, new OpenApiOperation(){
-                    Tags = new List<OpenApiTag>(){ new OpenApiTag() { Name = "Aggregates" } } ,
-                    Summary = "fffffffffffer"
-                } }
-            };
-            swaggerDoc.Paths.Clear();
-            swaggerDoc.Components.Schemas.Clear();
-            swaggerDoc.Paths.Add("/testing", new OpenApiPathItem()
-            {
-                Description = "fds fdsf sdfsd",
-                Operations = operations
-            });
         }
     }
 }

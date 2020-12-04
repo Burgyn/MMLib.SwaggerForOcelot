@@ -90,6 +90,11 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public IEnumerable<string> UpstreamHttpMethod { get; set; }
 
         /// <summary>
+        /// Gets or sets the key.
+        /// </summary>
+        public string Key { get; set; }
+
+        /// <summary>
         /// Determines whether [contains HTTP method] [the specified method type].
         /// </summary>
         /// <param name="methodType">Type of the method.</param>

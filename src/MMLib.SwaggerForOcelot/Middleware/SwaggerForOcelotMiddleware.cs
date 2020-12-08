@@ -54,7 +54,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// <param name="swaggerEndPointRepository">Swagger endpoint repository.</param>
         /// <param name="downstreamSwaggerDocs">Repository for obtaining downstream swagger docs.</param>
         public async Task Invoke(HttpContext context,
-            ISwaggerEndPointRepository swaggerEndPointRepository,
+            ISwaggerEndPointProvider swaggerEndPointRepository,
             IDownstreamSwaggerDocsRepository downstreamSwaggerDocs)
         {
             (string version, SwaggerEndPointOptions endPoint) = GetEndPoint(context.Request.Path, swaggerEndPointRepository);
@@ -115,7 +115,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
 
         private (string version, SwaggerEndPointOptions endpoint) GetEndPoint(
             string path,
-            ISwaggerEndPointRepository swaggerEndPointRepository)
+            ISwaggerEndPointProvider swaggerEndPointRepository)
         {
             (string Version, string Key) endPointInfo = GetEndPointInfo(path);
             SwaggerEndPointOptions endPoint = swaggerEndPointRepository.GetByKey(endPointInfo.Key);

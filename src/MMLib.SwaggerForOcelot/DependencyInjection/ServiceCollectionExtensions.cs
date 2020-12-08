@@ -8,8 +8,8 @@ using System;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.OpenApi.Models;
 using MMLib.SwaggerForOcelot.Repositories;
-using Microsoft.Extensions.DocumentFilters;
 using Ocelot.Configuration.File;
+using MMLib.SwaggerForOcelot.Aggregates;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -33,6 +33,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<SwaggerGenOptions> swaggerSetup = null)
         {
             services
+                .AddTransient<IRoutesDocumentationProvider, RoutesDocumentationProvider>()
                 .AddTransient<IDownstreamSwaggerDocsRepository, DownstreamSwaggerDocsRepository>()
                 .AddTransient<ISwaggerServiceDiscoveryProvider, SwaggerServiceDiscoveryProvider>()
                 .AddTransient<ISwaggerJsonTransformer, SwaggerJsonTransformer>()
@@ -40,7 +41,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Configure<List<SwaggerEndPointOptions>>(options
                     => configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName).Bind(options))
                 .AddHttpClient()
-                .AddSingleton<ISwaggerEndPointRepository, SwaggerEndPointRepository>();
+                .AddMemoryCache()
+                .AddSingleton<ISwaggerEndPointProvider, SwaggerEndPointProvider>();
 
             var options = new OcelotSwaggerGenOptions();
             ocelotSwaggerSetup?.Invoke(options);

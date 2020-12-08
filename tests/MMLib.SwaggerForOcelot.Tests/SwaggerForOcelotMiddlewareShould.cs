@@ -89,7 +89,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             // Act
             await swaggerForOcelotMiddleware.Invoke(
                 httpContext,
-                new SwaggerEndPointRepository(swaggerEndpointOptions, OcelotSwaggerGenOptions.Default),
+                new SwaggerEndPointProvider(swaggerEndpointOptions, OcelotSwaggerGenOptions.Default),
                 new DownstreamSwaggerDocsRepository(Microsoft.Extensions.Options.Options.Create(swaggerForOcelotOptions),
                     httpClientFactory, DummySwaggerServiceDiscoveryProvider.Default));
             httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
@@ -142,7 +142,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             // Act
             await swaggerForOcelotMiddleware.Invoke(
                 httpContext,
-                new SwaggerEndPointRepository(testSwaggerEndpointOptions, OcelotSwaggerGenOptions.Default),
+                new SwaggerEndPointProvider(testSwaggerEndpointOptions, OcelotSwaggerGenOptions.Default),
                 new DownstreamSwaggerDocsRepository(Microsoft.Extensions.Options.Options.Create(swaggerForOcelotOptions),
                     httpClientFactory, DummySwaggerServiceDiscoveryProvider.Default));
             httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
@@ -201,7 +201,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             // Act
             await swaggerForOcelotMiddleware.Invoke(
                 httpContext,
-                new SwaggerEndPointRepository(swaggerEndpointOptions, OcelotSwaggerGenOptions.Default),
+                new SwaggerEndPointProvider(swaggerEndpointOptions, OcelotSwaggerGenOptions.Default),
                 new DownstreamSwaggerDocsRepository(Microsoft.Extensions.Options.Options.Create(swaggerForOcelotOptions),
                     httpClientFactory, DummySwaggerServiceDiscoveryProvider.Default));
             httpContext.Response.Body.Seek(0, SeekOrigin.Begin);

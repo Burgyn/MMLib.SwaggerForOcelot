@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace MMLib.SwaggerForOcelot.Repositories
 {
     /// <summary>
-    /// Interface which describe repository for obtaining <see cref="SwaggerEndPointOptions"/>
+    /// Interface which describe provider for obtaining <see cref="SwaggerEndPointOptions"/>
     /// </summary>
-    public interface ISwaggerEndPointRepository
+    public interface ISwaggerEndPointProvider
     {
         /// <summary>
         /// Gets all.

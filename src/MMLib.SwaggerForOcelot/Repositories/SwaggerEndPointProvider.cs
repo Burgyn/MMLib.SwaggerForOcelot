@@ -8,19 +8,19 @@ using System.Linq;
 namespace MMLib.SwaggerForOcelot.Repositories
 {
     /// <summary>
-    /// Repository for obtaining <see cref="SwaggerEndPointOptions"/>.
+    /// Provider for obtaining <see cref="SwaggerEndPointOptions"/>.
     /// </summary>
-    public class SwaggerEndPointRepository : ISwaggerEndPointRepository
+    public class SwaggerEndPointProvider : ISwaggerEndPointProvider
     {
         private readonly Lazy<Dictionary<string, SwaggerEndPointOptions>> _swaggerEndPoints;
         private readonly IOptions<List<SwaggerEndPointOptions>> _swaggerEndPointsOptions;
         private readonly OcelotSwaggerGenOptions _options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SwaggerEndPointRepository"/> class.
+        /// Initializes a new instance of the <see cref="SwaggerEndPointProvider"/> class.
         /// </summary>
         /// <param name="swaggerEndPoints">The swagger end points.</param>
-        public SwaggerEndPointRepository(
+        public SwaggerEndPointProvider(
             IOptions<List<SwaggerEndPointOptions>> swaggerEndPoints,
             OcelotSwaggerGenOptions options)
         {

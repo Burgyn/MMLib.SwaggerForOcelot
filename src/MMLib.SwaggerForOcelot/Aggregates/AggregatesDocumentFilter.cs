@@ -6,7 +6,7 @@ using Ocelot.Configuration.File;
 using Microsoft.Extensions.Options;
 using System.Linq;
 
-namespace Microsoft.Extensions.DocumentFilters
+namespace MMLib.SwaggerForOcelot.Aggregates
 {
     /// <summary>
     /// Document filter, which add documentation for aggregates.
@@ -16,18 +16,23 @@ namespace Microsoft.Extensions.DocumentFilters
     {
         private readonly IOptions<List<FileAggregateRoute>> _aggregates;
         private readonly IOptions<List<RouteOptions>> _routes;
+        private readonly IRoutesDocumentationProvider _routesDocumentationProvider;
         private readonly OpenApiHelper _openApi = new OpenApiHelper();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregatesDocumentFilter"/> class.
         /// </summary>
         /// <param name="aggregates">The aggregates.</param>
+        /// <param name="routes">Routes.</param>
+        /// <param name="routesDocumentationProvider">Routes documentation provider.</param>
         public AggregatesDocumentFilter(
             IOptions<List<FileAggregateRoute>> aggregates,
-            IOptions<List<RouteOptions>> routes)
+            IOptions<List<RouteOptions>> routes,
+            IRoutesDocumentationProvider routesDocumentationProvider)
         {
             _aggregates = aggregates;
             _routes = routes;
+            _routesDocumentationProvider = routesDocumentationProvider;
         }
 
         /// <summary>
@@ -46,7 +51,9 @@ namespace Microsoft.Extensions.DocumentFilters
 
             foreach (FileAggregateRoute aggregate in _aggregates.Value)
             {
-                IEnumerable<RouteOptions> route = GetRoutes(aggregate);
+                IEnumerable<RouteDocs> routes = _routesDocumentationProvider.GetRouteDocs(aggregate.RouteKeys, _routes.Value);
+                //var endpoint = _swaggerEndPointRepository.GetByKey(routes.First().SwaggerKey);
+                //var docs = _downstreamSwaggerDocs.GetSwaggerJsonAsync(routes.First(), endpoint).Result;
 
                 var schema = new OpenApiSchema
                 {
@@ -66,7 +73,7 @@ namespace Microsoft.Extensions.DocumentFilters
                     {
                         OperationType.Get,
                         new OpenApiOperation(){
-                            Tags = GetTags(route),
+                            Tags = GetTags(routes),
                             Responses = _openApi.Responses(schema),
                             Parameters = new List<OpenApiParameter>(){
                                 new OpenApiParameter()
@@ -87,7 +94,7 @@ namespace Microsoft.Extensions.DocumentFilters
             }
         }
 
-        private static List<OpenApiTag> GetTags(IEnumerable<RouteOptions> route)
+        private static List<OpenApiTag> GetTags(IEnumerable<RouteDocs> route)
             => new List<OpenApiTag>() {
                 new OpenApiTag() {
                     Name = string.Join("-", route.OrderBy(p=> p.SwaggerKey).Select(r => r.SwaggerKey).Distinct())
@@ -99,9 +106,6 @@ namespace Microsoft.Extensions.DocumentFilters
             swaggerDoc.Paths.Clear();
             swaggerDoc.Components.Schemas.Clear();
         }
-
-        private IEnumerable<RouteOptions> GetRoutes(FileAggregateRoute aggregate)
-            => aggregate.RouteKeys.SelectMany(k => _routes.Value.Where(r => r.Key == k));
 
         private class OpenApiHelper
         {

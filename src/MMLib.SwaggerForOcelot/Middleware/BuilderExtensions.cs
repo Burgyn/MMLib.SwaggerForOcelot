@@ -35,7 +35,7 @@ namespace Microsoft.AspNetCore.Builder
             {
                 InitUIOption(c, options);
                 IReadOnlyList<SwaggerEndPointOptions> endPoints = app
-                    .ApplicationServices.GetService<ISwaggerEndPointRepository>().GetAll();
+                    .ApplicationServices.GetService<ISwaggerEndPointProvider>().GetAll();
                 AddSwaggerEndPoints(c, endPoints, options.DownstreamSwaggerEndPointBasePath);
             });
 

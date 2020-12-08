@@ -8,8 +8,8 @@ using System;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.OpenApi.Models;
 using MMLib.SwaggerForOcelot.Repositories;
-using Ocelot.Configuration.File;
 using MMLib.SwaggerForOcelot.Aggregates;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -44,13 +44,18 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddMemoryCache()
                 .AddSingleton<ISwaggerEndPointProvider, SwaggerEndPointProvider>();
 
+            services.TryAddTransient<IAggregateRouteDocumentationGenerator, AggregateRouteDocumentationGenerator>();
+
             var options = new OcelotSwaggerGenOptions();
             ocelotSwaggerSetup?.Invoke(options);
+
             services.AddSingleton(options);
+            services.AddSingleton(options.AggregateDocsGenerator);
+            services.AddSingleton(options.AggregateDocsGeneratorPostProcess);
 
             if (options.GenerateDocsForAggregates)
             {
-                services.Configure<List<FileAggregateRoute>>(options => configuration.GetSection("Aggregates").Bind(options));
+                services.Configure<List<SwaggerAggregateRoute>>(options => configuration.GetSection("Aggregates").Bind(options));
             }
 
             services.AddSwaggerGen(c =>

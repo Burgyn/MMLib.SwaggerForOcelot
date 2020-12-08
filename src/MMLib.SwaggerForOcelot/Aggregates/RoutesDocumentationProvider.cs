@@ -12,7 +12,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
     /// <summary>
     /// Provider for obtaining documentation for routes.
     /// </summary>
-    public class RoutesDocumentationProvider : IRoutesDocumentationProvider
+    internal class RoutesDocumentationProvider : IRoutesDocumentationProvider
     {
         private readonly IDownstreamSwaggerDocsRepository _downstreamSwaggerDocs;
         private readonly ISwaggerEndPointProvider _swaggerEndPointRepository;
@@ -60,7 +60,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             var retDocs = new JObject();
             if (path != null)
             {
-                retDocs["path"] = paths.SelectToken($"{path.Name}.get");
+                retDocs[RouteDocs.PathKey] = paths.SelectToken($"{path.Name}.get");
             }
 
             return retDocs;

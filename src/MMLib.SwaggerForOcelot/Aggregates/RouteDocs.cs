@@ -8,6 +8,30 @@ namespace MMLib.SwaggerForOcelot.Aggregates
     public class RouteDocs
     {
         /// <summary>
+        /// The path key.
+        /// </summary>
+        public const string PathKey = "path";
+
+        /// <summary>
+        /// The summary key
+        /// </summary>
+        public const string SummaryKey = "summary";
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RouteDocs"/> class.
+        /// </summary>
+        public RouteDocs()
+        {
+        }
+
+        internal RouteDocs(string key, JObject docs)
+        {
+            Key = key;
+            SwaggerKey = key;
+            Docs = docs;
+        }
+
+        /// <summary>
         /// Ocelot route key.
         /// </summary>
         public string Key { get; set; }
@@ -20,6 +44,19 @@ namespace MMLib.SwaggerForOcelot.Aggregates
         /// <summary>
         /// Gets or sets the docs.
         /// </summary>
-        public JObject Docs { get; set; }
+        internal JObject Docs { get; set; }
+
+        /// <summary>
+        /// Gets the summary.
+        /// </summary>
+        public string GetSummary()
+        {
+            if (Docs.ContainsKey(PathKey))
+            {
+                return Docs[PathKey].Value<string>(SummaryKey);
+            }
+
+            return null;
+        }
     }
 }

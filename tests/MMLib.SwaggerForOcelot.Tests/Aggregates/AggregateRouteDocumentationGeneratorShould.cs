@@ -23,13 +23,26 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
             IRoutesDocumentationProvider provider = Substitute.For<IRoutesDocumentationProvider>();
             provider.GetRouteDocs(Arg.Any<IEnumerable<string>>(), Arg.Any<IEnumerable<RouteOptions>>())
                    .Returns(routeDocs);
-            var generator = new AggregateRouteDocumentationGenerator(Routes, provider);
+            var generator = new AggregateRouteDocumentationGenerator(
+                Routes,
+                provider,
+                AggregateRouteDocumentationGenerator.DefaultGenerator,
+                AggregateRouteDocumentationGenerator.DefaultPostProcess);
 
             OpenApiPathItem docs = generator.GenerateDocs(aggregateRoute);
             OpenApiOperation actual = docs.Operations.First().Value;
 
             actual.Summary.Should().Be(expected.Summary);
             actual.Description.Should().Be(expected.Description);
+
+            actual.Parameters.Should().HaveCount(expected.Parameters.Count);
+
+            for (int i = 0; i < expected.Parameters.Count; i++)
+            {
+                actual.Parameters[i].Name.Should().Be(expected.Parameters[i].Name);
+                actual.Parameters[i].In.Should().Be(expected.Parameters[i].In);
+                actual.Parameters[i].Description.Should().Be(expected.Parameters[i].Description);
+            }
         }
 
         private IOptions<List<RouteOptions>> Routes
@@ -44,6 +57,12 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                 AggregateDefinitinWithDescription();
                 OnlyOneContainsSummary();
                 WithoutSummary();
+                WithOneParameter();
+                WithTwoParameter();
+                WithDifferentParameterNames();
+                WithQueryParameterInFirstService();
+                WithQueryParameterInSecondService();
+                WithParameterDescription();
             }
 
             private void TwoServicesWithDescription()
@@ -115,11 +134,165 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                     });
             }
 
-            private JObject CreateDocs(string summary)
-                => new JObject(
-                    new JProperty("path",
-                        new JObject(
-                            new JProperty("summary", summary))));
+            private void WithOneParameter()
+            {
+                JObject docs = CreateDocs("", CreateParameters(CreateParameter("id")));
+                Add(new SwaggerAggregateRoute()
+                {
+                    UpstreamPathTemplate = "/api/aggregate1",
+                    RouteKeys = new List<string>() { "service1", "service2" },
+                },
+                    new List<RouteDocs>() {
+                        new RouteDocs("service1", docs),
+                        new RouteDocs("service2", docs) },
+                    new OpenApiOperation()
+                    {
+                        Summary = "Aggregation of routes: service1, service2",
+                        Description = string.Empty,
+                        Parameters = new List<OpenApiParameter>() { CreateParameter("id") }
+                    });
+            }
+
+            private void WithTwoParameter()
+            {
+                JObject docs = CreateDocs("", CreateParameters(CreateParameter("id"), CreateParameter("type")));
+                Add(new SwaggerAggregateRoute()
+                {
+                    UpstreamPathTemplate = "/api/aggregate1",
+                    RouteKeys = new List<string>() { "service1", "service2" },
+                },
+                    new List<RouteDocs>() {
+                        new RouteDocs("service1", docs),
+                        new RouteDocs("service2", docs) },
+                    new OpenApiOperation()
+                    {
+                        Summary = "Aggregation of routes: service1, service2",
+                        Description = string.Empty,
+                        Parameters = new List<OpenApiParameter>() { CreateParameter("id"), CreateParameter("type") }
+                    });
+            }
+
+            private void WithDifferentParameterNames()
+            {
+                Add(new SwaggerAggregateRoute()
+                {
+                    UpstreamPathTemplate = "/api/aggregate1",
+                    RouteKeys = new List<string>() { "service1", "service2" },
+                },
+                    new List<RouteDocs>() {
+                        new RouteDocs("service1", CreateDocs("", CreateParameters(CreateParameter("id"), CreateParameter("type")))),
+                        new RouteDocs("service2", CreateDocs("", CreateParameters(CreateParameter("id1"), CreateParameter("type1")))){
+                            ParametersMap = new Dictionary<string, string>(){
+                                {"id", "id1" },
+                                {"type", "type1" }
+                            }
+                        } },
+                    new OpenApiOperation()
+                    {
+                        Summary = "Aggregation of routes: service1, service2",
+                        Description = string.Empty,
+                        Parameters = new List<OpenApiParameter>() { CreateParameter("id"), CreateParameter("type") }
+                    });
+            }
+
+            private void WithQueryParameterInFirstService()
+            {
+                Add(new SwaggerAggregateRoute()
+                {
+                    UpstreamPathTemplate = "/api/aggregate1",
+                    RouteKeys = new List<string>() { "service1", "service2" },
+                },
+                    new List<RouteDocs>() {
+                        new RouteDocs("service1",
+                            CreateDocs("",
+                                CreateParameters(CreateParameter("id"), CreateParameter("q1", ParameterLocation.Query)))),
+                        new RouteDocs("service2",
+                            CreateDocs("", CreateParameters(CreateParameter("id"))))
+                    },
+                    new OpenApiOperation()
+                    {
+                        Summary = "Aggregation of routes: service1, service2",
+                        Description = string.Empty,
+                        Parameters = new List<OpenApiParameter>() {
+                            CreateParameter("id"), CreateParameter("q1", ParameterLocation.Query)
+                        }
+                    });
+            }
+
+            private void WithQueryParameterInSecondService()
+            {
+                Add(new SwaggerAggregateRoute()
+                {
+                    UpstreamPathTemplate = "/api/aggregate1",
+                    RouteKeys = new List<string>() { "service1", "service2" },
+                },
+                    new List<RouteDocs>() {
+                        new RouteDocs("service1",
+                            CreateDocs("", CreateParameters(CreateParameter("id")))),
+                        new RouteDocs("service2",
+                            CreateDocs("",
+                                CreateParameters(CreateParameter("id"), CreateParameter("q1", ParameterLocation.Query))))
+                    },
+                    new OpenApiOperation()
+                    {
+                        Summary = "Aggregation of routes: service1, service2",
+                        Description = string.Empty,
+                        Parameters = new List<OpenApiParameter>() {
+                            CreateParameter("id"), CreateParameter("q1", ParameterLocation.Query)
+                        }
+                    });
+            }
+
+            private void WithParameterDescription()
+            {
+                Add(new SwaggerAggregateRoute()
+                {
+                    UpstreamPathTemplate = "/api/aggregate1",
+                    RouteKeys = new List<string>() { "service1", "service2" },
+                },
+                    new List<RouteDocs>() {
+                        new RouteDocs("service1",
+                            CreateDocs("", CreateParameters(CreateParameter("id", description: "User identifier")))),
+                        new RouteDocs("service2",
+                            CreateDocs("",
+                                CreateParameters(
+                                    CreateParameter("id", description: "Identifier"),
+                                    CreateParameter("q1", ParameterLocation.Query))))
+                    },
+                    new OpenApiOperation()
+                    {
+                        Summary = "Aggregation of routes: service1, service2",
+                        Description = string.Empty,
+                        Parameters = new List<OpenApiParameter>() {
+                            CreateParameter("id", description:"<strong>service1:</strong><br />User identifier<br /><br /><strong>service2:</strong><br />Identifier"),
+                            CreateParameter("q1", ParameterLocation.Query)
+                        }
+                    });
+            }
+
+            private OpenApiParameter CreateParameter(
+                string name,
+                ParameterLocation loc = ParameterLocation.Path,
+                string description = "")
+                => new OpenApiParameter() { Name = name, In = loc, Description = description };
+
+            private JObject CreateDocs(string summary, JArray parameters = null)
+            {
+                var path = new JObject(new JProperty(RouteDocs.SummaryKey, summary));
+
+                if (parameters != null)
+                {
+                    path.Add(RouteDocs.ParametersKey, parameters);
+                }
+
+                var ret = new JObject(
+                    new JProperty(RouteDocs.PathKey, path));
+
+                return ret;
+            }
+
+            private JArray CreateParameters(params OpenApiParameter[] parameters)
+                => JArray.FromObject(parameters);
         }
     }
 }

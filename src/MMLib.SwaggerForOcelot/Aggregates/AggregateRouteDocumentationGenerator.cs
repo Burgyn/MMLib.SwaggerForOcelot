@@ -86,22 +86,44 @@ namespace MMLib.SwaggerForOcelot.Aggregates
 
         private static OpenApiOperation CreateOperation(
             SwaggerAggregateRoute aggregateRoute,
-            IEnumerable<RouteDocs> routes,
+            IEnumerable<RouteDocs> routesDocs,
             OpenApiSchema schema) => new OpenApiOperation()
+            {
+                Tags = GetTags(routesDocs),
+                Summary = GetSummary(routesDocs),
+                Description = GetDescription(aggregateRoute, routesDocs),
+                Responses = OpenApiHelper.Responses(schema),
+                Parameters = GetParameters(routesDocs)
+            };
+
+        private static List<OpenApiParameter> GetParameters(IEnumerable<RouteDocs> routesDocs)
         {
-            Tags = GetTags(routes),
-            Summary = GetSummary(routes),
-            Description = GetDescription(aggregateRoute, routes),
-            Responses = OpenApiHelper.Responses(schema),
-            Parameters = new List<OpenApiParameter>(){
-                                new OpenApiParameter()
-                                {
-                                    Name = "everything",
-                                    Description = "fsdfsd dsf dsfsd dsfsd",
-                                    In = ParameterLocation.Path
-                                }
-                            }
-        };
+            var parameters = new Dictionary<string, OpenApiParameter>(StringComparer.OrdinalIgnoreCase);
+            static string GetDescription(RouteDocs docs, OpenApiParameter parameter, string prefix = null)
+                => parameter.Description.IsNullOrWhiteSpace()
+                    ? string.Empty
+                    : $"{prefix}<strong>{docs.Key}:</strong><br />{parameter.Description}";
+
+            foreach (RouteDocs docs in routesDocs)
+            {
+                foreach (OpenApiParameter parameter in docs.Parameters)
+                {
+                    if (!parameters.TryGetValue(parameter.Name, out OpenApiParameter newParam))
+                    {
+                        newParam = parameter;
+                        newParam.Description = GetDescription(docs, parameter);
+
+                        parameters.Add(newParam.Name, newParam);
+                    }
+                    else
+                    {
+                        newParam.Description += GetDescription(docs, parameter, "<br /><br />");
+                    }
+                }
+            }
+
+            return parameters.Values.ToList();
+        }
 
         private static string GetSummary(IEnumerable<RouteDocs> routes)
             => $"Aggregation of routes: {RoutesToString(routes, ", ")}";

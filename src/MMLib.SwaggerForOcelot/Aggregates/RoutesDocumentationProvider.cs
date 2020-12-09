@@ -51,7 +51,8 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             {
                 Key = route.Key,
                 SwaggerKey = route.SwaggerKey,
-                Docs = CreateDocs(paths, path)
+                Docs = CreateDocs(paths, path),
+                ParametersMap = route.ParametersMap
             };
         }
 

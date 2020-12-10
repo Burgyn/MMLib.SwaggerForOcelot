@@ -246,7 +246,7 @@ services.AddSwaggerForOcelot(Configuration,
   });
 ```
 
-Documentations of you aggregates will be available on custom page **Aggregates**.
+Documentations of your aggregates will be available on custom page **Aggregates**.
 ![aggregates docs](./demo/aggregates.png)
 
 The current implementation may not cover all scenarios *(I hope most of them)*, but there are several ways you can change the final documentation.

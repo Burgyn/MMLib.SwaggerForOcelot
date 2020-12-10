@@ -2,9 +2,15 @@
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using MMLib.SwaggerForOcelot.Configuration;
+using Ocelot.Configuration.Builder;
+using Ocelot.Multiplexer;
+using Ocelot.Responses;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
+using System.Reflection;
 using System.Text;
 
 namespace MMLib.SwaggerForOcelot.Aggregates
@@ -13,43 +19,74 @@ namespace MMLib.SwaggerForOcelot.Aggregates
     {
         private readonly IOptions<List<RouteOptions>> _routes;
         private readonly IRoutesDocumentationProvider _routesDocumentationProvider;
-        private readonly Func<SwaggerAggregateRoute, IEnumerable<RouteDocs>, OpenApiPathItem> _docsGenerator;
-        private readonly Action<SwaggerAggregateRoute, IEnumerable<RouteDocs>, OpenApiPathItem> _postProcess;
+        private readonly IDefinedAggregatorProvider _definedAggregatorProvider;
+        private readonly Action<SwaggerAggregateRoute, IEnumerable<RouteDocs>, OpenApiPathItem, OpenApiDocument> _postProcess;
+        private readonly ISchemaGenerator _schemaGenerator;
+        private readonly SchemaRepository _schemaRepository = new SchemaRepository();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateRouteDocumentationGenerator"/> class.
         /// </summary>
         /// <param name="routes">Routes.</param>
         /// <param name="routesDocumentationProvider">Routes documentation provider.</param>
-        /// <param name="docsGenerator">Docs generator.</param>
+        /// <param name="definedAggregatorProvider">Aggregator provider.</param>
         public AggregateRouteDocumentationGenerator(
             IOptions<List<RouteOptions>> routes,
             IRoutesDocumentationProvider routesDocumentationProvider,
-            Func<SwaggerAggregateRoute, IEnumerable<RouteDocs>, OpenApiPathItem> docsGenerator,
-            Action<SwaggerAggregateRoute, IEnumerable<RouteDocs>, OpenApiPathItem> postProcess)
+            IDefinedAggregatorProvider definedAggregatorProvider,
+            Action<SwaggerAggregateRoute, IEnumerable<RouteDocs>, OpenApiPathItem, OpenApiDocument> postProcess,
+            ISchemaGenerator schemaGenerator)
         {
             _routes = routes;
             _routesDocumentationProvider = routesDocumentationProvider;
-            _docsGenerator = docsGenerator;
+            _definedAggregatorProvider = definedAggregatorProvider;
             _postProcess = postProcess;
+            _schemaGenerator = schemaGenerator;
         }
 
-        public OpenApiPathItem GenerateDocs(SwaggerAggregateRoute aggregateRoute)
+        public OpenApiPathItem GenerateDocs(SwaggerAggregateRoute aggregateRoute, OpenApiDocument openApiDocument)
         {
             IEnumerable<RouteDocs> routes = _routesDocumentationProvider.GetRouteDocs(aggregateRoute.RouteKeys, _routes.Value);
-            OpenApiPathItem docs = _docsGenerator(aggregateRoute, routes);
+            OpenApiPathItem docs = GenerateDocs(aggregateRoute, routes, openApiDocument);
 
-            if (docs == null)
-            {
-                docs = GenerateDocs(aggregateRoute, routes);
-            }
-
-            _postProcess(aggregateRoute, routes, docs);
+            _postProcess(aggregateRoute, routes, docs, openApiDocument);
 
             return docs;
         }
 
-        private static OpenApiPathItem GenerateDocs(SwaggerAggregateRoute aggregateRoute, IEnumerable<RouteDocs> routes)
+        public static Action<SwaggerAggregateRoute, IEnumerable<RouteDocs>, OpenApiPathItem, OpenApiDocument> DefaultPostProcess
+        { get; } = (a, r, d, o) => { };
+
+        private OpenApiPathItem GenerateDocs(
+            SwaggerAggregateRoute aggregateRoute,
+            IEnumerable<RouteDocs> routes,
+            OpenApiDocument openApiDocument)
+        {
+            (string, OpenApiSchema) schema = CreateResponseSchema(routes, aggregateRoute, openApiDocument);
+            Dictionary<OperationType, OpenApiOperation> operations = CreateOperations(aggregateRoute, routes, schema);
+
+            return new OpenApiPathItem()
+            {
+                Operations = operations
+            };
+        }
+
+        private static Dictionary<OperationType, OpenApiOperation> CreateOperations(
+            SwaggerAggregateRoute aggregateRoute,
+            IEnumerable<RouteDocs> routes,
+            (string, OpenApiSchema) schema)
+            => new Dictionary<OperationType, OpenApiOperation>()
+            {
+                {
+                    OperationType.Get,
+                    CreateOperation(aggregateRoute, routes, schema)
+                }
+            };
+
+        private (string, OpenApiSchema) CreateResponseSchema(
+            IEnumerable<RouteDocs> routes,
+            SwaggerAggregateRoute aggregateRoute,
+            OpenApiDocument openApiDocument)
         {
             var schema = new OpenApiSchema
             {
@@ -59,40 +96,60 @@ namespace MMLib.SwaggerForOcelot.Aggregates
                 AdditionalPropertiesAllowed = false
             };
 
-            foreach (string key in aggregateRoute.RouteKeys)
+            AggregateResponseAttribute attribute = GetAggregatorAttribute(aggregateRoute);
+            if (attribute != null)
             {
-                schema.Properties.Add(key, new OpenApiSchema() { Type = "string" });
+                OpenApiSchema reference = _schemaGenerator.GenerateSchema(attribute.ResponseType, _schemaRepository);
+                foreach (KeyValuePair<string, OpenApiSchema> item in _schemaRepository.Schemas)
+                {
+                    openApiDocument.Components.Schemas.Add(item.Key, item.Value);
+                }
+                if (reference.Reference != null)
+                {
+                    return (attribute.Description, _schemaRepository.Schemas[reference.Reference.Id]);
+                }
+                else
+                {
+                    return (attribute.Description, reference);
+                }
             }
 
-            var operations = new Dictionary<OperationType, OpenApiOperation>()
+            foreach (RouteDocs docs in routes)
             {
+                OpenApiResponse response = docs.GetResponse();
+                if (response.Content.ContainsKey(MediaTypeNames.Application.Json))
                 {
-                    OperationType.Get,
-                    CreateOperation(aggregateRoute, routes, schema)
+                    OpenApiMediaType content = response.Content[MediaTypeNames.Application.Json];
+                    schema.Properties.Add(docs.Key, content.Schema);
                 }
-            };
+            }
 
-            return new OpenApiPathItem()
-            {
-                Operations = operations
-            };
+            return ("Success", schema);
         }
 
-        public static Func<SwaggerAggregateRoute, IEnumerable<RouteDocs>, OpenApiPathItem> DefaultGenerator { get; }
-            = GenerateDocs;
-
-        public static Action<SwaggerAggregateRoute, IEnumerable<RouteDocs>, OpenApiPathItem> DefaultPostProcess { get; }
-            = (a, r, d) => { };
+        private AggregateResponseAttribute GetAggregatorAttribute(SwaggerAggregateRoute aggregateRoute)
+        {
+            if (!aggregateRoute.Aggregator.IsNullOrEmpty())
+            {
+                Response<IDefinedAggregator> aggregator = _definedAggregatorProvider
+                    .Get(new RouteBuilder().WithAggregator(aggregateRoute.Aggregator).Build());
+                if (!aggregator.IsError)
+                {
+                    return aggregator.Data.GetType().GetCustomAttribute<AggregateResponseAttribute>();
+                }
+            }
+            return null;
+        }
 
         private static OpenApiOperation CreateOperation(
             SwaggerAggregateRoute aggregateRoute,
             IEnumerable<RouteDocs> routesDocs,
-            OpenApiSchema schema) => new OpenApiOperation()
+            (string, OpenApiSchema) response) => new OpenApiOperation()
             {
                 Tags = GetTags(routesDocs),
                 Summary = GetSummary(routesDocs),
                 Description = GetDescription(aggregateRoute, routesDocs),
-                Responses = OpenApiHelper.Responses(schema),
+                Responses = OpenApiHelper.Responses(response),
                 Parameters = GetParameters(routesDocs)
             };
 
@@ -172,13 +229,13 @@ namespace MMLib.SwaggerForOcelot.Aggregates
                     ["application/json"] = new OpenApiMediaType() { Schema = responseScheme }
                 };
 
-            public static OpenApiResponses Responses(OpenApiSchema responseScheme) =>
+            public static OpenApiResponses Responses((string, OpenApiSchema) response) =>
                 new OpenApiResponses
                 {
                     { "200",
                         new OpenApiResponse {
-                            Description = "Success",
-                            Content = MediaType(responseScheme)
+                            Description = response.Item1,
+                            Content = MediaType(response.Item2)
                         }
                     }
                 };

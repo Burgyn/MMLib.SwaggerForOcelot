@@ -5,8 +5,11 @@ using MMLib.SwaggerForOcelot.Aggregates;
 using MMLib.SwaggerForOcelot.Configuration;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
+using Ocelot.Multiplexer;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using Xunit;
 
 namespace MMLib.SwaggerForOcelot.Tests.Aggregates
@@ -26,10 +29,11 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
             var generator = new AggregateRouteDocumentationGenerator(
                 Routes,
                 provider,
-                AggregateRouteDocumentationGenerator.DefaultGenerator,
-                AggregateRouteDocumentationGenerator.DefaultPostProcess);
+                Substitute.For<IDefinedAggregatorProvider>(),
+                AggregateRouteDocumentationGenerator.DefaultPostProcess,
+                Substitute.For<ISchemaGenerator>());
 
-            OpenApiPathItem docs = generator.GenerateDocs(aggregateRoute);
+            OpenApiPathItem docs = generator.GenerateDocs(aggregateRoute, new OpenApiDocument());
             OpenApiOperation actual = docs.Operations.First().Value;
 
             actual.Summary.Should().Be(expected.Summary);
@@ -78,7 +82,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                     new OpenApiOperation()
                     {
                         Summary = "Aggregation of routes: service1, service2",
-                        Description = "Description from downstream services.<br /><br /><strong>service1:</strong><br />service 1<br /><br /><strong>service2:</strong><br />service 2"
+                        Description = "Description from downstream services.<br /><br /><strong>service1:</strong><br />service 1<br /><br /><strong>service2:</strong><br />service 2",
                     });
             }
 
@@ -276,7 +280,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                 string description = "")
                 => new OpenApiParameter() { Name = name, In = loc, Description = description };
 
-            private JObject CreateDocs(string summary, JArray parameters = null)
+            private JObject CreateDocs(string summary, JArray parameters = null, JObject response = null)
             {
                 var path = new JObject(new JProperty(RouteDocs.SummaryKey, summary));
 

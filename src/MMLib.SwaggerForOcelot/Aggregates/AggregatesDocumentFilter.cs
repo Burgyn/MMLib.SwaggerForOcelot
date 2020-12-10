@@ -3,7 +3,6 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.OpenApi.Models;
 using MMLib.SwaggerForOcelot.Configuration;
 using Microsoft.Extensions.Options;
-using System.Linq;
 
 namespace MMLib.SwaggerForOcelot.Aggregates
 {
@@ -47,7 +46,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             foreach (SwaggerAggregateRoute aggregate in _aggregates.Value)
             {
                 swaggerDoc.Paths
-                    .Add(aggregate.UpstreamPathTemplate, _documentationGenerator.GenerateDocs(aggregate));
+                    .Add(aggregate.UpstreamPathTemplate, _documentationGenerator.GenerateDocs(aggregate, swaggerDoc));
             }
         }
 

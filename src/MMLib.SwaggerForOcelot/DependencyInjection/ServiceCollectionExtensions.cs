@@ -50,7 +50,6 @@ namespace Microsoft.Extensions.DependencyInjection
             ocelotSwaggerSetup?.Invoke(options);
 
             services.AddSingleton(options);
-            services.AddSingleton(options.AggregateDocsGenerator);
             services.AddSingleton(options.AggregateDocsGeneratorPostProcess);
 
             if (options.GenerateDocsForAggregates)

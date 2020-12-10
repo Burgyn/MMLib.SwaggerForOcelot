@@ -51,18 +51,20 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             {
                 Key = route.Key,
                 SwaggerKey = route.SwaggerKey,
-                Docs = CreateDocs(paths, path),
+                Docs = CreateDocs(docs, paths, path),
                 ParametersMap = route.ParametersMap
             };
         }
 
-        private static JObject CreateDocs(JToken paths, JProperty path)
+        private static JObject CreateDocs(JObject docs, JToken paths, JProperty path)
         {
             var retDocs = new JObject();
             if (path != null)
             {
                 retDocs[RouteDocs.PathKey] = paths.SelectToken($"{path.Name}.get");
             }
+
+            retDocs[RouteDocs.SchemasKey] = docs.SelectToken("components.schemas");
 
             return retDocs;
         }

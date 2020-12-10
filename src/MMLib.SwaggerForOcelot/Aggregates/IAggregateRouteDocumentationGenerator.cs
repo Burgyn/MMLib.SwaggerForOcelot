@@ -11,6 +11,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
         /// Generates the docs.
         /// </summary>
         /// <param name="aggregateRoute">The aggregate route.</param>
-        OpenApiPathItem GenerateDocs(SwaggerAggregateRoute aggregateRoute);
+        /// <param name="openApiDocument">Open API document.</param>
+        OpenApiPathItem GenerateDocs(SwaggerAggregateRoute aggregateRoute, OpenApiDocument openApiDocument);
     }
 }

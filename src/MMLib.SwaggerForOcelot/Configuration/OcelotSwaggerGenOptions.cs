@@ -27,15 +27,9 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public bool GenerateDocsForGatewayItSelf { get; set; } = false;
 
         /// <summary>
-        /// Gets or sets the aggregate docs generator.
-        /// </summary>
-        public Func<SwaggerAggregateRoute, IEnumerable<RouteDocs>, OpenApiPathItem> AggregateDocsGenerator { get; set; }
-             = AggregateRouteDocumentationGenerator.DefaultGenerator;
-
-        /// <summary>
         /// Register aggregate docs generator post process.
         /// </summary>
-        public Action<SwaggerAggregateRoute, IEnumerable<RouteDocs>, OpenApiPathItem> AggregateDocsGeneratorPostProcess { get; set; }
+        public Action<SwaggerAggregateRoute, IEnumerable<RouteDocs>, OpenApiPathItem, OpenApiDocument> AggregateDocsGeneratorPostProcess { get; set; }
              = AggregateRouteDocumentationGenerator.DefaultPostProcess;
 
         internal static OcelotSwaggerGenOptions Default { get; } = new OcelotSwaggerGenOptions();

@@ -62,7 +62,6 @@ namespace MMLib.SwaggerForOcelot.Aggregates
                     return parameters.ToObject<IEnumerable<OpenApiParameter>>()
                         .Select(d =>
                         {
-
                             KeyValuePair<string, string>? map =
                                 ParametersMap?.FirstOrDefault(p => p.Value.Equals(d.Name, StringComparison.OrdinalIgnoreCase));
 

@@ -15,7 +15,6 @@ namespace MMLib.SwaggerForOcelot.Aggregates
         private readonly IOptions<List<SwaggerAggregateRoute>> _aggregates;
         private readonly IAggregateRouteDocumentationGenerator _documentationGenerator;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregatesDocumentFilter"/> class.
         /// </summary>
@@ -49,7 +48,6 @@ namespace MMLib.SwaggerForOcelot.Aggregates
                     .Add(aggregate.UpstreamPathTemplate, _documentationGenerator.GenerateDocs(aggregate, swaggerDoc));
             }
         }
-
 
         private static void Clear(OpenApiDocument swaggerDoc)
         {

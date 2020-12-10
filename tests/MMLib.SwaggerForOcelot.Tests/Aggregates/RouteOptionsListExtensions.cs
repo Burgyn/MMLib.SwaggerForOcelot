@@ -23,7 +23,6 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
             return list;
         }
 
-
         private static Dictionary<string, string> ParseMap(string paramMaps)
             => paramMaps?.Split(";").Select(p =>
             {

@@ -72,10 +72,5 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
             => Enumerable.Range(0, 10)
                 .Select(i => new RouteOptions() { SwaggerKey = $"route_swagger_{i}", Key = $"route_{i}" })
                 .ToList();
-
-        // doesnot exist
-
-        // parametre, simple, complex
-
     }
 }

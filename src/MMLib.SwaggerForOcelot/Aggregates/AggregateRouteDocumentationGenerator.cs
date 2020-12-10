@@ -1,4 +1,5 @@
 ﻿using Kros.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using MMLib.SwaggerForOcelot.Configuration;
@@ -62,8 +63,8 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             IEnumerable<RouteDocs> routes,
             OpenApiDocument openApiDocument)
         {
-            (string, OpenApiSchema) schema = CreateResponseSchema(routes, aggregateRoute, openApiDocument);
-            Dictionary<OperationType, OpenApiOperation> operations = CreateOperations(aggregateRoute, routes, schema);
+            Response response = CreateResponseSchema(routes, aggregateRoute, openApiDocument);
+            Dictionary<OperationType, OpenApiOperation> operations = CreateOperations(aggregateRoute, routes, response);
 
             return new OpenApiPathItem()
             {
@@ -74,20 +75,47 @@ namespace MMLib.SwaggerForOcelot.Aggregates
         private static Dictionary<OperationType, OpenApiOperation> CreateOperations(
             SwaggerAggregateRoute aggregateRoute,
             IEnumerable<RouteDocs> routes,
-            (string, OpenApiSchema) schema)
+            Response response)
             => new Dictionary<OperationType, OpenApiOperation>()
             {
                 {
                     OperationType.Get,
-                    CreateOperation(aggregateRoute, routes, schema)
+                    CreateOperation(aggregateRoute, routes, response)
                 }
             };
 
-        private (string, OpenApiSchema) CreateResponseSchema(
+        private Response CreateResponseSchema(
             IEnumerable<RouteDocs> routes,
             SwaggerAggregateRoute aggregateRoute,
             OpenApiDocument openApiDocument)
         {
+            AggregateResponseAttribute attribute = GetAggregatorAttribute(aggregateRoute);
+            if (attribute != null)
+            {
+                OpenApiSchema reference = _schemaGenerator.GenerateSchema(attribute.ResponseType, _schemaRepository);
+                var response = new Response()
+                {
+                    Description = attribute.Description,
+                    MediaType = attribute.MediaType,
+                    StatusCode = attribute.StatusCode
+                };
+                foreach (KeyValuePair<string, OpenApiSchema> item in _schemaRepository.Schemas)
+                {
+                    openApiDocument.Components.Schemas.Add(item.Key, item.Value);
+                }
+
+                if (reference.Reference != null)
+                {
+                    response.Schema = _schemaRepository.Schemas[reference.Reference.Id];
+                }
+                else
+                {
+                    response.Schema = reference;
+                }
+
+                return response;
+            }
+
             var schema = new OpenApiSchema
             {
                 Type = "object",
@@ -95,24 +123,6 @@ namespace MMLib.SwaggerForOcelot.Aggregates
                 Required = new SortedSet<string>(),
                 AdditionalPropertiesAllowed = false
             };
-
-            AggregateResponseAttribute attribute = GetAggregatorAttribute(aggregateRoute);
-            if (attribute != null)
-            {
-                OpenApiSchema reference = _schemaGenerator.GenerateSchema(attribute.ResponseType, _schemaRepository);
-                foreach (KeyValuePair<string, OpenApiSchema> item in _schemaRepository.Schemas)
-                {
-                    openApiDocument.Components.Schemas.Add(item.Key, item.Value);
-                }
-                if (reference.Reference != null)
-                {
-                    return (attribute.Description, _schemaRepository.Schemas[reference.Reference.Id]);
-                }
-                else
-                {
-                    return (attribute.Description, reference);
-                }
-            }
 
             foreach (RouteDocs docs in routes)
             {
@@ -124,7 +134,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
                 }
             }
 
-            return ("Success", schema);
+            return new Response() { Schema = schema };
         }
 
         private AggregateResponseAttribute GetAggregatorAttribute(SwaggerAggregateRoute aggregateRoute)
@@ -144,7 +154,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
         private static OpenApiOperation CreateOperation(
             SwaggerAggregateRoute aggregateRoute,
             IEnumerable<RouteDocs> routesDocs,
-            (string, OpenApiSchema) response) => new OpenApiOperation()
+            Response response) => new OpenApiOperation()
             {
                 Tags = GetTags(routesDocs),
                 Summary = GetSummary(routesDocs),
@@ -223,22 +233,33 @@ namespace MMLib.SwaggerForOcelot.Aggregates
 
         private class OpenApiHelper
         {
-            public static Dictionary<string, OpenApiMediaType> MediaType(OpenApiSchema responseScheme) =>
+            public static Dictionary<string, OpenApiMediaType> MediaType(Response response) =>
                 new Dictionary<string, OpenApiMediaType>
                 {
-                    ["application/json"] = new OpenApiMediaType() { Schema = responseScheme }
+                    [response.MediaType] = new OpenApiMediaType() { Schema = response.Schema }
                 };
 
-            public static OpenApiResponses Responses((string, OpenApiSchema) response) =>
+            public static OpenApiResponses Responses(Response response) =>
                 new OpenApiResponses
                 {
-                    { "200",
+                    { response.StatusCode.ToString(),
                         new OpenApiResponse {
-                            Description = response.Item1,
-                            Content = MediaType(response.Item2)
+                            Description = response.Description,
+                            Content = MediaType(response)
                         }
                     }
                 };
+        }
+
+        private class Response
+        {
+            public int StatusCode { get; set; } = StatusCodes.Status200OK;
+
+            public string MediaType { get; set; } = MediaTypeNames.Application.Json;
+
+            public string Description { get; set; } = "Success";
+
+            public OpenApiSchema Schema { get; set; }
         }
     }
 }

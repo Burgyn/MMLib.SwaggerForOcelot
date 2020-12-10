@@ -218,8 +218,8 @@ namespace MMLib.SwaggerForOcelot.Transformation
             string downstreamPathWithBasePath = PathHelper.BuildPath(basePath, downstreamPath);
             return routes.FirstOrDefault(p
                 => p.CanCatchAll
-                    ? downstreamPathWithBasePath.StartsWith(p.DownstreamPathWithShash, StringComparison.CurrentCultureIgnoreCase)
-                    : p.DownstreamPathWithShash.Equals(downstreamPathWithBasePath, StringComparison.CurrentCultureIgnoreCase));
+                    ? downstreamPathWithBasePath.StartsWith(p.DownstreamPathWithSlash, StringComparison.CurrentCultureIgnoreCase)
+                    : p.DownstreamPathWithSlash.Equals(downstreamPathWithBasePath, StringComparison.CurrentCultureIgnoreCase));
         }
 
         private static void AddHost(JObject swagger, string swaggerHost)

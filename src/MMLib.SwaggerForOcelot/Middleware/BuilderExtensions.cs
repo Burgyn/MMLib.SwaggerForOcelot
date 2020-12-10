@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using MMLib.SwaggerForOcelot.Repositories;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -33,7 +34,8 @@ namespace Microsoft.AspNetCore.Builder
             app.UseSwaggerUI(c =>
             {
                 InitUIOption(c, options);
-                IReadOnlyList<SwaggerEndPointOptions> endPoints = app.ApplicationServices.GetService<IOptions<List<SwaggerEndPointOptions>>>().Value;
+                IReadOnlyList<SwaggerEndPointOptions> endPoints = app
+                    .ApplicationServices.GetService<ISwaggerEndPointProvider>().GetAll();
                 AddSwaggerEndPoints(c, endPoints, options.DownstreamSwaggerEndPointBasePath);
             });
 
@@ -60,6 +62,9 @@ namespace Microsoft.AspNetCore.Builder
 
         private static void AddSwaggerEndPoints(SwaggerUIOptions c, IReadOnlyList<SwaggerEndPointOptions> endPoints, string basePath)
         {
+            static string GetDescription(SwaggerEndPointConfig config)
+                => config.IsGatewayItSelf ? config.Name : $"{config.Name} - {config.Version}";
+
             if (endPoints is null || endPoints.Count == 0)
             {
                 throw new InvalidOperationException(
@@ -70,7 +75,7 @@ namespace Microsoft.AspNetCore.Builder
             {
                 foreach (SwaggerEndPointConfig config in endPoint.Config)
                 {
-                    c.SwaggerEndpoint($"{basePath}/{config.Version}/{endPoint.KeyToPath}", $"{config.Name} - {config.Version}");
+                    c.SwaggerEndpoint($"{basePath}/{config.Version}/{endPoint.KeyToPath}", GetDescription(config));
                 }
             }
         }

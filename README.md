@@ -211,42 +211,127 @@ There are several real scenarios when you need to have a controller directly in 
 
 If you need to, you can also add documentation.
 
-1. Configure SwaggerGen in your Ocelot API Gateway services.
-   > Follow the [SwashbuckleAspNetCore documentation](https://github.com/domaindrivendev/Swashbuckle.AspNetCore#getting-started).
-
-`ConfigureServices`
-
-```csharp
-services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API Gateway", Version = "v1" });
-});
+1. Allow `GenerateDocsForGatewayItSelf` option in configuration section.
+   
+```CSharp
+services.AddSwaggerForOcelot(Configuration,
+  (o) =>
+  {
+      o.GenerateDocsForGatewayItSelf = true;
+  });
 ```
 
-`Configure`
+2. Use Swagger generator in `Configure` section.
+
 ```csharp
 app.UseSwagger();
 ```
 
-2. Add `SwaggerEndPoint` into ocelot json configuration.
+![ocelot docs](./demo/ocelotdocs.png)
+
+## Documentation of Ocelot Aggregates
+
+You are probably familiar with Ocelot great feature [***Request Aggregation***](https://ocelot.readthedocs.io/en/latest/features/requestaggregation.html). Request Aggregation allows you to easily add a new endpoint to the gateway that will aggregate the result from other existing endpoints.
+If you use these aggregations, you would probably want to have these endpoints in the api documentation as well.
+
+📢 From version `3.0.0` you can use this package for generating documentation for Ocelot aggregates.
+
+In `ConfigureServices` allow `GenerateDocsForAggregates` option.
+
+```CSharp
+services.AddSwaggerForOcelot(Configuration,
+  (o) =>
+  {
+      o.GenerateDocsForAggregates = true;
+  });
+```
+
+Documentations of you aggregates will be available on custom page **Aggregates**.
+![aggregates docs](./demo/aggregates.png)
+
+The current implementation may not cover all scenarios *(I hope most of them)*, but there are several ways you can change the final documentation.
+
+### Custom description
+
+By default, this package generate description from downstream documentation. If you want add custom description for your aggregate route, you can add description to `ocelot.json`.
+
+```json
+"Aggregates": [ 
+  {
+    "RouteKeys": [
+      "user",
+      "basket"
+    ],
+    "Description": "Custom description for this aggregate route.",
+    "Aggregator": "BasketAggregator",
+    "UpstreamPathTemplate": "/gateway/api/basketwithuser/{id}"
+  }
+]
+```
+
+### Different parameter names
+
+It is likely that you will have different parameter names in the downstream services that you are aggregating. For example, in the User service you will have the `{Id}` parameter, but in the Basket service the same parameter will be called `{BuyerId}`. In order for Ocelot aggregations to work, you must have parameters named the same in Ocelot configurations, but this will make it impossible to find the correct documentation.
+
+Therefore, you can help the configuration by setting parameter name map.
 
 ```json
 {
-  "Key": "gateway",
-  "TransformByOcelotConfig": false,
-  "Config": [
-    {
-      "Name": "Gateway",
-      "Version": "v1",
-      "Url": "http://localhost:5000/swagger/v1/swagger.json"
-    }
-  ]
+  "DownstreamPathTemplate": "/api/basket/{id}",
+  "UpstreamPathTemplate": "/gateway/api/basket/{id}",
+  "ParametersMap": {
+    "id": "buyerId"
+  },
+  "ServiceName": "basket",
+  "SwaggerKey": "basket",
+  "Key": "basket"
 }
 ```
 
-The key is to set it up property `TransformByOcelotConfig` to `false`, because in this case you do not need to transform the documentation according to the ocelot configuration.
+Property `ParametersMap` is map, where `key` *(first parameter)* is the name of parameter in Ocelot configuration and `value` *(second parameter)* is the name of parameter in downstream service.
 
-![ocelot docs](./demo/ocelotdocs.png)
+### Custom aggregator
+
+The response documentation is generated according to the rules that Ocelot uses to compose the response from the aggregate. If you use your custom `IDefinedAggregator`, your result may be different. In this case you can use `AggregateResponseAttibute`.
+
+```CSharp
+[AggregateResponse("Basket with buyer and busket items.", typeof(CustomResponse))]
+public class BasketAggregator : IDefinedAggregator
+{
+    public async Task<DownstreamResponse> Aggregate(List<HttpContext> responses)
+    {
+        ...
+    }
+}
+```
+
+### Modifying the generated documentation
+
+If you do not like the final documentation, you can modify it by defining your custom postprocessor.
+
+```CSharp
+services.AddSwaggerForOcelot(Configuration,
+  (o) =>
+  {
+      o.GenerateDocsForAggregates = true;
+      o.AggregateDocsGeneratorPostProcess = (aggregateRoute, routesDocs, pathItemDoc, documentation) =>
+      {
+          if (aggregateRoute.UpstreamPathTemplate == "/gateway/api/basketwithuser/{id}")
+          {
+              pathItemDoc.Operations[OperationType.Get].Parameters.Add(new OpenApiParameter()
+              {
+                  Name = "customParameter",
+                  Schema = new OpenApiSchema() { Type = "string"},
+                  In = ParameterLocation.Header
+              });
+          }
+      };
+  });
+```
+
+### If none of this is enough
+
+🙏 Feel free to provide a PR with implementation of your scenario. You will probably help many others.
 
 ## Merging configuration files
 

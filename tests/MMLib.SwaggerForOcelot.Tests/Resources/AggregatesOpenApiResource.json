@@ -1,0 +1,645 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Catalog Service Api",
+    "description": "Web API for Catalog.",
+    "contact": {
+      "name": "Kros",
+      "email": ""
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "paths": {
+    "/api/Catalog": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Gets all products.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Sample.Catalog.Domain.Product"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Sample.Catalog.Domain.Product"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Sample.Catalog.Domain.Product"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Creates the specified product.",
+        "requestBody": {
+          "description": "The user.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Sample.Catalog.Domain.Product"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Sample.Catalog.Domain.Product"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Sample.Catalog.Domain.Product"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/service1/endpoint1": {
+      "get": {
+        "tags": [
+          "service1"
+        ],
+        "summary": "service1 - endpoint 1",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/service2/endpoint1": {
+      "get": {
+        "tags": [
+          "service2"
+        ],
+        "summary": "service2 - endpoint 1",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/serviceWithSimpleParameter1/endpoint1/{id}": {
+      "get": {
+        "tags": [
+          "service1"
+        ],
+        "summary": "serviceWithSimpleParameter1 - endpoint 1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "The identifier.",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/serviceWithSimpleParameter2/endpoint1/{id}": {
+      "get": {
+        "tags": [
+          "service1"
+        ],
+        "summary": "serviceWithSimpleParameter2 - endpoint 1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "The identifier.",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/serviceWithMoreSimpleParameter1/endpoint1/{id}/{message}": {
+      "get": {
+        "tags": [
+          "service1"
+        ],
+        "summary": "serviceWithMoreSimpleParameter1 - endpoint 1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "The identifier.",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "message",
+            "in": "path",
+            "description": "The message.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/serviceWithMoreSimpleParameter2/endpoint1/{id}/{message}": {
+      "get": {
+        "tags": [
+          "service2"
+        ],
+        "summary": "serviceWithMoreSimpleParameter2 - endpoint 1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "The identifier.",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "message",
+            "in": "path",
+            "description": "The message.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/serviceWithMoreSimpleParameterAnotherNames/endpoint1/{idcko}/{sprava}": {
+      "get": {
+        "tags": [
+          "service2"
+        ],
+        "summary": "serviceWithMoreSimpleParameterAnotherNames - endpoint 1",
+        "parameters": [
+          {
+            "name": "idcko",
+            "in": "path",
+            "description": "The identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "The identifier.",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sprava",
+            "in": "path",
+            "description": "The message.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/moreMethod1/endpoint1": {
+      "post": {
+        "tags": [
+          "service1"
+        ],
+        "summary": "post method",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "moreMethod1"
+        ],
+        "summary": "moreMethod1 - endpoint 1",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/moreMethod2/endpoint1": {
+      "post": {
+        "tags": [
+          "service1"
+        ],
+        "summary": "post method",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "moreMethod1"
+        ],
+        "summary": "moreMethod2 - endpoint 1",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Catalog/{id}": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Gets the product by id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "The identifier.",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sample.Catalog.Domain.Product"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sample.Catalog.Domain.Product"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sample.Catalog.Domain.Product"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Update the specified product.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "The identifier.",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The product.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Sample.Catalog.Domain.Product"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Sample.Catalog.Domain.Product"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Sample.Catalog.Domain.Product"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Deletes the specified product.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "The identifier.",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Catalog/test/{id}/{message}": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "message",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Catalog/test2/{idcko}/{sprava}": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "idcko",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sprava",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "q1",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Sample.Catalog.Domain.Product": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Gets or sets the identifier.",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name.",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Gets or sets the description.",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "description": "Gets or sets the price.",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Product."
+      }
+    }
+  }
+}

@@ -34,7 +34,7 @@
         /// The tag's name property name.
         /// </summary>
         public const string TagName = "name";
-        
+
         /// <summary>
         /// The Base Path
         /// </summary>

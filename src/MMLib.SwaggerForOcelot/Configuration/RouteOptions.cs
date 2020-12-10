@@ -90,6 +90,11 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public IEnumerable<string> UpstreamHttpMethod { get; set; }
 
         /// <summary>
+        /// Gets or sets the key.
+        /// </summary>
+        public string Key { get; set; }
+
+        /// <summary>
         /// Determines whether [contains HTTP method] [the specified method type].
         /// </summary>
         /// <param name="methodType">Type of the method.</param>
@@ -105,11 +110,18 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public string VirtualDirectory { get; set; }
 
         /// <summary>
+        /// Gets or sets the parameters map.
+        /// It is a map between the parameters from the Ocelot configuration and the downstream service.
+        /// Key is Ocelot route parameter name and value is downstream service parameter name.
+        /// </summary>
+        public Dictionary<string, string> ParametersMap { get; set; }
+
+        /// <summary>
         /// Gets the downstream path.
         /// </summary>
         public string DownstreamPath => DownstreamPathWithVirtualDirectory.RemoveSlashFromEnd();
 
-        internal string DownstreamPathWithShash => DownstreamPathWithVirtualDirectory.WithShashEnding();
+        internal string DownstreamPathWithSlash => DownstreamPathWithVirtualDirectory.WithShashEnding();
 
         private readonly string _downstreamPathWithVirtualDirectory = null;
 

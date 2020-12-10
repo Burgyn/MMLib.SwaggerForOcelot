@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
 using MMLib.SwaggerForOcelot.Middleware;
+using MMLib.SwaggerForOcelot.Repositories;
 using MMLib.SwaggerForOcelot.Transformation;
 using Moq;
 using Moq.Protected;
@@ -83,12 +84,14 @@ namespace MMLib.SwaggerForOcelot.Tests
                 next.Invoke,
                 swaggerForOcelotOptions,
                 routeOptions,
-                swaggerEndpointOptions,
-                httpClientFactory,
                 swaggerJsonTransformerMock.Object);
 
             // Act
-            await swaggerForOcelotMiddleware.Invoke(httpContext, DummySwaggerServiceDiscoveryProvider.Default);
+            await swaggerForOcelotMiddleware.Invoke(
+                httpContext,
+                new SwaggerEndPointProvider(swaggerEndpointOptions, OcelotSwaggerGenOptions.Default),
+                new DownstreamSwaggerDocsRepository(Microsoft.Extensions.Options.Options.Create(swaggerForOcelotOptions),
+                    httpClientFactory, DummySwaggerServiceDiscoveryProvider.Default));
             httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
 
             // Assert
@@ -134,12 +137,14 @@ namespace MMLib.SwaggerForOcelot.Tests
                 next.Invoke,
                 swaggerForOcelotOptions,
                 routeOptions,
-                testSwaggerEndpointOptions,
-                httpClientFactory,
                 swaggerJsonTransformer);
 
             // Act
-            await swaggerForOcelotMiddleware.Invoke(httpContext, DummySwaggerServiceDiscoveryProvider.Default);
+            await swaggerForOcelotMiddleware.Invoke(
+                httpContext,
+                new SwaggerEndPointProvider(testSwaggerEndpointOptions, OcelotSwaggerGenOptions.Default),
+                new DownstreamSwaggerDocsRepository(Microsoft.Extensions.Options.Options.Create(swaggerForOcelotOptions),
+                    httpClientFactory, DummySwaggerServiceDiscoveryProvider.Default));
             httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
             string transformedUpstreamSwagger = await new StreamReader(httpContext.Response.Body).ReadToEndAsync();
 
@@ -191,12 +196,14 @@ namespace MMLib.SwaggerForOcelot.Tests
                 next.Invoke,
                 swaggerForOcelotOptions,
                 routeOptions,
-                swaggerEndpointOptions,
-                httpClientFactory,
                 swaggerJsonTransformerMock.Object);
 
             // Act
-            await swaggerForOcelotMiddleware.Invoke(httpContext, DummySwaggerServiceDiscoveryProvider.Default);
+            await swaggerForOcelotMiddleware.Invoke(
+                httpContext,
+                new SwaggerEndPointProvider(swaggerEndpointOptions, OcelotSwaggerGenOptions.Default),
+                new DownstreamSwaggerDocsRepository(Microsoft.Extensions.Options.Options.Create(swaggerForOcelotOptions),
+                    httpClientFactory, DummySwaggerServiceDiscoveryProvider.Default));
             httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
 
             // Assert

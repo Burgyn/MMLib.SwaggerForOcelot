@@ -7,6 +7,9 @@ assignees: ''
 
 ---
 
+**Please use Discussions page.**
+If you have question or feature request, please use [new Discussions page](https://github.com/Burgyn/MMLib.SwaggerForOcelot/discussions).
+
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 

@@ -15,9 +15,9 @@ namespace ApiGatewayWithEndpointSecurity.Repository
         {
             var lookupKey = $"{endPoint.Key}_{version}";
             var endpointData = new ManageSwaggerEndpointData();
-            if (this._endpointDatas.ContainsKey(lookupKey))
+            if (_endpointDatas.ContainsKey(lookupKey))
             {
-                endpointData = this._endpointDatas[lookupKey];
+                endpointData = _endpointDatas[lookupKey];
             }
 
             return endpointData;

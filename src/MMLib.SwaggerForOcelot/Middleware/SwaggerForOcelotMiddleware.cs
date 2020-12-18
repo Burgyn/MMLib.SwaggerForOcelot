@@ -62,8 +62,8 @@ namespace MMLib.SwaggerForOcelot.Middleware
         {
             (string version, SwaggerEndPointOptions endPoint) = GetEndPoint(context.Request.Path, swaggerEndPointRepository);
 
-            if (this._downstreamInterceptor != null &&
-                !this._downstreamInterceptor.DoDownstreamSwaggerEndpoint(context, version, endPoint))
+            if (_downstreamInterceptor != null &&
+                !_downstreamInterceptor.DoDownstreamSwaggerEndpoint(context, version, endPoint))
             {
                 return;
             }

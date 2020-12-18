@@ -399,6 +399,44 @@ WebHost.CreateDefaultBuilder(args)
   .UseStartup<Startup>();
 ```
 
+## Control downstream to swagger api
+With the `ISwaggerDownstreamInterceptor` interface you are able to inject your own logic to control the downstream.
+
+1. In the ConfigureServices method of Startup.cs, register your downstream interceptor along with your other dependencies.
+```CSharp
+services.AddSingleton<ISwaggerDownstreamInterceptor, PublishedDownstreamInterceptor>();
+services.AddSingleton<ISwaggerEndpointConfigurationRepository, DummySwaggerEndpointRepository>();
+```
+
+2. In your downstream interceptor add your custom logic to control if the downstream should be done.
+```CSharp
+public class PublishedDownstreamInterceptor : ISwaggerDownstreamInterceptor
+{
+    private readonly ISwaggerEndpointConfigurationRepository _endpointConfigurationRepository;
+
+    public PublishedDownstreamInterceptor(ISwaggerEndpointConfigurationRepository endpointConfigurationRepository)
+    {
+        _endpointConfigurationRepository = endpointConfigurationRepository;
+    }
+
+    public bool DoDownstreamSwaggerEndpoint(HttpContext httpContext, string version, SwaggerEndPointOptions endPoint)
+    {
+        var myEndpointConfiguration = _endpointConfigurationRepository.GetSwaggerEndpoint(endPoint, version);
+
+        if (!myEndpointConfiguration.IsPublished)
+        {
+            httpContext.Response.StatusCode = 404;
+            httpContext.Response.WriteAsync("This enpoint is under development, please come back later.");
+        }
+
+        return myEndpointConfiguration.IsPublished;
+    }
+}
+```
+
+Note, the service is still visible in the swagger ui the response is only visible in the request to the downstream url.
+If you want to control the visibility of the endpoints as well you have to implement a custom swagger ui.
+
 ## Limitation
 
 - Now, this library support only `{everything}` as a wildcard in routing definition. #68

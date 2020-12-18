@@ -24,6 +24,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         private readonly IOptions<List<RouteOptions>> _routes;
         private readonly ISwaggerJsonTransformer _transformer;
         private readonly SwaggerForOcelotUIOptions _options;
+        private readonly ISwaggerDownstreamInterceptor _downstreamInterceptor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerForOcelotMiddleware"/> class.
@@ -38,12 +39,14 @@ namespace MMLib.SwaggerForOcelot.Middleware
             RequestDelegate next,
             SwaggerForOcelotUIOptions options,
             IOptions<List<RouteOptions>> routes,
-            ISwaggerJsonTransformer transformer)
+            ISwaggerJsonTransformer transformer,
+            ISwaggerDownstreamInterceptor downstreamInterceptor = null)
         {
             _transformer = Check.NotNull(transformer, nameof(transformer));
             _next = Check.NotNull(next, nameof(next));
             _routes = Check.NotNull(routes, nameof(routes));
             _options = options;
+            _downstreamInterceptor = downstreamInterceptor;
         }
 
         /// <summary>
@@ -58,6 +61,12 @@ namespace MMLib.SwaggerForOcelot.Middleware
             IDownstreamSwaggerDocsRepository downstreamSwaggerDocs)
         {
             (string version, SwaggerEndPointOptions endPoint) = GetEndPoint(context.Request.Path, swaggerEndPointRepository);
+
+            if (_downstreamInterceptor != null &&
+                !_downstreamInterceptor.DoDownstreamSwaggerEndpoint(context, version, endPoint))
+            {
+                return;
+            }
 
             IEnumerable<RouteOptions> routeOptions = _routes.Value
                 .ExpandConfig(endPoint)

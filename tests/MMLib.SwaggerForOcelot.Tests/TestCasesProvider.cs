@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace MMLib.SwaggerForOcelot.Tests
         {
             IEnumerable<string> tests = GetTestFilePaths();
 
-            foreach(string testFilePath in tests)
+            foreach (string testFilePath in tests)
             {
                 TestCase testCase = GetData(testFilePath);
                 testCase.FileName = Path.GetFileName(testFilePath);
@@ -51,6 +51,6 @@ namespace MMLib.SwaggerForOcelot.Tests
         private IEnumerable<string> GetTestFilePaths()
             => _assembly
                 .GetManifestResourceNames()
-                .Where(p=> p.StartsWith(RootNamespaceResources));
+                .Where(p => p.StartsWith(RootNamespaceResources));
     }
 }

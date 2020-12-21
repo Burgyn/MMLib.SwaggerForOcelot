@@ -1,0 +1,291 @@
+{
+  "name": "GitHub issue #135",
+  "description": "Polymorphic API (base and sub type models) in downstream services doesn't seem generate schemas in swagger.json",
+  "hostOverride": "",
+  "routes": [
+    {
+      "DownstreamPathTemplate": "/api/events",
+      "UpstreamPathTemplate": "/api/events",
+      "SwaggerKey": "data"
+    }
+  ],
+  "downstreamSwagger": {
+    "openapi": "3.0.1",
+    "info": {
+      "title": "PolymorphicAPI",
+      "version": "1.0"
+    },
+    "paths": {
+      "/api/Events": {
+        "post": {
+          "tags": [
+            "Events"
+          ],
+          "requestBody": {
+            "content": {
+              "application/json-patch+json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateEventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CancelEventCommand"
+                    }
+                  ],
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateEventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CancelEventCommand"
+                    }
+                  ],
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateEventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CancelEventCommand"
+                    }
+                  ],
+                  "nullable": true
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateEventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CancelEventCommand"
+                    }
+                  ],
+                  "nullable": true
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "EventCommand": {
+          "type": "object",
+          "properties": {
+            "eventType": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "CreateEventCommand": {
+          "type": "object",
+          "properties": {
+            "eventType": {
+              "type": "string",
+              "nullable": true
+            },
+            "name": {
+              "type": "string",
+              "nullable": true
+            },
+            "quantity": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "additionalProperties": false
+        },
+        "CancelEventCommand": {
+          "type": "object",
+          "properties": {
+            "eventType": {
+              "type": "string",
+              "nullable": true
+            },
+            "id": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "reason": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+
+  "expectedTransformedSwagger": {
+    "openapi": "3.0.1",
+    "info": {
+      "title": "PolymorphicAPI",
+      "version": "1.0"
+    },
+    "paths": {
+      "/api/events": {
+        "post": {
+          "tags": [
+            "Events"
+          ],
+          "requestBody": {
+            "content": {
+              "application/json-patch+json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateEventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CancelEventCommand"
+                    }
+                  ],
+                  "nullable": true
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateEventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CancelEventCommand"
+                    }
+                  ],
+                  "nullable": true
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateEventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CancelEventCommand"
+                    }
+                  ],
+                  "nullable": true
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateEventCommand"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CancelEventCommand"
+                    }
+                  ],
+                  "nullable": true
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "EventCommand": {
+          "type": "object",
+          "properties": {
+            "eventType": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "CreateEventCommand": {
+          "type": "object",
+          "properties": {
+            "eventType": {
+              "type": "string",
+              "nullable": true
+            },
+            "name": {
+              "type": "string",
+              "nullable": true
+            },
+            "quantity": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "additionalProperties": false
+        },
+        "CancelEventCommand": {
+          "type": "object",
+          "properties": {
+            "eventType": {
+              "type": "string",
+              "nullable": true
+            },
+            "id": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "reason": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  }
+}

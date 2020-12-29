@@ -68,8 +68,13 @@ namespace MMLib.SwaggerForOcelot.Repositories
             string downstreamHttpVersion = route?.DownstreamHttpVersion;
             if (!downstreamHttpVersion.IsNullOrEmpty())
             {
-                int[] version = downstreamHttpVersion.Split('.').Select(int.Parse).ToArray();
+                int[] version = downstreamHttpVersion!.Split('.').Select(int.Parse).ToArray();
                 httpClient.DefaultRequestVersion = new Version(version[0], version[1]);
+                // HTTP/2 over insecure http requires non-default version policy.
+                if (route?.DownstreamScheme == "http" && version[0] == 2)
+                {
+                    httpClient.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact;
+                }
             }
         }
 

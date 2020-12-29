@@ -59,7 +59,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddSwaggerGen(c =>
             {
-                swaggerSetup(c);
+                swaggerSetup?.Invoke(c);
 
                 AddAggregatesDocs(c, options);
                 AddGatewayItSelfDocs(c, options);

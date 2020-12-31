@@ -28,8 +28,16 @@ jobs:
                     "delay": 3000,
                     "message": "The issue could not be validated after 60 minutes. Closing now."
                 },
-                "waiting": {
+                "waiting-1-day": {
+                  "delay": 86400,
+                  "message": "Closing after 1 day of waiting for the additional info requested."
+                },
+                "waiting-2-days": {
+                  "delay": 86400,
+                  "message": "Closing after 2 days of waiting for the additional info requested."
+                }
+                "waiting-8-days": {
                     "delay": 691200,
                     "message": "Closing after 8 days of waiting for the additional info requested."
-                }
+                }                
             }

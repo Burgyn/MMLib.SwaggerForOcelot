@@ -35,7 +35,7 @@ jobs:
                 "waiting-2-days": {
                   "delay": 172800,
                   "message": "Closing after 2 days of waiting for the additional info requested."
-                }
+                },
                 "waiting-8-days": {
                     "delay": 691200,
                     "message": "Closing after 8 days of waiting for the additional info requested."

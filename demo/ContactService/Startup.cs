@@ -40,6 +40,8 @@ namespace ContactService
             }
 
             app.UseRouting();
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
             app.UseSwagger()
                 .UseSwaggerUI(c =>
                 {

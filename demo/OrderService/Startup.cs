@@ -78,6 +78,7 @@ namespace OrderService
         public void Configure(IApplicationBuilder app, IApiVersionDescriptionProvider provider)
         {
             app.UseRouting();
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             app.UseSwagger();
             _ = app.UseSwaggerUI(
                 options =>

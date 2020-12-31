@@ -41,6 +41,7 @@ namespace ProjectService
             }
 
             app.UseRouting();
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             app.UseSwagger()
                 .UseSwaggerUI(c =>

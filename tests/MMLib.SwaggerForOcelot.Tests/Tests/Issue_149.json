@@ -1,0 +1,217 @@
+{
+  "name": "GitHub issue #49",
+  "description": "Polymorphic API (base and sub type models) in downstream services doesn't seem generate schemas in swagger.json",
+  "hostOverride": "",
+  "routes": [
+    {
+      "DownstreamPathTemplate": "/api/test",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7003
+        }
+      ],
+      "UpstreamPathTemplate": "/api/v2/test",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "test"
+    }
+  ],
+  "downstreamSwagger": {
+    "x-generator": "NSwag v13.6.2.0 (NJsonSchema v10.1.23.0 (Newtonsoft.Json v12.0.0.0))",
+    "openapi": "3.0.0",
+    "info": {
+      "title": "My Title",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:7003"
+      }
+    ],
+    "paths": {
+      "/api/test": {
+        "get": {
+          "tags": [],
+          "operationId": "Test_GetAll",
+          "parameters": [
+            {
+              "name": "filter",
+              "in": "query",
+              "schema": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ProblemRequestFilter"
+                  }
+                ]
+              },
+              "x-position": 2
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RecordsModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "ProblemRequestFilter": {
+          "type": "string",
+          "description": "",
+          "x-enumNames": [
+            "U",
+            "W",
+            "F",
+            "A"
+          ],
+          "enum": [
+            "u",
+            "w",
+            "f",
+            "a"
+          ]
+        },
+        "RecordsModel": {
+          "type": "object",
+          "additionalProperties": {
+            "nullable": true
+          },
+          "required": [
+            "hasMoreItems"
+          ],
+          "properties": {
+            "hasMoreItems": {
+              "type": "boolean"
+            },
+            "items": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "$ref": "#/components/schemas/Dto"
+              }
+            }
+          }
+        },
+        "Dto": {
+          "type": "object",
+          "additionalProperties": {
+            "nullable": true
+          }
+        }
+      }
+    }
+  },
+
+  "expectedTransformedSwagger": {
+    "x-generator": "NSwag v13.6.2.0 (NJsonSchema v10.1.23.0 (Newtonsoft.Json v12.0.0.0))",
+    "openapi": "3.0.0",
+    "info": {
+      "title": "My Title",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": ""
+      }
+    ],
+    "paths": {
+      "/api/v2/test": {
+        "get": {
+          "tags": [],
+          "operationId": "Test_GetAll",
+          "parameters": [
+            {
+              "name": "filter",
+              "in": "query",
+              "schema": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ProblemRequestFilter"
+                  }
+                ]
+              },
+              "x-position": 2
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RecordsModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "ProblemRequestFilter": {
+          "type": "string",
+          "description": "",
+          "x-enumNames": [
+            "U",
+            "W",
+            "F",
+            "A"
+          ],
+          "enum": [
+            "u",
+            "w",
+            "f",
+            "a"
+          ]
+        },
+        "RecordsModel": {
+          "type": "object",
+          "additionalProperties": {
+            "nullable": true
+          },
+          "required": [
+            "hasMoreItems"
+          ],
+          "properties": {
+            "hasMoreItems": {
+              "type": "boolean"
+            },
+            "items": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "$ref": "#/components/schemas/Dto"
+              }
+            }
+          }
+        },
+        "Dto": {
+          "type": "object",
+          "additionalProperties": {
+            "nullable": true
+          }
+        }
+      }
+    }
+  }
+}

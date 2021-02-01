@@ -8,6 +8,7 @@
     <None Remove="Tests\BasicConfigurationWithSchemaInHostOverride.json" />
     <None Remove="Tests\Issue_128.json" />
     <None Remove="Tests\Issue_135.json" />
+    <None Remove="Tests\Issue_149.json" />
     <None Remove="Tests\Issue_65.json" />
   </ItemGroup>
   <ItemGroup>
@@ -19,6 +20,8 @@
     <EmbeddedResource Include="Tests\BasicConfigurationWithSchemaInHostOverride.json" />
 
     <EmbeddedResource Include="Tests\BasicConfiguration.json" />
+
+    <EmbeddedResource Include="Tests\Issue_149.json" />
 
     <EmbeddedResource Include="Tests\Issue_135.json" />
 

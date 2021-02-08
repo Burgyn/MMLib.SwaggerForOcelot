@@ -10,7 +10,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// <summary>
         /// Folder of files of configuration of Ocelot.
         /// </summary>
-        public string Folder { get; set; } = "/";
+        public string Folder { get; set; } = "./";
 
         /// <summary>
         /// Name of file of configuration SwaggerForOcelot without .json extension.

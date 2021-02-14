@@ -9,15 +9,14 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 ![SwaggerForOcelot](https://github.com/Burgyn/MMLib.SwaggerForOcelot/blob/master/demo/image.png?raw=true)
 
 ---
-
 Did this project help you? [You can now buy me a beer 😎🍺.](https://www.buymeacoffee.com/0dQ7tNG)
 
 ## Get Started
 
 1. Configure SwaggerGen in your downstream services.
-    > Follow the [SwashbuckleAspNetCore documentation](https://github.com/domaindrivendev/Swashbuckle.AspNetCore#getting-started).
+   > Follow the [SwashbuckleAspNetCore documentation](https://github.com/domaindrivendev/Swashbuckle.AspNetCore#getting-started).
 2. Install Nuget package into yout ASP.NET Core Ocelot project.
-    > dotnet add package MMLib.SwaggerForOcelot
+   > dotnet add package MMLib.SwaggerForOcelot
 3. Configure SwaggerForOcelot in `ocelot.json`.
 
 ```Json
@@ -93,7 +92,7 @@ Did this project help you? [You can now buy me a beer 😎🍺.](https://www.buy
 }
 ```
 
-> `SwaggerEndPoint` is configuration for downstream service swagger generator endpoint. Property `Key` is used to pair with the Route configuration. `Name` is displayed in the combobox. `Url` is downstream service swagger generator endpoint.
+   > `SwaggerEndPoint` is configuration for downstream service swagger generator endpoint. Property `Key` is used to pair with the Route configuration. `Name` is displayed in the combobox. `Url` is downstream service swagger generator endpoint.
 
 4. In the `ConfigureServices` method of `Startup.cs`, register the SwaggerForOcelot generator.
 
@@ -109,44 +108,42 @@ app.UseSwaggerForOcelotUI(opt => {
 })
 ```
 
-You can optionally include headers that your Ocelot Gateway will send when requesting a swagger endpoint. This can be especially useful if your downstream microservices require contents from a header to authenticate.
+   You can optionally include headers that your Ocelot Gateway will send when requesting a swagger endpoint. This can be especially useful if your downstream microservices require contents from a header to authenticate.
 
-```CSharp
+  ```CSharp
 app.UseSwaggerForOcelotUI(opt => {
-  opts.DownstreamSwaggerHeaders = new[]
-  {
-      new KeyValuePair<string, string>("Auth-Key", "AuthValue"),
-  };
+    opts.DownstreamSwaggerHeaders = new[]
+    {
+        new KeyValuePair<string, string>("Auth-Key", "AuthValue"),
+    };
 })
-```
+  ```
 
-After swagger for ocelot transforms the downstream swagger to the upstream swagger, you have the ability to alter the upstream swagger if you need to by setting the `ReConfigureUpstreamSwaggerJson` option or `ReConfigureUpstreamSwaggerJsonAsync` option for async methods.
+  After swagger for ocelot transforms the downstream swagger to the upstream swagger, you have the ability to alter the upstream swagger if you need to by setting the `ReConfigureUpstreamSwaggerJson` option or `ReConfigureUpstreamSwaggerJsonAsync` option for async methods.
 
-```CSharp
+  ```CSharp
 public string AlterUpstreamSwaggerJson(HttpContext context, string swaggerJson)
 {
-  var swagger = JObject.Parse(swaggerJson);
-  // ... alter upstream json
-  return swagger.ToString(Formatting.Indented);
+    var swagger = JObject.Parse(swaggerJson);
+    // ... alter upstream json
+    return swagger.ToString(Formatting.Indented);
 }
 
 app.UseSwaggerForOcelotUI(opt => {
-  opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
+    opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
 })
-```
-
+  ```
 You can optionally customize the swagger server prior to calling the endpoints of the microservices as follows:
-
 ```CSharp
 app.UseSwaggerForOcelotUI(opt => {
     opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
 	opts.ServerOcelot = "/siteName/apigateway" ;
 })
-```
+  ```
 
 6. Show your microservices interactive documentation.
 
-    > `http://ocelotserviceurl/swagger`
+   > `http://ocelotserviceurl/swagger`
 
 ## Virtual directory
 
@@ -154,7 +151,7 @@ If you have a `downstream service` hosted in the virtual directory, you probably
 
 Example:
 
-```Json
+``` Json
  {
   "DownstreamPathTemplate": "/project/api/{everything}",
   "DownstreamScheme": "http",
@@ -175,7 +172,7 @@ Example:
 
 If you use [Ocelot Service Discovery Provider](https://ocelot.readthedocs.io/en/latest/features/servicediscovery.html) to find the host and port for the downstream service, then you can use the same service name for swagger configuration.
 
-```Json
+``` Json
 "Routes": [
   {
     "DownstreamPathTemplate": "/api/{everything}",
@@ -215,13 +212,12 @@ There are several real scenarios when you need to have a controller directly in 
 If you need to, you can also add documentation.
 
 1. Allow `GenerateDocsForGatewayItSelf` option in configuration section.
-
+   
 ```CSharp
 services.AddSwaggerForOcelot(Configuration,
   (o) =>
   {
       o.GenerateDocsForGatewayItSelf = true;
-      o.FilePathsForXmlCommentsOfGatewayItSelf = { "MyAPI.xml" }
   });
 ```
 
@@ -235,7 +231,7 @@ app.UseSwagger();
 
 ## Documentation of Ocelot Aggregates
 
-You are probably familiar with Ocelot great feature [**_Request Aggregation_**](https://ocelot.readthedocs.io/en/latest/features/requestaggregation.html). Request Aggregation allows you to easily add a new endpoint to the gateway that will aggregate the result from other existing endpoints.
+You are probably familiar with Ocelot great feature [***Request Aggregation***](https://ocelot.readthedocs.io/en/latest/features/requestaggregation.html). Request Aggregation allows you to easily add a new endpoint to the gateway that will aggregate the result from other existing endpoints.
 If you use these aggregations, you would probably want to have these endpoints in the api documentation as well.
 
 📢 From version `3.0.0` you can use this package for generating documentation for Ocelot aggregates.
@@ -253,14 +249,14 @@ services.AddSwaggerForOcelot(Configuration,
 Documentations of your aggregates will be available on custom page **Aggregates**.
 ![aggregates docs](./demo/aggregates.png)
 
-The current implementation may not cover all scenarios _(I hope most of them)_, but there are several ways you can change the final documentation.
+The current implementation may not cover all scenarios *(I hope most of them)*, but there are several ways you can change the final documentation.
 
 ### Custom description
 
 By default, this package generate description from downstream documentation. If you want add custom description for your aggregate route, you can add description to `ocelot.json`.
 
 ```json
-"Aggregates": [
+"Aggregates": [ 
   {
     "RouteKeys": [
       "user",
@@ -281,18 +277,18 @@ Therefore, you can help the configuration by setting parameter name map.
 
 ```json
 {
-    "DownstreamPathTemplate": "/api/basket/{id}",
-    "UpstreamPathTemplate": "/gateway/api/basket/{id}",
-    "ParametersMap": {
-        "id": "buyerId"
-    },
-    "ServiceName": "basket",
-    "SwaggerKey": "basket",
-    "Key": "basket"
+  "DownstreamPathTemplate": "/api/basket/{id}",
+  "UpstreamPathTemplate": "/gateway/api/basket/{id}",
+  "ParametersMap": {
+    "id": "buyerId"
+  },
+  "ServiceName": "basket",
+  "SwaggerKey": "basket",
+  "Key": "basket"
 }
 ```
 
-Property `ParametersMap` is map, where `key` _(first parameter)_ is the name of parameter in Ocelot configuration and `value` _(second parameter)_ is the name of parameter in downstream service.
+Property `ParametersMap` is map, where `key` *(first parameter)* is the name of parameter in Ocelot configuration and `value` *(second parameter)* is the name of parameter in downstream service.
 
 ### Custom aggregator
 
@@ -404,18 +400,15 @@ WebHost.CreateDefaultBuilder(args)
 ```
 
 ## Control downstream to swagger api
-
 With the `ISwaggerDownstreamInterceptor` interface you are able to inject your own logic to control the downstream.
 
 1. In the ConfigureServices method of Startup.cs, register your downstream interceptor along with your other dependencies.
-
 ```CSharp
 services.AddSingleton<ISwaggerDownstreamInterceptor, PublishedDownstreamInterceptor>();
 services.AddSingleton<ISwaggerEndpointConfigurationRepository, DummySwaggerEndpointRepository>();
 ```
 
 2. In your downstream interceptor add your custom logic to control if the downstream should be done.
-
 ```CSharp
 public class PublishedDownstreamInterceptor : ISwaggerDownstreamInterceptor
 {
@@ -446,8 +439,8 @@ If you want to control the visibility of the endpoints as well you have to imple
 
 ## Limitation
 
--   Now, this library support only `{everything}` as a wildcard in routing definition. #68
--   This package unfortunately does not support parameter translating between upstream and downstream path template. #59
+- Now, this library support only `{everything}` as a wildcard in routing definition. #68
+- This package unfortunately does not support parameter translating between upstream and downstream path template. #59
 
 ## Version 2.0.0
 

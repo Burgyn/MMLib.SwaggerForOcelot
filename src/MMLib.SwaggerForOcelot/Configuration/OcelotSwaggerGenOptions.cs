@@ -27,6 +27,11 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public bool GenerateDocsForGatewayItSelf { get; set; } = false;
 
         /// <summary>
+        /// Get or sets values indicating file paths of XML comment of gateway it self.
+        /// </summary>
+        public string[] FilePathsForXmlCommentsOfGatewayItSelf { get; set; }
+
+        /// <summary>
         /// Register aggregate docs generator post process.
         /// </summary>
         public Action<SwaggerAggregateRoute, IEnumerable<RouteDocs>, OpenApiPathItem, OpenApiDocument> AggregateDocsGeneratorPostProcess { get; set; }

@@ -237,12 +237,13 @@ There are several real scenarios when you need to have a controller directly in 
 If you need to, you can also add documentation.
 
 1. Allow `GenerateDocsForGatewayItSelf` option in configuration section.
-   
+
 ```CSharp
 services.AddSwaggerForOcelot(Configuration,
   (o) =>
   {
       o.GenerateDocsForGatewayItSelf = true;
+      o.FilePathsForXmlCommentsOfGatewayItSelf = { "MyAPI.xml" };
   });
 ```
 

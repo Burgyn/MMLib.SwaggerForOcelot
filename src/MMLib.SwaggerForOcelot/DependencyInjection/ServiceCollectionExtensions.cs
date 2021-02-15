@@ -78,7 +78,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     Title = "Gateway",
                     Version = OcelotSwaggerGenOptions.GatewayKey,
                 });
-
+              
                 AddDocumentFilterForGatewayItSelf(options.OcelotGatewayItSelfSwaggerGenOptions.DocumentFilterActions, c);
 
                 IncludeXmlComments(options.OcelotGatewayItSelfSwaggerGenOptions.FilePathsForXmlComments, c);

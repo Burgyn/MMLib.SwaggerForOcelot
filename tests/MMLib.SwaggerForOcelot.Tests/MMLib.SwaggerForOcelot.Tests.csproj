@@ -10,6 +10,7 @@
     <None Remove="Tests\Issue_135.json" />
     <None Remove="Tests\Issue_149.json" />
     <None Remove="Tests\Issue_65.json" />
+    <None Remove="Tests\OpenApiWithListOfServers.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\AggregatesOpenApiResource.json" />
@@ -28,6 +29,8 @@
     <EmbeddedResource Include="Tests\Issue_65.json" />
 
     <EmbeddedResource Include="Tests\Issue_128.json" />
+
+    <EmbeddedResource Include="Tests\OpenApiWithListOfServers.json" />
     <EmbeddedResource Include="Tests\SwaggerWithBasePath.json" />
     <EmbeddedResource Include="Tests\OcelotRouteOnlyOneController.json" />
     <EmbeddedResource Include="Tests\BasicConfigurationWithVirtualDirectory.json" />

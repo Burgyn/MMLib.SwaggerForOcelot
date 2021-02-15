@@ -98,11 +98,14 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static void IncludeXmlComments(string[] paths, SwaggerGenOptions c)
         {
-            foreach (var path in paths)
+            if (paths is not null)
             {
-                if (File.Exists(path))
+                foreach (var path in paths)
                 {
-                    c.IncludeXmlComments(path, true);
+                    if (File.Exists(path))
+                    {
+                        c.IncludeXmlComments(path, true);
+                    }
                 }
             }
         }

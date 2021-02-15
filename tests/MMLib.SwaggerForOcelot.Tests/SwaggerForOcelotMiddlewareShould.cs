@@ -74,12 +74,14 @@ namespace MMLib.SwaggerForOcelot.Tests
                 .Setup(x => x.Transform(
                     It.IsAny<string>(),
                     It.IsAny<IEnumerable<RouteOptions>>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<bool>()))
                 .Returns((
                     string swaggerJson,
                     IEnumerable<RouteOptions> routeOptions,
-                    string serverOverride) => new SwaggerJsonTransformer()
-                    .Transform(swaggerJson,routeOptions, serverOverride));
+                    string serverOverride,
+                    bool servers) => new SwaggerJsonTransformer()
+                    .Transform(swaggerJson,routeOptions, serverOverride, servers));
             var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
                 next.Invoke,
                 swaggerForOcelotOptions,
@@ -103,7 +105,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             swaggerJsonTransformerMock.Verify(x => x.Transform(
                 It.IsAny<string>(),
                 It.IsAny<IEnumerable<RouteOptions>>(),
-                It.IsAny<string>()), Times.Once);
+                It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
         [Fact]
@@ -186,12 +188,14 @@ namespace MMLib.SwaggerForOcelot.Tests
                 .Setup(x => x.Transform(
                     It.IsAny<string>(),
                     It.IsAny<IEnumerable<RouteOptions>>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<bool>()))
                 .Returns((
                     string swaggerJson,
                     IEnumerable<RouteOptions> routeOptions,
-                    string serverOverride) => new SwaggerJsonTransformer()
-                    .Transform(swaggerJson, routeOptions, serverOverride));
+                    string serverOverride,
+                    bool servers) => new SwaggerJsonTransformer()
+                    .Transform(swaggerJson, routeOptions, serverOverride, servers));
             var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
                 next.Invoke,
                 swaggerForOcelotOptions,
@@ -383,7 +387,10 @@ namespace MMLib.SwaggerForOcelot.Tests
                 _transformedJson = transformedJson;
             }
 
-            public string Transform(string swaggerJson, IEnumerable<RouteOptions> routes, string serverOverride)
+            public string Transform(string swaggerJson,
+                IEnumerable<RouteOptions> routes,
+                string serverOverride,
+                bool transformByOcelotConfig)
             {
                 return _transformedJson;
             }

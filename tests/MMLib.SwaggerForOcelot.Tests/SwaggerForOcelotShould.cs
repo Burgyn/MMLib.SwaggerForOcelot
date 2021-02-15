@@ -8,7 +8,7 @@ using Xunit.Sdk;
 namespace MMLib.SwaggerForOcelot.Tests
 {
     /// <summary>
-    /// Generic tests for transformation downstream swagger to upstream format. 
+    /// Generic tests for transformation downstream swagger to upstream format.
     /// Source test cases are located as resources in '/tests' folder and providing by <see cref="TestCasesProvider" />.
     /// </summary>
     public class SwaggerForOcelotShould
@@ -22,7 +22,8 @@ namespace MMLib.SwaggerForOcelot.Tests
             string transformed = transformer.Transform(
                 testData.DownstreamSwagger.ToString(),
                 testData.Routes,
-                testData.HostOverride);
+                testData.HostOverride,
+                testData.TakeServersFromDownstreamService);
 
             AreEqual(transformed, testData.ExpectedTransformedSwagger, testData.FileName);
         }

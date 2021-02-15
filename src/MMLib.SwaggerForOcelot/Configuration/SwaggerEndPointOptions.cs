@@ -46,6 +46,14 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// </value>
         public bool TransformByOcelotConfig { get; set; } = true;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether can take open api servers list from downstream service.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [take servers from downstream service]; otherwise, <c>false</c>.
+        /// </value>
+        public bool TakeServersFromDownstreamService { get; set; } = false;
+
         internal bool IsGatewayItSelf => Config != null && Config.Any(c => c.IsGatewayItSelf);
     }
 }

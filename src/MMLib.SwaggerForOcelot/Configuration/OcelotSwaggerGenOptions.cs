@@ -27,9 +27,16 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public bool GenerateDocsForGatewayItSelf { get; set; } = false;
 
         /// <summary>
-        /// Get or sets values indicating file paths of XML comment of gateway it self.
+        /// Generates docs for gateway it self with options.
         /// </summary>
-        public string[] FilePathsForXmlCommentsOfGatewayItSelf { get; set; }
+        /// <param name="options">Gateway itself docs generation options.</param>
+        public void GenerateDocsDocsForGatewayItSelf(Action<OcelotGatewayItSelfSwaggerGenOptions> options = null)
+        {
+            GenerateDocsForGatewayItSelf = true;
+
+            OcelotGatewayItSelfSwaggerGenOptions = new OcelotGatewayItSelfSwaggerGenOptions();
+            options?.Invoke(OcelotGatewayItSelfSwaggerGenOptions);
+        }
 
         /// <summary>
         /// Register aggregate docs generator post process.
@@ -42,5 +49,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         internal const string AggregatesKey = "aggregates";
 
         internal const string GatewayKey = "gateway";
+
+        internal OcelotGatewayItSelfSwaggerGenOptions OcelotGatewayItSelfSwaggerGenOptions { get; private set; }
     }
 }

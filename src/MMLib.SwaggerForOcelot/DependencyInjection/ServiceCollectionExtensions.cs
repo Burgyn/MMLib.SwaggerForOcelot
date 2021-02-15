@@ -79,7 +79,9 @@ namespace Microsoft.Extensions.DependencyInjection
                     Version = OcelotSwaggerGenOptions.GatewayKey,
                 });
 
-                IncludeXmlComments(options.FilePathsForXmlCommentsOfGatewayItSelf, c);
+                AddDocumentFilterForGatewayItSelf(options.OcelotGatewayItSelfSwaggerGenOptions.DocumentFilterActions, c);
+
+                IncludeXmlComments(options.OcelotGatewayItSelfSwaggerGenOptions.FilePathsForXmlComments, c);
             }
         }
 
@@ -108,6 +110,11 @@ namespace Microsoft.Extensions.DependencyInjection
                     }
                 }
             }
+        }
+
+        private static void AddDocumentFilterForGatewayItSelf(List<Action<SwaggerGenOptions>> documentFilterActions, SwaggerGenOptions c)
+        {
+            documentFilterActions.ForEach(f => f.Invoke(c));
         }
     }
 }

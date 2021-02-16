@@ -145,6 +145,31 @@ app.UseSwaggerForOcelotUI(opt => {
 
    > `http://ocelotserviceurl/swagger`
 
+## Open API Servers
+
+If you have multiple servers defined in the downstream service Open API documentation, or you use server templating and you want to use it on the gateway side as well, then you must explicitly enable it on the Swagger endpoint definition by setting property `TakeServersFromDownstreamService` to `true`.
+
+```json
+"SwaggerEndPoints": [
+    {
+      "Key": "users",
+      "TakeServersFromDownstreamService": true,
+      "Config": [
+        {
+          "Name": "Users API",
+          "Version": "v1",
+          "Service": {
+            "Name": "users",
+            "Path": "/swagger/v1/swagger.json"
+          }
+        }
+      ]
+    }
+]
+```
+
+> ⚠ If you set `TakeServersFromDownstreamService` to `true`, then the server path is not used to transform the paths of individual endpoints.
+
 ## Virtual directory
 
 If you have a `downstream service` hosted in the virtual directory, you probably have a `DownstreamPathTemplate` starting with the name of this virtual directory `/virtualdirectory/api/{everything}`. In order to properly replace the paths, it is necessary to set the property route `"Virtualdirectory":"/virtualdirectory"`.

@@ -82,7 +82,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 if (options.OcelotGatewayItSelfSwaggerGenOptions is not null)
                 {
                     AddDocumentFilterForGatewayItSelf(options.OcelotGatewayItSelfSwaggerGenOptions.DocumentFilterActions, c);
-
                     IncludeXmlComments(options.OcelotGatewayItSelfSwaggerGenOptions.FilePathsForXmlComments, c);
                 }
             }

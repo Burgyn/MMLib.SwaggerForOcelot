@@ -218,7 +218,20 @@ services.AddSwaggerForOcelot(Configuration,
   (o) =>
   {
       o.GenerateDocsForGatewayItSelf = true;
-      o.FilePathsForXmlCommentsOfGatewayItSelf = { "MyAPI.xml" };
+  });
+```
+
+or you can provide more options for gateway itself documentation
+
+```CSharp
+services.AddSwaggerForOcelot(Configuration,
+  (o) =>
+  {
+      o.GenerateDocsForGatewayItSelf(opt =>
+      {
+          opt.FilePathsForXmlComments = { "MyAPI.xml" };
+          opt.DocumentFilter<MyDocumentFilter>();
+      });
   });
 ```
 

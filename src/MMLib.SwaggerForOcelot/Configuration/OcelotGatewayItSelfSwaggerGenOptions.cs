@@ -5,8 +5,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MMLib.SwaggerForOcelot.Configuration
 {
+    /// <summary>
+    /// Options for generating docs of Gateway itself.
+    /// </summary>
     public class OcelotGatewayItSelfSwaggerGenOptions
     {
+        /// <summary>
+        /// Ctor.
+        /// </summary>
         public OcelotGatewayItSelfSwaggerGenOptions()
         {
             DocumentFilterActions = new List<Action<SwaggerGenOptions>>();

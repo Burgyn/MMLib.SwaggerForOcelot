@@ -79,9 +79,12 @@ namespace Microsoft.Extensions.DependencyInjection
                     Version = OcelotSwaggerGenOptions.GatewayKey,
                 });
 
-                AddDocumentFilterForGatewayItSelf(options.OcelotGatewayItSelfSwaggerGenOptions.DocumentFilterActions, c);
+                if (options.OcelotGatewayItSelfSwaggerGenOptions is not null)
+                {
+                    AddDocumentFilterForGatewayItSelf(options.OcelotGatewayItSelfSwaggerGenOptions.DocumentFilterActions, c);
 
-                IncludeXmlComments(options.OcelotGatewayItSelfSwaggerGenOptions.FilePathsForXmlComments, c);
+                    IncludeXmlComments(options.OcelotGatewayItSelfSwaggerGenOptions.FilePathsForXmlComments, c);
+                }
             }
         }
 

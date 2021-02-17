@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using MMLib.SwaggerForOcelot.Repositories;
 using MMLib.SwaggerForOcelot.Aggregates;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.IO;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -77,6 +78,12 @@ namespace Microsoft.Extensions.DependencyInjection
                     Title = "Gateway",
                     Version = OcelotSwaggerGenOptions.GatewayKey,
                 });
+
+                if (options.OcelotGatewayItSelfSwaggerGenOptions is not null)
+                {
+                    AddDocumentFilterForGatewayItSelf(options.OcelotGatewayItSelfSwaggerGenOptions.DocumentFilterActions, c);
+                    IncludeXmlComments(options.OcelotGatewayItSelfSwaggerGenOptions.FilePathsForXmlComments, c);
+                }
             }
         }
 
@@ -91,6 +98,25 @@ namespace Microsoft.Extensions.DependencyInjection
                 });
                 c.DocumentFilter<AggregatesDocumentFilter>();
             }
+        }
+
+        private static void IncludeXmlComments(string[] paths, SwaggerGenOptions c)
+        {
+            if (paths is not null)
+            {
+                foreach (var path in paths)
+                {
+                    if (File.Exists(path))
+                    {
+                        c.IncludeXmlComments(path, true);
+                    }
+                }
+            }
+        }
+
+        private static void AddDocumentFilterForGatewayItSelf(List<Action<SwaggerGenOptions>> documentFilterActions, SwaggerGenOptions c)
+        {
+            documentFilterActions.ForEach(f => f.Invoke(c));
         }
     }
 }

@@ -40,6 +40,14 @@ namespace MMLib.SwaggerForOcelot.Tests
         public JObject ExpectedTransformedSwagger { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether can take open api servers list from downstream service.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [take servers from downstream service]; otherwise, <c>false</c>.
+        /// </value>
+        public bool TakeServersFromDownstreamService { get; set; } = false;
+
+        /// <summary>
         /// Test name.
         /// </summary>
         public override string ToString() => $"{Name} ({FileName})";

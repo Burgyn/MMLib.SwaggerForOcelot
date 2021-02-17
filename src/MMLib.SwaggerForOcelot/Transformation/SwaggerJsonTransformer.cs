@@ -11,11 +11,15 @@ namespace MMLib.SwaggerForOcelot.Transformation
     /// <summary>
     /// Class which implement transformation downstream service swagger json into upstream format
     /// </summary>
-    /// <seealso cref="MMLib.SwaggerForOcelot.Transformation.ISwaggerJsonTransformer" />
+    /// <seealso cref="ISwaggerJsonTransformer" />
     public class SwaggerJsonTransformer : ISwaggerJsonTransformer
     {
         /// <inheritdoc/>
-        public string Transform(string swaggerJson, IEnumerable<RouteOptions> routes, string serverOverride)
+        public string Transform(
+            string swaggerJson,
+            IEnumerable<RouteOptions> routes,
+            string serverOverride,
+            bool takeServersFromDownstreamService)
         {
             var swagger = JObject.Parse(swaggerJson);
 
@@ -26,7 +30,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
             if (swagger.ContainsKey("openapi"))
             {
-                return TransformOpenApi(swagger, routes, serverOverride);
+                return TransformOpenApi(swagger, routes, serverOverride, takeServersFromDownstreamService);
             }
 
             throw new InvalidOperationException("Unknown swagger/openapi version");
@@ -75,11 +79,15 @@ namespace MMLib.SwaggerForOcelot.Transformation
             return swagger.ToString(Formatting.Indented);
         }
 
-        private string TransformOpenApi(JObject openApi, IEnumerable<RouteOptions> routes, string serverOverride = "/")
+        private string TransformOpenApi(
+            JObject openApi,
+            IEnumerable<RouteOptions> routes,
+            string serverOverride,
+            bool takeServersFromDownstreamService)
         {
             // NOTE: Only supporting one server for now.
             string downstreamBasePath = "";
-            if (openApi.ContainsKey(OpenApiProperties.Servers))
+            if (openApi.ContainsKey(OpenApiProperties.Servers) && !takeServersFromDownstreamService)
             {
                 string firstServerUrl = openApi.GetValue(OpenApiProperties.Servers).First.Value<string>(OpenApiProperties.Url);
                 var downstreamUrl = new Uri(firstServerUrl, UriKind.RelativeOrAbsolute);
@@ -115,7 +123,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 }
             }
 
-            TransformServerPaths(openApi, serverOverride);
+            TransformServerPaths(openApi, serverOverride, takeServersFromDownstreamService);
 
             return openApi.ToString(Formatting.Indented);
         }
@@ -258,9 +266,9 @@ namespace MMLib.SwaggerForOcelot.Transformation
             property.Replace(newProperty);
         }
 
-        private static void TransformServerPaths(JObject openApi, string serverOverride)
+        private static void TransformServerPaths(JObject openApi, string serverOverride, bool takeServersFromDownstreamService)
         {
-            if (!openApi.ContainsKey(OpenApiProperties.Servers))
+            if (!openApi.ContainsKey(OpenApiProperties.Servers) || takeServersFromDownstreamService)
             {
                 return;
             }

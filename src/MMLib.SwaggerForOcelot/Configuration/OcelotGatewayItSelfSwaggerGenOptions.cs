@@ -42,7 +42,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
                 s.DocumentFilter<TFilter>(arguments);
             });
         }
-
+      
         /// <summary>
         /// Add one or more "securityDefinitions", describing how your API is protected, to the generated Swagger
         /// </summary>

@@ -75,7 +75,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 c.SwaggerDoc(OcelotSwaggerGenOptions.GatewayKey, new OpenApiInfo
                 {
-                    Title = "Gateway",
+                    Title =  "Gateway",
                     Version = OcelotSwaggerGenOptions.GatewayKey,
                 });
 
@@ -83,6 +83,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     AddDocumentFilterForGatewayItSelf(options.OcelotGatewayItSelfSwaggerGenOptions.DocumentFilterActions, c);
                     IncludeXmlComments(options.OcelotGatewayItSelfSwaggerGenOptions.FilePathsForXmlComments, c);
+                    options.OcelotGatewayItSelfSwaggerGenOptions.SecurityDefinitionAction?.Invoke(c);
+                    options.OcelotGatewayItSelfSwaggerGenOptions.SecurityRequirementAction?.Invoke(c);
                 }
             }
         }

@@ -19,6 +19,8 @@ using Moq;
 using Moq.Protected;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NSubstitute;
+using Swashbuckle.AspNetCore.Swagger;
 using Xunit;
 using Xunit.Sdk;
 
@@ -86,7 +88,8 @@ namespace MMLib.SwaggerForOcelot.Tests
                 next.Invoke,
                 swaggerForOcelotOptions,
                 routeOptions,
-                swaggerJsonTransformerMock.Object);
+                swaggerJsonTransformerMock.Object,
+                Substitute.For<ISwaggerProvider>());
 
             // Act
             await swaggerForOcelotMiddleware.Invoke(
@@ -139,7 +142,8 @@ namespace MMLib.SwaggerForOcelot.Tests
                 next.Invoke,
                 swaggerForOcelotOptions,
                 routeOptions,
-                swaggerJsonTransformer);
+                swaggerJsonTransformer,
+                Substitute.For<ISwaggerProvider>());
 
             // Act
             await swaggerForOcelotMiddleware.Invoke(
@@ -200,7 +204,8 @@ namespace MMLib.SwaggerForOcelot.Tests
                 next.Invoke,
                 swaggerForOcelotOptions,
                 routeOptions,
-                swaggerJsonTransformerMock.Object);
+                swaggerJsonTransformerMock.Object,
+                Substitute.For<ISwaggerProvider>());
 
             // Act
             await swaggerForOcelotMiddleware.Invoke(
@@ -214,7 +219,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             httClientMock.DefaultRequestVersion.Should().BeEquivalentTo(new Version(2, 0));
         }
 
-        private TestSwaggerEndpointOptions CreateSwaggerEndpointOptions(string key, string version)
+        private static TestSwaggerEndpointOptions CreateSwaggerEndpointOptions(string key, string version)
             => new TestSwaggerEndpointOptions(
                 new List<SwaggerEndPointOptions>()
                 {

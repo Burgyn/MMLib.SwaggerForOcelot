@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
 using Newtonsoft.Json.Linq;
+using NSubstitute;
+using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Collections.Generic;
@@ -102,6 +104,7 @@ namespace MMLib.SwaggerForOcelot.Tests
         {
             IServiceCollection serviceCollection = new ServiceCollection();
 
+            serviceCollection.AddSingleton(Substitute.For<ISwaggerProvider>());
             serviceCollection.AddSwaggerForOcelot(configuration);
             configureServices?.Invoke(serviceCollection);
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();

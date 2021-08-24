@@ -123,7 +123,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
         /// </summary>
         public OpenApiResponse GetResponse()
         {
-            var response = Docs[PathKey].SelectToken("responses.200")?.ToObject(typeof(Response), _serializer) as Response;
+            var response = Docs[PathKey]?.SelectToken("responses.200")?.ToObject(typeof(Response), _serializer) as Response;
 
             return new OpenApiResponse()
             {
@@ -134,22 +134,28 @@ namespace MMLib.SwaggerForOcelot.Aggregates
 
         private Dictionary<string, OpenApiMediaType> CreateContent(Response response)
         {
-            OpenApiMediaTypeEx content = response?.Content[MediaTypeNames.Application.Json];
             var ret = new Dictionary<string, OpenApiMediaType>();
-
-            if (content != null)
+            if (response?.Content is null)
             {
-                if (!content.SchemaExt.IsReference)
-                {
-                    content.SetSchema();
-                }
-                else
-                {
-                    FindSchema(content);
-                }
-
-                ret.Add(MediaTypeNames.Application.Json, content);
+                return ret;
             }
+
+            OpenApiMediaTypeEx content = response.Content[MediaTypeNames.Application.Json];
+            if (content == null)
+            {
+                return ret;
+            }
+
+            if (!content.SchemaExt.IsReference)
+            {
+                content.SetSchema();
+            }
+            else
+            {
+                FindSchema(content);
+            }
+
+            ret.Add(MediaTypeNames.Application.Json, content);
 
             return ret;
         }

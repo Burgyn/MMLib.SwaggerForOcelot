@@ -125,6 +125,32 @@
         }
       }
     },
+    "/api/withoutcontent1/endpoint1": {
+      "get": {
+        "tags": [
+          "withoutcontent1"
+        ],
+        "summary": "withoutcontent1 - endpoint 1",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/withoutcontent2/endpoint1": {
+      "get": {
+        "tags": [
+          "withoutcontent2"
+        ],
+        "summary": "withoutcontent2 - endpoint 1",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/api/serviceWithSimpleParameter1/endpoint1/{id}": {
       "get": {
         "tags": [

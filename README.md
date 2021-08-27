@@ -11,6 +11,8 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 ---
 Did this project help you? [You can now buy me a beer 😎🍺.](https://www.buymeacoffee.com/0dQ7tNG)
 
+[!["You can now buy me a beer 😎🍺."](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/0dQ7tNG)
+
 ## Get Started
 
 1. Configure SwaggerGen in your downstream services.

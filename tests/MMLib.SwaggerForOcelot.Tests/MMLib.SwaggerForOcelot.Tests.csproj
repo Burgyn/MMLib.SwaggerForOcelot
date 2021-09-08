@@ -9,6 +9,7 @@
     <None Remove="Tests\Issue_128.json" />
     <None Remove="Tests\Issue_135.json" />
     <None Remove="Tests\Issue_149.json" />
+    <None Remove="Tests\Issue_186.json" />
     <None Remove="Tests\Issue_65.json" />
     <None Remove="Tests\OpenApiWithListOfServers.json" />
   </ItemGroup>
@@ -21,6 +22,8 @@
     <EmbeddedResource Include="Tests\BasicConfigurationWithSchemaInHostOverride.json" />
 
     <EmbeddedResource Include="Tests\BasicConfiguration.json" />
+
+    <EmbeddedResource Include="Tests\Issue_186.json" />
 
     <EmbeddedResource Include="Tests\Issue_149.json" />
 

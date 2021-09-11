@@ -114,7 +114,7 @@ app.UseSwaggerForOcelotUI(opt => {
 
   ```CSharp
 app.UseSwaggerForOcelotUI(opt => {
-    opts.DownstreamSwaggerHeaders = new[]
+    opt.DownstreamSwaggerHeaders = new[]
     {
         new KeyValuePair<string, string>("Auth-Key", "AuthValue"),
     };
@@ -132,14 +132,14 @@ public string AlterUpstreamSwaggerJson(HttpContext context, string swaggerJson)
 }
 
 app.UseSwaggerForOcelotUI(opt => {
-    opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
+    opt.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
 })
   ```
 You can optionally customize the swagger server prior to calling the endpoints of the microservices as follows:
 ```CSharp
 app.UseSwaggerForOcelotUI(opt => {
-    opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
-	opts.ServerOcelot = "/siteName/apigateway" ;
+    opt.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
+    opt.ServerOcelot = "/siteName/apigateway" ;
 })
   ```
 

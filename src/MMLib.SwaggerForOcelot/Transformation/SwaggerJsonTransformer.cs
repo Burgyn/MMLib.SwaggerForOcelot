@@ -14,6 +14,13 @@ namespace MMLib.SwaggerForOcelot.Transformation
     /// <seealso cref="ISwaggerJsonTransformer" />
     public class SwaggerJsonTransformer : ISwaggerJsonTransformer
     {
+        private readonly OcelotSwaggerGenOptions _ocelotSwaggerGenOptions;
+
+        public SwaggerJsonTransformer(OcelotSwaggerGenOptions ocelotSwaggerGenOptions)
+        {
+            _ocelotSwaggerGenOptions = ocelotSwaggerGenOptions;
+        }
+
         /// <inheritdoc/>
         public string Transform(
             string swaggerJson,
@@ -141,6 +148,8 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
                 if (route != null && RemoveMethods(path, route))
                 {
+                    AddSecurityDefinitions(path, route);
+
                     RenameToken(path, ConvertDownstreamPathToUpstreamPath(downstreamPath, route.DownstreamPath, route.UpstreamPath, basePath));
                 }
                 else
@@ -175,6 +184,34 @@ namespace MMLib.SwaggerForOcelot.Transformation
             }
 
             return path.First.Any();
+        }
+
+        private void AddSecurityDefinitions(JProperty path, RouteOptions route)
+        {
+            var authProviderKey = route.AuthenticationOptions?.AuthenticationProviderKey;
+
+            if (string.IsNullOrEmpty(authProviderKey))
+                return;
+
+            if (_ocelotSwaggerGenOptions.AuthenticationProviderKeyMap.TryGetValue(
+                authProviderKey,
+                out var securityScheme))
+            {
+                var method = path.First.First as JProperty;
+
+                while (method != null)
+                {
+                    var securityProperty = new JProperty(OpenApiProperties.Security,
+                        new JArray(
+                            new JObject(
+                                new JProperty(securityScheme,
+                                    new JArray(route.AuthenticationOptions?.AllowedScopes?.ToArray() ?? Array.Empty<string>())))));
+
+                    ((JObject)method.Value).Add(securityProperty);
+
+                    method = method.Next as JProperty;
+                }
+            }
         }
 
         private static void RemoveItems<T>(JToken token, JToken paths, params Func<T, string>[] searchPaths)

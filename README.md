@@ -503,6 +503,55 @@ public class PublishedDownstreamInterceptor : ISwaggerDownstreamInterceptor
 Note, the service is still visible in the swagger ui the response is only visible in the request to the downstream url.
 If you want to control the visibility of the endpoints as well you have to implement a custom swagger ui.
 
+## Security definition generation
+
+It is possible to generate security definitions for the enpoints based on Ocelot configuration
+
+1. Add `AuthenticationOptions` to your route definition
+``` Json
+"Routes": [
+  {
+    "DownstreamPathTemplate": "/api/{everything}",
+    "ServiceName": "projects",
+    "UpstreamPathTemplate": "/api/project/{everything}",
+    "SwaggerKey": "projects",
+    "AuthenticationOptions": {
+      "AuthenticationProviderKey": "Bearer",
+      "AllowedScopes": [ "scope" ]
+    },
+  }
+]
+```
+
+2. Provide a mapping in Startup between `AuthenticationProviderKey` and it's corresponding `securityDefintion`
+```CSharp
+services.AddSwaggerForOcelot(Configuration,
+  (o) =>
+  {
+    o.AddAuthenticationProviderKeyMapping("Bearer", "appAuth");
+  });
+```
+
+3. Now you should have security definitions on your swagger documents
+``` Json
+{
+  "paths": {
+    "/api/project": {
+      "get": {
+        ...
+        "security": [
+          {
+            "appAuth": [ "scope" ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+Note, this does not affect nor checks the swagger document's `securityDefinitions` property.
+
 ## Limitation
 
 - Now, this library support only `{everything}` as a wildcard in routing definition. #68

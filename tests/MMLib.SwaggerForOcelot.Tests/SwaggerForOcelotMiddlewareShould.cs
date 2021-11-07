@@ -82,7 +82,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                     string swaggerJson,
                     IEnumerable<RouteOptions> routeOptions,
                     string serverOverride,
-                    bool servers) => new SwaggerJsonTransformer()
+                    bool servers) => new SwaggerJsonTransformer(OcelotSwaggerGenOptions.Default)
                     .Transform(swaggerJson,routeOptions, serverOverride, servers));
             var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
                 next.Invoke,
@@ -198,7 +198,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                     string swaggerJson,
                     IEnumerable<RouteOptions> routeOptions,
                     string serverOverride,
-                    bool servers) => new SwaggerJsonTransformer()
+                    bool servers) => new SwaggerJsonTransformer(OcelotSwaggerGenOptions.Default)
                     .Transform(swaggerJson, routeOptions, serverOverride, servers));
             var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
                 next.Invoke,

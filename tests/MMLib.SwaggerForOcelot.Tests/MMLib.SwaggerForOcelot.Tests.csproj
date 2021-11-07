@@ -23,6 +23,8 @@
 
     <EmbeddedResource Include="Tests\BasicConfiguration.json" />
 
+    <EmbeddedResource Include="Tests\BasicSecurityDefinition.json" />
+
     <EmbeddedResource Include="Tests\Issue_186.json" />
 
     <EmbeddedResource Include="Tests\Issue_149.json" />

@@ -191,7 +191,9 @@ namespace MMLib.SwaggerForOcelot.Transformation
             var authProviderKey = route.AuthenticationOptions?.AuthenticationProviderKey;
 
             if (string.IsNullOrEmpty(authProviderKey))
+            {
                 return;
+            }
 
             if (_ocelotSwaggerGenOptions.AuthenticationProviderKeyMap.TryGetValue(
                 authProviderKey,

@@ -39,5 +39,10 @@
         /// The tag's name property name.  Property is a child of <seealso cref="Tags"/>.
         /// </summary>
         public const string TagName = "name";
+
+        /// <summary>
+        /// The endpoint's security definition property name
+        /// </summary>
+        public const string Security = "security";
     }
 }

@@ -1,4 +1,5 @@
 ﻿using JsonDiffPatchDotNet;
+using MMLib.SwaggerForOcelot.Configuration;
 using MMLib.SwaggerForOcelot.Transformation;
 using Newtonsoft.Json.Linq;
 using System;
@@ -17,7 +18,12 @@ namespace MMLib.SwaggerForOcelot.Tests
         [ClassData(typeof(TestCasesProvider))]
         public void TransferDownstreamSwaggerToUpstreamFormat(TestCase testData)
         {
-            var transformer = new SwaggerJsonTransformer();
+            var options = new OcelotSwaggerGenOptions();
+
+            foreach (var mapping in testData.AuthenticationProviderKeyMap)
+                options.AuthenticationProviderKeyMap.Add(mapping.Key, mapping.Value);
+
+            var transformer = new SwaggerJsonTransformer(options);
 
             string transformed = transformer.Transform(
                 testData.DownstreamSwagger.ToString(),

@@ -39,6 +39,17 @@ namespace MMLib.SwaggerForOcelot.Configuration
         }
 
         /// <summary>
+        /// Adds a mapping between Ocelot's AuthenticationProviderKey and Swagger's securityScheme
+        /// If a route has a match, security definition will be added to the endpoint with the provided AllowedScopes from the config.
+        /// </summary>
+        /// <param name="authenticationProviderKey"></param>
+        /// <param name="securityScheme"></param>
+        public void AddAuthenticationProviderKeyMapping(string authenticationProviderKey, string securityScheme)
+        {
+            AuthenticationProviderKeyMap.Add(authenticationProviderKey, securityScheme);
+        }
+
+        /// <summary>
         /// Register aggregate docs generator post process.
         /// </summary>
         public Action<SwaggerAggregateRoute, IEnumerable<RouteDocs>, OpenApiPathItem, OpenApiDocument> AggregateDocsGeneratorPostProcess { get; set; }
@@ -51,5 +62,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         internal const string GatewayKey = "gateway";
 
         internal OcelotGatewayItSelfSwaggerGenOptions OcelotGatewayItSelfSwaggerGenOptions { get; private set; }
+
+        internal Dictionary<string, string> AuthenticationProviderKeyMap { get; } = new();
     }
 }

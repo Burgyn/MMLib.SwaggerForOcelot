@@ -81,10 +81,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 if (options.OcelotGatewayItSelfSwaggerGenOptions is not null)
                 {
-                    AddDocumentFilterForGatewayItSelf(options.OcelotGatewayItSelfSwaggerGenOptions.DocumentFilterActions, c);
+                    InvokeActionsForGatewayItSelf(options.OcelotGatewayItSelfSwaggerGenOptions.DocumentFilterActions, c);
+                    InvokeActionsForGatewayItSelf(options.OcelotGatewayItSelfSwaggerGenOptions.SecurityDefinitionActions, c);
+                    InvokeActionsForGatewayItSelf(options.OcelotGatewayItSelfSwaggerGenOptions.SecurityRequirementActions, c);
                     IncludeXmlComments(options.OcelotGatewayItSelfSwaggerGenOptions.FilePathsForXmlComments, c);
-                    options.OcelotGatewayItSelfSwaggerGenOptions.SecurityDefinitionAction?.Invoke(c);
-                    options.OcelotGatewayItSelfSwaggerGenOptions.SecurityRequirementAction?.Invoke(c);
                 }
             }
         }
@@ -116,9 +116,9 @@ namespace Microsoft.Extensions.DependencyInjection
             }
         }
 
-        private static void AddDocumentFilterForGatewayItSelf(List<Action<SwaggerGenOptions>> documentFilterActions, SwaggerGenOptions c)
+        private static void InvokeSwaggerGenOptionsActions(List<Action<SwaggerGenOptions>> actions, SwaggerGenOptions c)
         {
-            documentFilterActions.ForEach(f => f.Invoke(c));
+            actions.ForEach(f => f.Invoke(c));
         }
     }
 }

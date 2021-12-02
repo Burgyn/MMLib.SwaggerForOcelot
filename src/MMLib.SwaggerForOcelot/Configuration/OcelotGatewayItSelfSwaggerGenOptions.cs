@@ -17,6 +17,8 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public OcelotGatewayItSelfSwaggerGenOptions()
         {
             DocumentFilterActions = new List<Action<SwaggerGenOptions>>();
+            SecurityDefinitionActions = new List<Action<SwaggerGenOptions>>();
+            SecurityRequirementActions = new List<Action<SwaggerGenOptions>>();
         }
 
         /// <summary>
@@ -26,9 +28,9 @@ namespace MMLib.SwaggerForOcelot.Configuration
 
         internal List<Action<SwaggerGenOptions>> DocumentFilterActions { get; }
 
-        internal Action<SwaggerGenOptions> SecurityDefinitionAction { get; private set; }
+        internal List<Action<SwaggerGenOptions>> SecurityDefinitionActions { get; private set; }
 
-        internal Action<SwaggerGenOptions> SecurityRequirementAction { get; private set; }
+        internal List<Action<SwaggerGenOptions>> SecurityRequirementActions { get; private set; }
 
         /// <summary>
         /// Extend the gateway itself Swagger Generator with "filters" that can modify SwaggerDocuments after they're initially generated.
@@ -50,10 +52,10 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// <param name="openApiSecurityScheme">A description of the scheme - can be an instance of BasicAuthScheme, ApiKeyScheme or OAuth2Scheme</param>
         public void AddSecurityDefinition(string name, OpenApiSecurityScheme openApiSecurityScheme)
         {
-            SecurityDefinitionAction = (s) =>
+            SecurityDefinitionActions.Add((s) =>
             {
                 s.AddSecurityDefinition(name, openApiSecurityScheme);
-            };
+            });
         }
 
         /// <summary>
@@ -66,10 +68,10 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// </param>
         public void AddSecurityRequirement(OpenApiSecurityRequirement openApiSecurityRequirement)
         {
-            SecurityDefinitionAction = (s) =>
+            SecurityDefinitionActions.Add((s) =>
             {
                 s.AddSecurityRequirement(openApiSecurityRequirement);
-            };
+            });
         }
     }
 }

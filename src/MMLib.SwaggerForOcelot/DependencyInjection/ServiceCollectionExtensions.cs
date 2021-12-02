@@ -81,9 +81,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 if (options.OcelotGatewayItSelfSwaggerGenOptions is not null)
                 {
-                    InvokeActionsForGatewayItSelf(options.OcelotGatewayItSelfSwaggerGenOptions.DocumentFilterActions, c);
-                    InvokeActionsForGatewayItSelf(options.OcelotGatewayItSelfSwaggerGenOptions.SecurityDefinitionActions, c);
-                    InvokeActionsForGatewayItSelf(options.OcelotGatewayItSelfSwaggerGenOptions.SecurityRequirementActions, c);
+                    InvokeSwaggerGenOptionsActions(options.OcelotGatewayItSelfSwaggerGenOptions.DocumentFilterActions, c);
+                    InvokeSwaggerGenOptionsActions(options.OcelotGatewayItSelfSwaggerGenOptions.SecurityDefinitionActions, c);
+                    InvokeSwaggerGenOptionsActions(options.OcelotGatewayItSelfSwaggerGenOptions.SecurityRequirementActions, c);
                     IncludeXmlComments(options.OcelotGatewayItSelfSwaggerGenOptions.FilePathsForXmlComments, c);
                 }
             }

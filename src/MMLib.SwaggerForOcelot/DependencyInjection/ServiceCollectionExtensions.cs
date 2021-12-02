@@ -82,6 +82,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 if (options.OcelotGatewayItSelfSwaggerGenOptions is not null)
                 {
                     InvokeSwaggerGenOptionsActions(options.OcelotGatewayItSelfSwaggerGenOptions.DocumentFilterActions, c);
+                    InvokeSwaggerGenOptionsActions(options.OcelotGatewayItSelfSwaggerGenOptions.OperationFilterActions, c);
                     InvokeSwaggerGenOptionsActions(options.OcelotGatewayItSelfSwaggerGenOptions.SecurityDefinitionActions, c);
                     InvokeSwaggerGenOptionsActions(options.OcelotGatewayItSelfSwaggerGenOptions.SecurityRequirementActions, c);
                     IncludeXmlComments(options.OcelotGatewayItSelfSwaggerGenOptions.FilePathsForXmlComments, c);

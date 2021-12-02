@@ -17,6 +17,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public OcelotGatewayItSelfSwaggerGenOptions()
         {
             DocumentFilterActions = new List<Action<SwaggerGenOptions>>();
+            OperationFilterActions = new List<Action<SwaggerGenOptions>>();
             SecurityDefinitionActions = new List<Action<SwaggerGenOptions>>();
             SecurityRequirementActions = new List<Action<SwaggerGenOptions>>();
         }
@@ -27,6 +28,8 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public string[] FilePathsForXmlComments { get; set; }
 
         internal List<Action<SwaggerGenOptions>> DocumentFilterActions { get; }
+
+        internal List<Action<SwaggerGenOptions>> OperationFilterActions { get; }
 
         internal List<Action<SwaggerGenOptions>> SecurityDefinitionActions { get; private set; }
 
@@ -42,6 +45,19 @@ namespace MMLib.SwaggerForOcelot.Configuration
             DocumentFilterActions.Add((s) =>
             {
                 s.DocumentFilter<TFilter>(arguments);
+            });
+        }
+
+        /// <summary>
+        /// Extend the Swagger Generator with "filters" that can modify Operations after they're initially generated
+        /// </summary>
+        /// <typeparam name="TFilter">A type that derives from IOperationFilter</typeparam>
+        /// <param name="arguments">Optionally inject parameters through filter constructors</param>
+        public void OperationFilter<TFilter>(params object[] arguments) where TFilter : IOperationFilter
+        {
+            OperationFilterActions.Add((s) =>
+            {
+                s.OperationFilter<TFilter>(arguments);
             });
         }
 

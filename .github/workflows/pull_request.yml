@@ -16,4 +16,4 @@ jobs:
     - name: Test
       run: dotnet test ./MMLib.SwaggerForOcelot.sln --configuration Release
     - name: Benchmark
-      run: dotnet run ./tests/MMLib.SwaggerForOcelot.BenchmarkTests/MMLib.SwaggerForOcelot.BenchmarkTests.csproj -c Release
+      run: dotnet run --project ./tests/MMLib.SwaggerForOcelot.BenchmarkTests/MMLib.SwaggerForOcelot.BenchmarkTests.csproj -c Release

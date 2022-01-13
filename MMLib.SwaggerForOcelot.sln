@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGatewayWithPath", "demo\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGatewayWithEndpointInterceptor", "demo\ApiGatewayWithEndpointInterceptor\ApiGatewayWithEndpointInterceptor.csproj", "{4CF0F59A-E155-4F68-B47B-7042E5A1CB2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MMLib.SwaggerForOcelot.BenchmarkTests", "tests\MMLib.SwaggerForOcelot.BenchmarkTests\MMLib.SwaggerForOcelot.BenchmarkTests.csproj", "{BFB72205-5F70-474B-BC43-6C0B71C39FFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{4CF0F59A-E155-4F68-B47B-7042E5A1CB2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CF0F59A-E155-4F68-B47B-7042E5A1CB2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CF0F59A-E155-4F68-B47B-7042E5A1CB2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFB72205-5F70-474B-BC43-6C0B71C39FFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFB72205-5F70-474B-BC43-6C0B71C39FFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFB72205-5F70-474B-BC43-6C0B71C39FFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFB72205-5F70-474B-BC43-6C0B71C39FFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +89,7 @@ Global
 		{F823FFA3-F5D9-488E-ADAB-15C4E9790DC5} = {75938D16-D280-4200-A970-8D33B719D252}
 		{DF18713F-3BE4-4300-BB41-D8239AAC2CA4} = {75938D16-D280-4200-A970-8D33B719D252}
 		{4CF0F59A-E155-4F68-B47B-7042E5A1CB2B} = {75938D16-D280-4200-A970-8D33B719D252}
+		{BFB72205-5F70-474B-BC43-6C0B71C39FFA} = {A9111054-B663-41BA-AE67-E6FE3E7515AF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AAA408E9-E738-4F2B-A6C2-B35AAADDB00F}

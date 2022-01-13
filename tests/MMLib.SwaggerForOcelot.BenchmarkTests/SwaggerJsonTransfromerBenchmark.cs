@@ -18,14 +18,13 @@ public class SwaggerJsonTransfromerBenchmark
     public SwaggerJsonTransfromerBenchmark()
     {
         _swagger = ReadFile("Swagger.json");
-
         _routeOptions = new List<RouteOptions>
         {
             new()
             {
-                SwaggerKey = "pets",
-                UpstreamPathTemplate ="/v2/api/pets/pet/{everything}",
-                DownstreamPathTemplate ="/v2/pet/{everything}",
+                SwaggerKey = "ppm-backend-netcore",
+                UpstreamPathTemplate ="/{everything}",
+                DownstreamPathTemplate ="/{everything}",
             },
             new()
             {

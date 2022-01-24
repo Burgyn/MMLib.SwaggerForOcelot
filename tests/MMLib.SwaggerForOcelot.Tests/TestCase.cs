@@ -47,6 +47,11 @@ namespace MMLib.SwaggerForOcelot.Tests
         /// </value>
         public bool TakeServersFromDownstreamService { get; set; } = false;
 
+        /// <summary>
+        /// Indicating if can remove unused components from downstream docs in this test case.
+        /// </summary>
+        public bool RemoveUnusedComponentsFromScheme { get; set; } = true;
+
         public Dictionary<string, string> AuthenticationProviderKeyMap { get; set; } = new();
 
         /// <summary>

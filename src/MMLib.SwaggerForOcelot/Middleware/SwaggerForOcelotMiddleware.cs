@@ -99,7 +99,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
                     content,
                     routeOptions,
                     GetServerName(context, endPoint),
-                    endPoint.TakeServersFromDownstreamService);
+                    endPoint);
             }
             content = await ReconfigureUpstreamSwagger(context, content);
 

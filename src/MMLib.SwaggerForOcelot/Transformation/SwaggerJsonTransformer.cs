@@ -22,28 +22,31 @@ namespace MMLib.SwaggerForOcelot.Transformation
         }
 
         /// <inheritdoc/>
-        public string Transform(
-            string swaggerJson,
+        public string Transform(string swaggerJson,
             IEnumerable<RouteOptions> routes,
             string serverOverride,
-            bool takeServersFromDownstreamService)
+            SwaggerEndPointOptions endPointOptions)
         {
             var swagger = JObject.Parse(swaggerJson);
 
             if (swagger.ContainsKey("swagger"))
             {
-                return TransformSwagger(swagger, routes, serverOverride);
+                return TransformSwagger(swagger, routes, serverOverride, endPointOptions);
             }
 
             if (swagger.ContainsKey("openapi"))
             {
-                return TransformOpenApi(swagger, routes, serverOverride, takeServersFromDownstreamService);
+                return TransformOpenApi(swagger, routes, serverOverride, endPointOptions);
             }
 
             throw new InvalidOperationException("Unknown swagger/openapi version");
         }
 
-        private string TransformSwagger(JObject swagger, IEnumerable<RouteOptions> routes, string hostOverride)
+        private string TransformSwagger(
+            JObject swagger,
+            IEnumerable<RouteOptions> routes,
+            string hostOverride,
+            SwaggerEndPointOptions endPointOptions)
         {
             JToken paths = swagger[SwaggerProperties.Paths];
             string basePath = swagger.ContainsKey(SwaggerProperties.BasePath)
@@ -61,20 +64,23 @@ namespace MMLib.SwaggerForOcelot.Transformation
             {
                 RenameAndRemovePaths(routes, paths, basePath);
 
-                RemoveItems<JProperty>(
-                    swagger[SwaggerProperties.Definitions],
-                    paths,
-                    i => $"$..[?(@*.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
-                    i => $"$..[?(@*.*.items.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
-                    i => $"$..[?(@*.*.allOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')])]",
-                    i => $"$..allOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
-                    i => $"$..[?(@*.*.oneOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')])]");
-                if (swagger["tags"] != null)
+                if (endPointOptions.RemoveUnusedComponentsFromScheme)
                 {
-                    RemoveItems<JObject>(
-                        swagger[SwaggerProperties.Tags],
+                    RemoveItems<JProperty>(
+                        swagger[SwaggerProperties.Definitions],
                         paths,
-                        i => $"$..tags[?(@ == '{i[SwaggerProperties.TagName]}')]");
+                        i => $"$..[?(@*.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
+                        i => $"$..[?(@*.*.items.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
+                        i => $"$..[?(@*.*.allOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')])]",
+                        i => $"$..allOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
+                        i => $"$..[?(@*.*.oneOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')])]");
+                    if (swagger["tags"] != null)
+                    {
+                        RemoveItems<JObject>(
+                            swagger[SwaggerProperties.Tags],
+                            paths,
+                            i => $"$..tags[?(@ == '{i[SwaggerProperties.TagName]}')]");
+                    }
                 }
             }
 
@@ -90,11 +96,11 @@ namespace MMLib.SwaggerForOcelot.Transformation
             JObject openApi,
             IEnumerable<RouteOptions> routes,
             string serverOverride,
-            bool takeServersFromDownstreamService)
+            SwaggerEndPointOptions endPointOptions)
         {
             // NOTE: Only supporting one server for now.
             string downstreamBasePath = "";
-            if (openApi.ContainsKey(OpenApiProperties.Servers) && !takeServersFromDownstreamService)
+            if (openApi.ContainsKey(OpenApiProperties.Servers) && !endPointOptions.TakeServersFromDownstreamService)
             {
                 string firstServerUrl = openApi.GetValue(OpenApiProperties.Servers).First.Value<string>(OpenApiProperties.Url);
                 var downstreamUrl = new Uri(firstServerUrl, UriKind.RelativeOrAbsolute);
@@ -109,7 +115,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 RenameAndRemovePaths(routes, paths, downstreamBasePath);
 
                 JToken schemaToken = openApi[OpenApiProperties.Components][OpenApiProperties.Schemas];
-                if (schemaToken != null)
+                if (endPointOptions.RemoveUnusedComponentsFromScheme && schemaToken != null)
                 {
                     RemoveItems<JProperty>(schemaToken,
                         paths,
@@ -122,7 +128,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                         i => $"$..[?(@*.*.oneOf[?(@.$ref == '#/{OpenApiProperties.Components}/{OpenApiProperties.Schemas}/{i.Name}')])]");
                 }
 
-                if (openApi["tags"] != null)
+                if (endPointOptions.RemoveUnusedComponentsFromScheme && openApi["tags"] != null)
                 {
                     RemoveItems<JObject>(
                         openApi[OpenApiProperties.Tags],
@@ -131,7 +137,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 }
             }
 
-            TransformServerPaths(openApi, serverOverride, takeServersFromDownstreamService);
+            TransformServerPaths(openApi, serverOverride, endPointOptions.TakeServersFromDownstreamService);
 
             return openApi.ToString(Formatting.Indented);
         }

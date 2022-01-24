@@ -20,8 +20,10 @@ namespace MMLib.SwaggerForOcelot.Tests
         {
             var options = new OcelotSwaggerGenOptions();
 
-            foreach (var mapping in testData.AuthenticationProviderKeyMap)
-                options.AuthenticationProviderKeyMap.Add(mapping.Key, mapping.Value);
+            foreach ((string key, string value) in testData.AuthenticationProviderKeyMap)
+            {
+                options.AuthenticationProviderKeyMap.Add(key, value);
+            }
 
             var transformer = new SwaggerJsonTransformer(options);
 
@@ -29,7 +31,11 @@ namespace MMLib.SwaggerForOcelot.Tests
                 testData.DownstreamSwagger.ToString(),
                 testData.Routes,
                 testData.HostOverride,
-                testData.TakeServersFromDownstreamService);
+                new SwaggerEndPointOptions()
+                {
+                    TakeServersFromDownstreamService = testData.TakeServersFromDownstreamService,
+                    RemoveUnusedComponentsFromScheme = testData.RemoveUnusedComponentsFromScheme
+                });
 
             AreEqual(transformed, testData.ExpectedTransformedSwagger, testData.FileName);
         }

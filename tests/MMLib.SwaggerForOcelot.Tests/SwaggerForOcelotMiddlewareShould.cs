@@ -43,19 +43,19 @@ namespace MMLib.SwaggerForOcelot.Tests
             TestSwaggerEndpointOptions swaggerEndpointOptions = CreateSwaggerEndpointOptions(key,version);
             var routeOptions = new TestRouteOptions(new List<RouteOptions>
             {
-                new RouteOptions
+                new()
                 {
                     SwaggerKey = "projects",
                     UpstreamPathTemplate ="/api/{version}/projects/Values/{everything}",
                     DownstreamPathTemplate ="/api/{version}/Values/{everything}",
                 },
-                new RouteOptions
+                new()
                 {
                     SwaggerKey = "projects",
                     UpstreamPathTemplate = "/api/projects/Projects",
                     DownstreamPathTemplate = "/api/Projects",
                 },
-                new RouteOptions
+                new()
                 {
                     SwaggerKey = "projects",
                     UpstreamPathTemplate = "/api/projects/Projects/{everything}",
@@ -77,13 +77,13 @@ namespace MMLib.SwaggerForOcelot.Tests
                     It.IsAny<string>(),
                     It.IsAny<IEnumerable<RouteOptions>>(),
                     It.IsAny<string>(),
-                    It.IsAny<bool>()))
+                    It.IsAny<SwaggerEndPointOptions>()))
                 .Returns((
                     string swaggerJson,
                     IEnumerable<RouteOptions> routeOptions,
                     string serverOverride,
-                    bool servers) => new SwaggerJsonTransformer(OcelotSwaggerGenOptions.Default)
-                    .Transform(swaggerJson,routeOptions, serverOverride, servers));
+                    SwaggerEndPointOptions options) => new SwaggerJsonTransformer(OcelotSwaggerGenOptions.Default)
+                    .Transform(swaggerJson,routeOptions, serverOverride, options));
             var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
                 next.Invoke,
                 swaggerForOcelotOptions,
@@ -108,7 +108,8 @@ namespace MMLib.SwaggerForOcelot.Tests
             swaggerJsonTransformerMock.Verify(x => x.Transform(
                 It.IsAny<string>(),
                 It.IsAny<IEnumerable<RouteOptions>>(),
-                It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+                It.IsAny<string>(),
+                It.IsAny<SwaggerEndPointOptions>()), Times.Once);
         }
 
         [Fact]
@@ -173,7 +174,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             TestSwaggerEndpointOptions swaggerEndpointOptions = CreateSwaggerEndpointOptions(key,version);
             var routeOptions = new TestRouteOptions(new List<RouteOptions>
             {
-                new RouteOptions
+                new()
                 {
                     SwaggerKey = "projects",
                     UpstreamPathTemplate = "/api/projects/Projects",
@@ -193,13 +194,13 @@ namespace MMLib.SwaggerForOcelot.Tests
                     It.IsAny<string>(),
                     It.IsAny<IEnumerable<RouteOptions>>(),
                     It.IsAny<string>(),
-                    It.IsAny<bool>()))
+                    It.IsAny<SwaggerEndPointOptions>()))
                 .Returns((
                     string swaggerJson,
                     IEnumerable<RouteOptions> routeOptions,
                     string serverOverride,
-                    bool servers) => new SwaggerJsonTransformer(OcelotSwaggerGenOptions.Default)
-                    .Transform(swaggerJson, routeOptions, serverOverride, servers));
+                    SwaggerEndPointOptions options) => new SwaggerJsonTransformer(OcelotSwaggerGenOptions.Default)
+                    .Transform(swaggerJson, routeOptions, serverOverride, options));
             var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
                 next.Invoke,
                 swaggerForOcelotOptions,
@@ -395,7 +396,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             public string Transform(string swaggerJson,
                 IEnumerable<RouteOptions> routes,
                 string serverOverride,
-                bool transformByOcelotConfig)
+                SwaggerEndPointOptions endPointOptions)
             {
                 return _transformedJson;
             }

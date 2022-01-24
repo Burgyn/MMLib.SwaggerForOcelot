@@ -14,15 +14,13 @@ namespace MMLib.SwaggerForOcelot.Transformation
         /// <param name="swaggerJson">The swagger json.</param>
         /// <param name="routes">The re routes.</param>
         /// <param name="serverOverride">The host override to add to swagger json.</param>
-        /// <param name="transformByOcelotConfig">
-        /// Indicating whether can take open api servers list from downstream service.
-        /// </param>
+        /// <param name="endPointOptions">Endpoint options.</param>
         /// <returns>
         /// Transformed swagger json.
         /// </returns>
         string Transform(string swaggerJson,
             IEnumerable<RouteOptions> routes,
             string serverOverride,
-            bool takeServersFromDownstreamService);
+            SwaggerEndPointOptions endPointOptions);
     }
 }

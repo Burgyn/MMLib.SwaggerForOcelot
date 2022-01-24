@@ -556,6 +556,25 @@ Note, this does not affect nor checks the swagger document's `securityDefinition
 
 - Now, this library support only `{everything}` as a wildcard in routing definition. #68
 - This package unfortunately does not support parameter translating between upstream and downstream path template. #59
+- If your downstream documentation is too large (usually more than 10 MB), the response may be too slow. You can turn off the removal of an unused schema component from downstream documentation by using `RemoveUnusedComponentsFromScheme: false`.
+```csharp
+ "SwaggerEndPoints": [
+    {
+      "Key": "projects",
+      "RemoveUnusedComponentsFromScheme": false,
+      "Config": [
+        {
+          "Name": "Projects API",
+          "Version": "v1",
+          "Service": {
+            "Name": "projects",
+            "Path": "/swagger/v1/swagger.json"
+          }
+        }
+      ]
+    }
+  ]
+```
 
 ## Version 2.0.0
 

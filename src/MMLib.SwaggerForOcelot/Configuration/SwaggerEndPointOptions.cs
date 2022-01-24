@@ -47,6 +47,11 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public bool TransformByOcelotConfig { get; set; } = true;
 
         /// <summary>
+        /// Gets or sets a value indicating whether to remove unused components from the documentation.
+        /// </summary>
+        public bool RemoveUnusedComponentsFromScheme { get; set; } = true;
+
+        /// <summary>
         /// Gets or sets a value indicating whether can take open api servers list from downstream service.
         /// </summary>
         /// <value>

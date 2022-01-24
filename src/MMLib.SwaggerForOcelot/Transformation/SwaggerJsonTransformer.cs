@@ -31,7 +31,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
             if (swagger.ContainsKey("swagger"))
             {
-                return TransformSwagger(swagger, routes, serverOverride);
+                return TransformSwagger(swagger, routes, serverOverride, endPointOptions);
             }
 
             if (swagger.ContainsKey("openapi"))
@@ -42,7 +42,11 @@ namespace MMLib.SwaggerForOcelot.Transformation
             throw new InvalidOperationException("Unknown swagger/openapi version");
         }
 
-        private string TransformSwagger(JObject swagger, IEnumerable<RouteOptions> routes, string hostOverride)
+        private string TransformSwagger(
+            JObject swagger,
+            IEnumerable<RouteOptions> routes,
+            string hostOverride,
+            SwaggerEndPointOptions endPointOptions)
         {
             JToken paths = swagger[SwaggerProperties.Paths];
             string basePath = swagger.ContainsKey(SwaggerProperties.BasePath)
@@ -60,20 +64,23 @@ namespace MMLib.SwaggerForOcelot.Transformation
             {
                 RenameAndRemovePaths(routes, paths, basePath);
 
-                RemoveItems<JProperty>(
-                    swagger[SwaggerProperties.Definitions],
-                    paths,
-                    i => $"$..[?(@*.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
-                    i => $"$..[?(@*.*.items.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
-                    i => $"$..[?(@*.*.allOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')])]",
-                    i => $"$..allOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
-                    i => $"$..[?(@*.*.oneOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')])]");
-                if (swagger["tags"] != null)
+                if (endPointOptions.RemoveUnusedComponentsFromScheme)
                 {
-                    RemoveItems<JObject>(
-                        swagger[SwaggerProperties.Tags],
+                    RemoveItems<JProperty>(
+                        swagger[SwaggerProperties.Definitions],
                         paths,
-                        i => $"$..tags[?(@ == '{i[SwaggerProperties.TagName]}')]");
+                        i => $"$..[?(@*.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
+                        i => $"$..[?(@*.*.items.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
+                        i => $"$..[?(@*.*.allOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')])]",
+                        i => $"$..allOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
+                        i => $"$..[?(@*.*.oneOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')])]");
+                    if (swagger["tags"] != null)
+                    {
+                        RemoveItems<JObject>(
+                            swagger[SwaggerProperties.Tags],
+                            paths,
+                            i => $"$..tags[?(@ == '{i[SwaggerProperties.TagName]}')]");
+                    }
                 }
             }
 
@@ -108,7 +115,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 RenameAndRemovePaths(routes, paths, downstreamBasePath);
 
                 JToken schemaToken = openApi[OpenApiProperties.Components][OpenApiProperties.Schemas];
-                if (schemaToken != null)
+                if (endPointOptions.RemoveUnusedComponentsFromScheme && schemaToken != null)
                 {
                     RemoveItems<JProperty>(schemaToken,
                         paths,
@@ -121,7 +128,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                         i => $"$..[?(@*.*.oneOf[?(@.$ref == '#/{OpenApiProperties.Components}/{OpenApiProperties.Schemas}/{i.Name}')])]");
                 }
 
-                if (openApi["tags"] != null)
+                if (endPointOptions.RemoveUnusedComponentsFromScheme && openApi["tags"] != null)
                 {
                     RemoveItems<JObject>(
                         openApi[OpenApiProperties.Tags],

@@ -22,11 +22,10 @@ namespace MMLib.SwaggerForOcelot.Transformation
         }
 
         /// <inheritdoc/>
-        public string Transform(
-            string swaggerJson,
+        public string Transform(string swaggerJson,
             IEnumerable<RouteOptions> routes,
             string serverOverride,
-            bool takeServersFromDownstreamService)
+            SwaggerEndPointOptions endPointOptions)
         {
             var swagger = JObject.Parse(swaggerJson);
 
@@ -37,7 +36,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
             if (swagger.ContainsKey("openapi"))
             {
-                return TransformOpenApi(swagger, routes, serverOverride, takeServersFromDownstreamService);
+                return TransformOpenApi(swagger, routes, serverOverride, endPointOptions);
             }
 
             throw new InvalidOperationException("Unknown swagger/openapi version");
@@ -90,11 +89,11 @@ namespace MMLib.SwaggerForOcelot.Transformation
             JObject openApi,
             IEnumerable<RouteOptions> routes,
             string serverOverride,
-            bool takeServersFromDownstreamService)
+            SwaggerEndPointOptions endPointOptions)
         {
             // NOTE: Only supporting one server for now.
             string downstreamBasePath = "";
-            if (openApi.ContainsKey(OpenApiProperties.Servers) && !takeServersFromDownstreamService)
+            if (openApi.ContainsKey(OpenApiProperties.Servers) && !endPointOptions.TakeServersFromDownstreamService)
             {
                 string firstServerUrl = openApi.GetValue(OpenApiProperties.Servers).First.Value<string>(OpenApiProperties.Url);
                 var downstreamUrl = new Uri(firstServerUrl, UriKind.RelativeOrAbsolute);
@@ -131,7 +130,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 }
             }
 
-            TransformServerPaths(openApi, serverOverride, takeServersFromDownstreamService);
+            TransformServerPaths(openApi, serverOverride, endPointOptions.TakeServersFromDownstreamService);
 
             return openApi.ToString(Formatting.Indented);
         }

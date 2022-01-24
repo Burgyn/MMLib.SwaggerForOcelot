@@ -29,7 +29,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                 testData.DownstreamSwagger.ToString(),
                 testData.Routes,
                 testData.HostOverride,
-                testData.TakeServersFromDownstreamService);
+                new SwaggerEndPointOptions(){ TakeServersFromDownstreamService = testData.TakeServersFromDownstreamService});
 
             AreEqual(transformed, testData.ExpectedTransformedSwagger, testData.FileName);
         }

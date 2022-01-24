@@ -46,7 +46,7 @@ public class SwaggerJsonTransfromerBenchmark
     [Benchmark]
     public void Transform()
     {
-       _transformer.Transform(_swagger, _routeOptions,  string.Empty, false);
+       _transformer.Transform(_swagger, _routeOptions,  string.Empty, new SwaggerEndPointOptions());
     }
 
     private static string ReadFile(string testFilePath)

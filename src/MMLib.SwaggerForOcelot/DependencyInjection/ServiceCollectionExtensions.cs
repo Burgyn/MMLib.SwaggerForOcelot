@@ -38,7 +38,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IDownstreamSwaggerDocsRepository, DownstreamSwaggerDocsRepository>()
                 .AddTransient<ISwaggerServiceDiscoveryProvider, SwaggerServiceDiscoveryProvider>()
                 .AddTransient<ISwaggerJsonTransformer, SwaggerJsonTransformer>()
-                .Configure<List<RouteOptions>>(options => configuration.GetSection("Routes").Bind(options))
+                .AddSingleton<List<RouteOptions>>(options => LoadFromCSV("routes.csv"))
                 .Configure<List<SwaggerEndPointOptions>>(options
                     => configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName).Bind(options))
                 .AddHttpClient()
@@ -67,6 +67,17 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
             return services;
+        }
+
+        private static List<RouteOptions> LoadFromCSV(string routesPath)
+        {
+            using var csv = new CsvHelper.CsvReader(File.OpenText(routesPath), CultureInfo.InvariantCulture);
+
+            var routes = csv.GetRecords<RouteOptions>().
+                             Where(r => !string.IsNullOrEmpty(r.SwaggerKey)
+                             && r.SwaggerKey != "noswagger").ToList();
+
+            return routes;
         }
 
         private static void AddGatewayItSelfDocs(SwaggerGenOptions c, OcelotSwaggerGenOptions options)

@@ -13,7 +13,7 @@ namespace MMLib.SwaggerForOcelot.Repositories
     public class SwaggerEndPointProvider : ISwaggerEndPointProvider
     {
         private readonly Lazy<Dictionary<string, SwaggerEndPointOptions>> _swaggerEndPoints;
-        private readonly IOptions<List<SwaggerEndPointOptions>> _swaggerEndPointsOptions;
+        private readonly IOptionsMonitor<List<SwaggerEndPointOptions>> _swaggerEndPointsOptions;
         private readonly OcelotSwaggerGenOptions _options;
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace MMLib.SwaggerForOcelot.Repositories
         /// </summary>
         /// <param name="swaggerEndPoints">The swagger end points.</param>
         public SwaggerEndPointProvider(
-            IOptions<List<SwaggerEndPointOptions>> swaggerEndPoints,
+            IOptionsMonitor<List<SwaggerEndPointOptions>> swaggerEndPoints,
             OcelotSwaggerGenOptions options)
         {
             _swaggerEndPointsOptions = Check.NotNull(swaggerEndPoints, nameof(swaggerEndPoints));
@@ -40,7 +40,7 @@ namespace MMLib.SwaggerForOcelot.Repositories
 
         private Dictionary<string, SwaggerEndPointOptions> Init()
         {
-            var ret = _swaggerEndPointsOptions.Value.ToDictionary(p => $"/{p.KeyToPath}", p => p);
+            var ret = _swaggerEndPointsOptions.CurrentValue.ToDictionary(p => $"/{p.KeyToPath}", p => p);
 
             if (_options.GenerateDocsForAggregates)
             {

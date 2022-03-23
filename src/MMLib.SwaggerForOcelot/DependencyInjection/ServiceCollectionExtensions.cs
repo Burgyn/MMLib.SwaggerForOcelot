@@ -38,9 +38,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IDownstreamSwaggerDocsRepository, DownstreamSwaggerDocsRepository>()
                 .AddTransient<ISwaggerServiceDiscoveryProvider, SwaggerServiceDiscoveryProvider>()
                 .AddTransient<ISwaggerJsonTransformer, SwaggerJsonTransformer>()
-                .Configure<List<RouteOptions>>(options => configuration.GetSection("Routes").Bind(options))
-                .Configure<List<SwaggerEndPointOptions>>(options
-                    => configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName).Bind(options))
+                .Configure<List<RouteOptions>>(configuration.GetSection("Routes"))
+                .Configure<List<SwaggerEndPointOptions>>(configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName))
                 .AddHttpClient()
                 .AddMemoryCache()
                 .AddSingleton<ISwaggerEndPointProvider, SwaggerEndPointProvider>();

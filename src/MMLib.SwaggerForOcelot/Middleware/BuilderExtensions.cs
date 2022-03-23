@@ -36,10 +36,23 @@ namespace Microsoft.AspNetCore.Builder
                 InitUIOption(c, options);
                 IReadOnlyList<SwaggerEndPointOptions> endPoints = app
                     .ApplicationServices.GetService<ISwaggerEndPointProvider>().GetAll();
+
+                ChangeDetection(app, c, options);
                 AddSwaggerEndPoints(c, endPoints, options.DownstreamSwaggerEndPointBasePath);
             });
 
             return app;
+        }
+
+        private static void ChangeDetection(IApplicationBuilder app, SwaggerUIOptions c, SwaggerForOcelotUIOptions options)
+        {
+            IOptionsMonitor<List<SwaggerEndPointOptions>> endpointsChangeMonitor =
+                app.ApplicationServices.GetService<IOptionsMonitor<List<SwaggerEndPointOptions>>>();
+            endpointsChangeMonitor.OnChange((newEndpoints) =>
+            {
+                c.ConfigObject.Urls = null;
+                AddSwaggerEndPoints(c, newEndpoints, options.DownstreamSwaggerEndPointBasePath);
+            });
         }
 
         /// <inheritdoc cref="UseSwaggerForOcelotUI(IApplicationBuilder,Action{SwaggerForOcelotUIOptions})"/>
@@ -60,7 +73,10 @@ namespace Microsoft.AspNetCore.Builder
         private static void UseSwaggerForOcelot(IApplicationBuilder app, SwaggerForOcelotUIOptions options)
             => app.Map(options.PathToSwaggerGenerator, builder => builder.UseMiddleware<SwaggerForOcelotMiddleware>(options));
 
-        private static void AddSwaggerEndPoints(SwaggerUIOptions c, IReadOnlyList<SwaggerEndPointOptions> endPoints, string basePath)
+        private static void AddSwaggerEndPoints(
+            SwaggerUIOptions c,
+            IReadOnlyList<SwaggerEndPointOptions> endPoints,
+            string basePath)
         {
             static string GetDescription(SwaggerEndPointConfig config)
                 => config.IsGatewayItSelf ? config.Name : $"{config.Name} - {config.Version}";

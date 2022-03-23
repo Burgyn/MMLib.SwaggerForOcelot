@@ -40,14 +40,14 @@ namespace MMLib.SwaggerForOcelot.Tests
 
             // What is being tested
             var swaggerForOcelotOptions = new SwaggerForOcelotUIOptions();
-            TestSwaggerEndpointOptions swaggerEndpointOptions = CreateSwaggerEndpointOptions(key,version);
+            TestSwaggerEndpointOptions swaggerEndpointOptions = CreateSwaggerEndpointOptions(key, version);
             var routeOptions = new TestRouteOptions(new List<RouteOptions>
             {
                 new()
                 {
                     SwaggerKey = "projects",
-                    UpstreamPathTemplate ="/api/{version}/projects/Values/{everything}",
-                    DownstreamPathTemplate ="/api/{version}/Values/{everything}",
+                    UpstreamPathTemplate = "/api/{version}/projects/Values/{everything}",
+                    DownstreamPathTemplate = "/api/{version}/Values/{everything}",
                 },
                 new()
                 {
@@ -83,7 +83,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                     IEnumerable<RouteOptions> routeOptions,
                     string serverOverride,
                     SwaggerEndPointOptions options) => new SwaggerJsonTransformer(OcelotSwaggerGenOptions.Default)
-                    .Transform(swaggerJson,routeOptions, serverOverride, options));
+                    .Transform(swaggerJson, routeOptions, serverOverride, options));
             var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
                 next.Invoke,
                 swaggerForOcelotOptions,
@@ -105,6 +105,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                 string transformedUpstreamSwagger = await streamReader.ReadToEndAsync();
                 AreEqual(transformedUpstreamSwagger, expectedSwagger);
             }
+
             swaggerJsonTransformerMock.Verify(x => x.Transform(
                 It.IsAny<string>(),
                 It.IsAny<IEnumerable<RouteOptions>>(),
@@ -127,7 +128,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             {
                 ReConfigureUpstreamSwaggerJson = ExampleUserDefinedUpstreamTransformer
             };
-            TestSwaggerEndpointOptions testSwaggerEndpointOptions = CreateSwaggerEndpointOptions(key,version);
+            TestSwaggerEndpointOptions testSwaggerEndpointOptions = CreateSwaggerEndpointOptions(key, version);
             var routeOptions = new TestRouteOptions();
 
             // downstreamSwagger is returned when client.GetStringAsync is called by the middleware.
@@ -171,7 +172,7 @@ namespace MMLib.SwaggerForOcelot.Tests
 
             // What is being tested
             var swaggerForOcelotOptions = new SwaggerForOcelotUIOptions();
-            TestSwaggerEndpointOptions swaggerEndpointOptions = CreateSwaggerEndpointOptions(key,version);
+            TestSwaggerEndpointOptions swaggerEndpointOptions = CreateSwaggerEndpointOptions(key, version);
             var routeOptions = new TestRouteOptions(new List<RouteOptions>
             {
                 new()
@@ -308,10 +309,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                 )
                 .ReturnsAsync((HttpRequestMessage request, CancellationToken token) =>
                 {
-                    var response = new HttpResponseMessage(HttpStatusCode.OK)
-                    {
-                        Content = new StringContent(downstreamSwagger)
-                    };
+                    var response = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(downstreamSwagger) };
                     return response;
                 });
             return new HttpClient(httpMessageHandlerMock.Object);
@@ -349,6 +347,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             {
                 _mockHttpClient = mockHttpClient;
             }
+
             public HttpClient CreateClient()
             {
                 return _mockHttpClient;
@@ -360,28 +359,38 @@ namespace MMLib.SwaggerForOcelot.Tests
             }
         }
 
-        private class TestRouteOptions : IOptions<List<RouteOptions>>
+        private class TestRouteOptions : IOptionsMonitor<List<RouteOptions>>
         {
             public TestRouteOptions()
             {
-                Value = new List<RouteOptions>();
+                CurrentValue = new List<RouteOptions>();
             }
 
             public TestRouteOptions(List<RouteOptions> value)
             {
-                Value = value;
+                CurrentValue = value;
             }
 
-            public List<RouteOptions> Value { get; }
+            public List<RouteOptions> Get(string name) => throw new NotImplementedException();
+
+            public IDisposable OnChange(Action<List<RouteOptions>, string> listener) => throw new NotImplementedException();
+
+            public List<RouteOptions> CurrentValue { get; }
         }
 
-        private class TestSwaggerEndpointOptions : IOptions<List<SwaggerEndPointOptions>>
+        private class TestSwaggerEndpointOptions : IOptionsMonitor<List<SwaggerEndPointOptions>>
         {
             public TestSwaggerEndpointOptions(List<SwaggerEndPointOptions> options)
             {
-                Value = options;
+                CurrentValue = options;
             }
-            public List<SwaggerEndPointOptions> Value { get; }
+
+            public List<SwaggerEndPointOptions> Get(string name) => throw new NotImplementedException();
+
+            public IDisposable OnChange(Action<List<SwaggerEndPointOptions>, string> listener) =>
+                throw new NotImplementedException();
+
+            public List<SwaggerEndPointOptions> CurrentValue { get; }
         }
 
         private class TestSwaggerJsonTransformer : ISwaggerJsonTransformer

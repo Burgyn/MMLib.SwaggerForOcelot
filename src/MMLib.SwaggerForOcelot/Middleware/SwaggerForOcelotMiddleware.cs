@@ -27,7 +27,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         private readonly RequestDelegate _next;
 #pragma warning restore IDE0052
 
-        private readonly IOptions<List<RouteOptions>> _routes;
+        private readonly IOptionsMonitor<List<RouteOptions>> _routes;
         private readonly ISwaggerJsonTransformer _transformer;
         private readonly SwaggerForOcelotUIOptions _options;
         private readonly ISwaggerDownstreamInterceptor _downstreamInterceptor;
@@ -45,7 +45,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         public SwaggerForOcelotMiddleware(
             RequestDelegate next,
             SwaggerForOcelotUIOptions options,
-            IOptions<List<RouteOptions>> routes,
+            IOptionsMonitor<List<RouteOptions>> routes,
             ISwaggerJsonTransformer transformer,
             ISwaggerProvider swaggerProvider,
             ISwaggerDownstreamInterceptor downstreamInterceptor = null)
@@ -85,7 +85,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
                 return;
             }
 
-            IEnumerable<RouteOptions> routeOptions = _routes.Value
+            IEnumerable<RouteOptions> routeOptions = _routes.CurrentValue
                 .ExpandConfig(endPoint)
                 .GroupByPaths();
 

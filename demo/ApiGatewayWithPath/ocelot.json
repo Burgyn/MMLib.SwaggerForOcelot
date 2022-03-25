@@ -59,7 +59,7 @@
         {
           "Name": "Contacts API",
           "Version": "v1",
-          "Url": "http://localhost:5000/swagger/v1/swagger.json"
+          "Url": "http://localhost:5100/swagger/v1/swagger.json"
         }
       ]
     },

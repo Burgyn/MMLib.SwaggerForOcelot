@@ -8,7 +8,6 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO;
 using System.Reflection;
-using static Microsoft.AspNetCore.Mvc.CompatibilityVersion;
 
 namespace OrderService
 {
@@ -40,7 +39,7 @@ namespace OrderService
         {
             // the sample application always uses the latest version, but you may want an explicit version such as Version_2_2
             // note: Endpoint Routing is enabled by default; however, if you need legacy style routing via IRouter, change it to false
-            services.AddMvc(options => options.EnableEndpointRouting = true).SetCompatibilityVersion(Latest);
+            services.AddMvc(options => options.EnableEndpointRouting = true);
             services.AddApiVersioning(
                 options =>
                 {

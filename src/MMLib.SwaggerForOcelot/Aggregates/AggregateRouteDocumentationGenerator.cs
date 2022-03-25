@@ -31,6 +31,8 @@ namespace MMLib.SwaggerForOcelot.Aggregates
         /// <param name="routes">Routes.</param>
         /// <param name="routesDocumentationProvider">Routes documentation provider.</param>
         /// <param name="definedAggregatorProvider">Aggregator provider.</param>
+        /// <param name="postProcess">Post process.</param>
+        /// <param name="schemaGenerator">Schema generator.</param>
         public AggregateRouteDocumentationGenerator(
             IOptions<List<RouteOptions>> routes,
             IRoutesDocumentationProvider routesDocumentationProvider,

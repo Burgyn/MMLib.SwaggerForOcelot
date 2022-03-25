@@ -14,6 +14,13 @@ namespace MMLib.SwaggerForOcelot.Middleware
     /// </summary>
     public interface ISwaggerDownstreamInterceptor
     {
+        /// <summary>
+        /// Do downstream swagger endopint
+        /// </summary>
+        /// <param name="httpContext"></param>
+        /// <param name="version"></param>
+        /// <param name="endPoint"></param>
+        /// <returns></returns>
         bool DoDownstreamSwaggerEndpoint(HttpContext httpContext, string version, SwaggerEndPointOptions endPoint);
     }
 }

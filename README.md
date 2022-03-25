@@ -293,7 +293,7 @@ services.AddSwaggerForOcelot(Configuration,
 app.UseSwagger();
 ```
 
-![ocelot docs](./demo/ocelotdocs.png)
+![ocelot docs](https://raw.githubusercontent.com/Burgyn/MMLib.SwaggerForOcelot/swaggerforocelot_v4.9.1/demo/ocelotdocs.png)
 
 ## Documentation of Ocelot Aggregates
 
@@ -313,7 +313,7 @@ services.AddSwaggerForOcelot(Configuration,
 ```
 
 Documentations of your aggregates will be available on custom page **Aggregates**.
-![aggregates docs](./demo/aggregates.png)
+![aggregates docs](https://raw.githubusercontent.com/Burgyn/MMLib.SwaggerForOcelot/swaggerforocelot_v4.9.1/demo/aggregates.png)
 
 The current implementation may not cover all scenarios *(I hope most of them)*, but there are several ways you can change the final documentation.
 

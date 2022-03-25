@@ -39,9 +39,9 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// <param name="next">The next delegate.</param>
         /// <param name="options">The options.</param>
         /// <param name="routes">The Ocelot Routes configuration.</param>
-        /// <param name="swaggerEndPoints">The swagger end points.</param>
-        /// <param name="httpClientFactory">The HTTP client factory.</param>
         /// <param name="transformer">The SwaggerJsonTransformer</param>
+        /// <param name="swaggerProvider">Swagger provider.</param>
+        /// <param name="downstreamInterceptor">Downstream interceptor.</param>
         public SwaggerForOcelotMiddleware(
             RequestDelegate next,
             SwaggerForOcelotUIOptions options,
@@ -62,7 +62,6 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// Invokes the specified context.
         /// </summary>
         /// <param name="context">The context.</param>
-        /// <param name="discoveryProvider">The discovery provider.</param>
         /// <param name="swaggerEndPointRepository">Swagger endpoint repository.</param>
         /// <param name="downstreamSwaggerDocs">Repository for obtaining downstream swagger docs.</param>
         public async Task Invoke(HttpContext context,

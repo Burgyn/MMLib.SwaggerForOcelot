@@ -1,4 +1,4 @@
-![alt logo](https://github.com/Burgyn/MMLib.SwaggerForOcelot/blob/master/.github/MMLibLogo.png?raw=true)
+![alt logo](https://raw.githubusercontent.com/Burgyn/MMLib.SwaggerForOcelot/master/.github/MMLibLogo.png)
 
 ![Publish package](https://github.com/Burgyn/MMLib.SwaggerForOcelot/workflows/Publish%20package/badge.svg)
 
@@ -6,12 +6,12 @@
 
 Direct via `http://ocelotprojecturl:port/swagger` provides documentation for downstream services configured in `ocelot.json`. Additionally, the addresses are modified to match the `UpstreamPathTemplate` from the configuration.
 
-![SwaggerForOcelot](https://github.com/Burgyn/MMLib.SwaggerForOcelot/blob/master/demo/image.png?raw=true)
+![SwaggerForOcelot](https://raw.githubusercontent.com/Burgyn/MMLib.SwaggerForOcelot/master/demo/image.png)
 
 ---
 Did this project help you? [You can now buy me a beer 😎🍺.](https://www.buymeacoffee.com/0dQ7tNG)
 
-[!["You can now buy me a beer 😎🍺."](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/0dQ7tNG)
+[!["You can now buy me a beer 😎🍺."](https://raw.githubusercontent.com/Burgyn/MMLib.SwaggerForOcelot/master/demo/buymecoffee.png)](https://www.buymeacoffee.com/0dQ7tNG)
 
 ## Get Started
 

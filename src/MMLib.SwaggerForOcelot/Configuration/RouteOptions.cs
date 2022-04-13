@@ -96,7 +96,6 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// Gets or sets the downstream ssl certificate check value.
         /// </summary>
         public bool DangerousAcceptAnyServerCertificateValidator { get; set; }
-
         /// <summary>
         /// Gets or sets the key.
         /// </summary>

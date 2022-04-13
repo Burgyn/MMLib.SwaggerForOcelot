@@ -11,6 +11,7 @@ using MMLib.SwaggerForOcelot.Repositories;
 using MMLib.SwaggerForOcelot.Aggregates;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.IO;
+using System.Net.Http;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -43,6 +44,17 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddHttpClient()
                 .AddMemoryCache()
                 .AddSingleton<ISwaggerEndPointProvider, SwaggerEndPointProvider>();
+
+            services.AddHttpClient("HttpClientWithSSLUntrusted", c =>
+            {
+            }).ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler
+                {
+                    ClientCertificateOptions = ClientCertificateOption.Manual,
+                    ServerCertificateCustomValidationCallback = (httpRequestMessage, cert, certChain, policyErrors) => true
+                };
+            });
 
             services.TryAddTransient<IAggregateRouteDocumentationGenerator, AggregateRouteDocumentationGenerator>();
 

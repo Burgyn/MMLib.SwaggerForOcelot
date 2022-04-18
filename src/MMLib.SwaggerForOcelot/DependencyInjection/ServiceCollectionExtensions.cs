@@ -20,6 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class ServiceCollectionExtensions
     {
+        public const string IgnoreSslCertificate = "HttpClientWithSSLUntrusted";
         /// <summary>
         /// Adds configuration for for <see cref="SwaggerForOcelotMiddleware"/> into <see cref="IServiceCollection"/>.
         /// </summary>
@@ -45,7 +46,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddMemoryCache()
                 .AddSingleton<ISwaggerEndPointProvider, SwaggerEndPointProvider>();
 
-            services.AddHttpClient("HttpClientWithSSLUntrusted", c =>
+            services.AddHttpClient(IgnoreSslCertificate, c =>
             {
             }).ConfigurePrimaryHttpMessageHandler(() =>
             {

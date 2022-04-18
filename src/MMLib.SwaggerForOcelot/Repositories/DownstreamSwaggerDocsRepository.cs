@@ -1,4 +1,5 @@
 ﻿using Kros.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
 using MMLib.SwaggerForOcelot.ServiceDiscovery;
@@ -42,7 +43,7 @@ namespace MMLib.SwaggerForOcelot.Repositories
             string docsVersion = null)
         {
             string url = await GetUrlAsync(route, endPoint, docsVersion);
-            var clientName = (route?.DangerousAcceptAnyServerCertificateValidator ?? false) ? "HttpClientWithSSLUntrusted" : string.Empty;
+            var clientName = (route?.DangerousAcceptAnyServerCertificateValidator ?? false) ? ServiceCollectionExtensions.IgnoreSslCertificate : string.Empty;
             HttpClient httpClient = _httpClientFactory.CreateClient(clientName);
 
             SetHttpVersion(httpClient, route);

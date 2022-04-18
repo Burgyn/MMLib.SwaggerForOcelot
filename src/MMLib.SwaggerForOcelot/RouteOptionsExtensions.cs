@@ -24,6 +24,7 @@ namespace MMLib.SwaggerForOcelot
                     route.UpstreamPathTemplate,
                     route.DownstreamPathTemplate,
                     p.Key.VirtualDirectory,
+                    route.DangerousAcceptAnyServerCertificateValidator,
                     p.Where(r => r.UpstreamHttpMethod != null).SelectMany(r => r.UpstreamHttpMethod))
                 {
                     DownstreamHttpVersion = route.DownstreamHttpVersion,

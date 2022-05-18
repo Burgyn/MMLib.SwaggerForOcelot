@@ -44,7 +44,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Configure<List<SwaggerEndPointOptions>>(configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName))
                 .AddHttpClient()
                 .AddMemoryCache()
-                .AddSingleton<ISwaggerEndPointProvider, SwaggerEndPointProvider>();
+                .AddTransient<ISwaggerEndPointProvider, SwaggerEndPointProvider>();
 
             services.AddHttpClient(IgnoreSslCertificate, c =>
             {

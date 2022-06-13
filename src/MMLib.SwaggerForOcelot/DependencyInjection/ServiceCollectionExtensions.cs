@@ -26,7 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services">The services.</param>
         /// <param name="configuration">The configuration.</param>
-        /// <param name="ocelotSwaggerSetup">Setup action for configraution thios package.</param>
+        /// <param name="ocelotSwaggerSetup">Setup action for configraution this package.</param>
         /// <param name="swaggerSetup">Setup acton for configuration of swagger generator.</param>
         /// <returns><see cref="IServiceCollection"/></returns>
         public static IServiceCollection AddSwaggerForOcelot(

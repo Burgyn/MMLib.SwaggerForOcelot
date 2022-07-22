@@ -579,3 +579,6 @@ Note, this does not affect nor checks the swagger document's `securityDefinition
 ## Version 2.0.0
 
 This version is breaking change. Because support Ocelot 16.0.0, which rename `ReRoutes` to `Routes`. See Ocelot [v16.0.0](https://github.com/ThreeMammals/Ocelot/releases/tag/16.0.0).
+
+---
+If you have read this readme to the end, please let me know by [clicking this link](https://clicks.burgyn.online/lRUXPzJGG).

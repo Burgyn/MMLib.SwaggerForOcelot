@@ -2,6 +2,8 @@
 
 ![Publish package](https://github.com/Burgyn/MMLib.SwaggerForOcelot/workflows/Publish%20package/badge.svg)
 
+How satisfied are you with the package? [Please let me know by answering this question](https://app.swallowpoll.com/TNtseFprsD) 🙏.
+
 **SwaggerForOcelot** combines two amazing projects **[Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)** and **[Ocelot](https://github.com/ThreeMammals/Ocelot)**. Allows you to view and use swagger documentation for downstream services directly through the Ocelot project.
 
 Direct via `http://ocelotprojecturl:port/swagger` provides documentation for downstream services configured in `ocelot.json`. Additionally, the addresses are modified to match the `UpstreamPathTemplate` from the configuration.

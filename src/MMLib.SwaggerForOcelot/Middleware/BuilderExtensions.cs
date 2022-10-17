@@ -20,12 +20,14 @@ namespace Microsoft.AspNetCore.Builder
         /// </summary>
         /// <param name="app">The application builder.</param>
         /// <param name="setupAction">Setup <see cref="SwaggerForOcelotUIOptions"/></param>
+        /// <param name="setupUiAction">Setup SwaggerUI</param>
         /// <returns>
         /// <see cref="IApplicationBuilder"/>.
         /// </returns>
         public static IApplicationBuilder UseSwaggerForOcelotUI(
             this IApplicationBuilder app,
-            Action<SwaggerForOcelotUIOptions> setupAction = null)
+            Action<SwaggerForOcelotUIOptions> setupAction = null,
+            Action<SwaggerUIOptions> setupUiAction = null)
         {
             SwaggerForOcelotUIOptions options = app.ApplicationServices.GetService<IOptions<SwaggerForOcelotUIOptions>>().Value;
             setupAction?.Invoke(options);
@@ -33,7 +35,7 @@ namespace Microsoft.AspNetCore.Builder
 
             app.UseSwaggerUI(c =>
             {
-                InitUIOption(c, options);
+                setupUiAction?.Invoke(c);
                 IReadOnlyList<SwaggerEndPointOptions> endPoints = app
                     .ApplicationServices.GetService<ISwaggerEndPointProvider>().GetAll();
 
@@ -94,16 +96,6 @@ namespace Microsoft.AspNetCore.Builder
                     c.SwaggerEndpoint($"{basePath}/{config.Version}/{endPoint.KeyToPath}", GetDescription(config));
                 }
             }
-        }
-
-        private static void InitUIOption(SwaggerUIOptions c, SwaggerForOcelotUIOptions options)
-        {
-            c.ConfigObject = options.ConfigObject;
-            c.DocumentTitle = options.DocumentTitle;
-            c.HeadContent = options.HeadContent;
-            c.IndexStream = options.IndexStream;
-            c.OAuthConfigObject = options.OAuthConfigObject;
-            c.RoutePrefix = options.RoutePrefix;
         }
     }
 }

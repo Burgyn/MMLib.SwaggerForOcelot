@@ -10,7 +10,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
     /// Configuration for Swagger UI.
     /// </summary>
     /// <seealso cref="Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIOptions" />
-    public class SwaggerForOcelotUIOptions : SwaggerUIOptions
+    public class SwaggerForOcelotUIOptions
     {
         /// <summary>
         /// The relative path to gateway swagger generator.

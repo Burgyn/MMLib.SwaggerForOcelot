@@ -145,6 +145,16 @@ app.UseSwaggerForOcelotUI(opt => {
 })
   ```
 
+You can optionally customize SwaggerUI:
+```CSharp
+app.UseSwaggerForOcelotUI(opt => {
+    // swaggerForOcelot options
+}, uiOpt => {
+    //swaggerUI options
+    uiOpt.DocumentTitle = "Gateway documentation";
+})
+  ```
+
 6. Show your microservices interactive documentation.
 
    > `http://ocelotserviceurl/swagger`

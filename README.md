@@ -590,7 +590,7 @@ Note, this does not affect nor checks the swagger document's `securityDefinition
 
 ## Version 6.0.0
 
-⚠️ Breaking change #240 - new way to modify swagger UI configuration.
+⚠️ Breaking change [#240](https://github.com/Burgyn/MMLib.SwaggerForOcelot/pull/240) - new way to modify swagger UI configuration.
 
 ## Version 2.0.0
 

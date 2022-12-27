@@ -269,6 +269,12 @@ services.AddSwaggerForOcelot(Configuration,
       o.GenerateDocsForGatewayItSelf(opt =>
       {
           opt.FilePathsForXmlComments = { "MyAPI.xml" };
+          docGen.GatewayDocsTitle = "My Gateway";
+          docGen.GatewayDocsOpenApiInfo = new()
+          {
+             Title = "My Gateway",
+             Version = "v1",
+          };
           opt.DocumentFilter<MyDocumentFilter>();
           opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
           {

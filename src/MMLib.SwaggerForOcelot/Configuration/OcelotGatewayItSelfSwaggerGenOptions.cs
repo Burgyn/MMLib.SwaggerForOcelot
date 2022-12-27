@@ -27,6 +27,9 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// </summary>
         public string[] FilePathsForXmlComments { get; set; }
 
+        public string? GatewayDocsTitle { get; set; }
+        public OpenApiInfo? GatewayDocsOpenApiInfo { get; set; }
+
         internal List<Action<SwaggerGenOptions>> DocumentFilterActions { get; }
 
         internal List<Action<SwaggerGenOptions>> OperationFilterActions { get; }

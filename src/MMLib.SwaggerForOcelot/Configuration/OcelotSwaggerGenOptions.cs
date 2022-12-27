@@ -34,7 +34,6 @@ namespace MMLib.SwaggerForOcelot.Configuration
         {
             GenerateDocsForGatewayItSelf = true;
            
-
             OcelotGatewayItSelfSwaggerGenOptions = new OcelotGatewayItSelfSwaggerGenOptions();
             options?.Invoke(OcelotGatewayItSelfSwaggerGenOptions);
 

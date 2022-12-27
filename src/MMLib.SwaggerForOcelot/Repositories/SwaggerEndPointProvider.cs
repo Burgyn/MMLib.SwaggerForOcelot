@@ -49,7 +49,7 @@ namespace MMLib.SwaggerForOcelot.Repositories
 
             if (_options.GenerateDocsForGatewayItSelf)
             {
-                AddEndpoint(ret, OcelotSwaggerGenOptions.GatewayKey, "Gateway");
+                AddEndpoint(ret, OcelotSwaggerGenOptions.GatewayKey, _options.GatewayDocsTitle);
             }
 
             return ret;

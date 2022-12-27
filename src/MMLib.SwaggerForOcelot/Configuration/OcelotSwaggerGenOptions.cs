@@ -33,9 +33,12 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public void GenerateDocsDocsForGatewayItSelf(Action<OcelotGatewayItSelfSwaggerGenOptions> options = null)
         {
             GenerateDocsForGatewayItSelf = true;
-
+           
             OcelotGatewayItSelfSwaggerGenOptions = new OcelotGatewayItSelfSwaggerGenOptions();
             options?.Invoke(OcelotGatewayItSelfSwaggerGenOptions);
+
+            GatewayDocsTitle = OcelotGatewayItSelfSwaggerGenOptions.GatewayDocsTitle ?? GatewayDocsTitle;
+            GatewayDocsOpenApiInfo = OcelotGatewayItSelfSwaggerGenOptions.GatewayDocsOpenApiInfo ?? GatewayDocsOpenApiInfo;
         }
 
         /// <summary>
@@ -60,6 +63,14 @@ namespace MMLib.SwaggerForOcelot.Configuration
         internal const string AggregatesKey = "aggregates";
 
         internal const string GatewayKey = "gateway";
+
+        internal string GatewayDocsTitle { get; set; } = "Gateway";
+
+        internal OpenApiInfo GatewayDocsOpenApiInfo { get; set; } = new()
+        {
+            Title = "Gateway",
+            Version = GatewayKey,
+        };
 
         internal OcelotGatewayItSelfSwaggerGenOptions OcelotGatewayItSelfSwaggerGenOptions { get; private set; }
 

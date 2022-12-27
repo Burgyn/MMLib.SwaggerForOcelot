@@ -85,11 +85,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             if (options.GenerateDocsForGatewayItSelf)
             {
-                c.SwaggerDoc(OcelotSwaggerGenOptions.GatewayKey, new OpenApiInfo
-                {
-                    Title =  "Gateway",
-                    Version = OcelotSwaggerGenOptions.GatewayKey,
-                });
+                c.SwaggerDoc(OcelotSwaggerGenOptions.GatewayKey, options.GatewayDocsOpenApiInfo);
 
                 if (options.OcelotGatewayItSelfSwaggerGenOptions is not null)
                 {

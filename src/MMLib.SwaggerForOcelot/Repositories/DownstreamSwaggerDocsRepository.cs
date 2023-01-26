@@ -44,7 +44,9 @@ namespace MMLib.SwaggerForOcelot.Repositories
         {
             string url = await GetUrlAsync(route, endPoint, docsVersion);
             var clientName = (route?.DangerousAcceptAnyServerCertificateValidator ?? false) ? ServiceCollectionExtensions.IgnoreSslCertificate : string.Empty;
-            HttpClient httpClient = _httpClientFactory.CreateClient(clientName);
+
+            HttpClient? httpClient = _options.Value.HttpClient;
+            httpClient ??= _httpClientFactory.CreateClient(clientName);
 
             SetHttpVersion(httpClient, route);
             AddHeaders(httpClient);

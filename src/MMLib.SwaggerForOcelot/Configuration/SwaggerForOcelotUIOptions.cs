@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using System.Net.Http;
 
 namespace MMLib.SwaggerForOcelot.Configuration
 {
@@ -41,5 +42,10 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// Configure route of server of swagger in ocelot.
         /// </summary>
         public string ServerOcelot { get; set; }
+
+        /// <summary>
+        /// If set, The given httpclient will be used instead of an internal generated one.
+        /// </summary>
+        public HttpClient? HttpClient { get; set; }
     }
 }

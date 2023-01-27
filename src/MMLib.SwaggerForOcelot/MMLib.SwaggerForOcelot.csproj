@@ -8,7 +8,7 @@
         <Description>Swagger generator for Ocelot downstream services.</Description>
         <PackageProjectUrl>https://github.com/Burgyn/MMLib.SwaggerForOcelot</PackageProjectUrl>
         <PackageIcon>icon.png</PackageIcon>
-        <PackageProjectUrl>https://github.com/Burgyn/MMLib.SwaggerForOcelot</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Burgyn/MMLib.SwaggerForOcelot</RepositoryUrl>
         <PackageTags>swagger;documentation;ocelot</PackageTags>
         <PackageReleaseNotes/>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

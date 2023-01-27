@@ -44,8 +44,10 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public string ServerOcelot { get; set; }
 
         /// <summary>
-        /// If set, The given httpclient will be used instead of an internal generated one.
+        /// Replace the internal HttpClient with a custom named client.<br/><br/> When this is set, Some downstream route specific properties will be ignored
+        /// such as <see cref="RouteOptions.DangerousAcceptAnyServerCertificateValidator"/>
+        /// <br/><br/><see href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-6.0#named-clients"/>
         /// </summary>
-        public HttpClient? HttpClient { get; set; }
+        public string? HttpClientName { get; set; }
     }
 }

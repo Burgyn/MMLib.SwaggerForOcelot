@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using System.Net.Http;
 
 namespace MMLib.SwaggerForOcelot.Configuration
 {
@@ -41,5 +42,12 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// Configure route of server of swagger in ocelot.
         /// </summary>
         public string ServerOcelot { get; set; }
+
+        /// <summary>
+        /// Replace the internal HttpClient with a custom named client.<br/><br/> When this is set, Some downstream route specific properties will be ignored
+        /// such as <see cref="RouteOptions.DangerousAcceptAnyServerCertificateValidator"/>
+        /// <br/><br/><see href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-6.0#named-clients"/>
+        /// </summary>
+        public string? HttpClientName { get; set; }
     }
 }

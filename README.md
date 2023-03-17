@@ -266,7 +266,7 @@ or you can provide more options for gateway itself documentation
 services.AddSwaggerForOcelot(Configuration,
   (o) =>
   {
-      o.GenerateDocsForGatewayItSelf(opt =>
+      o.GenerateDocsDocsForGatewayItSelf(opt =>
       {
           opt.FilePathsForXmlComments = { "MyAPI.xml" };
           opt.GatewayDocsTitle = "My Gateway";

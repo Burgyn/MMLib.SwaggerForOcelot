@@ -23,6 +23,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
         /// </summary>
         /// <param name="downstreamSwaggerDocs">The downstream swagger docs.</param>
         /// <param name="swaggerEndPointRepository">The swagger end point repository.</param>
+        /// <param name="memoryCache">Memory cache</param>
         public RoutesDocumentationProvider(
             IDownstreamSwaggerDocsRepository downstreamSwaggerDocs,
             ISwaggerEndPointProvider swaggerEndPointRepository,

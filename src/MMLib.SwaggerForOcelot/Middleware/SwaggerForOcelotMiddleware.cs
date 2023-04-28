@@ -8,6 +8,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MMLib.SwaggerForOcelot.Repositories;
+using Swashbuckle.AspNetCore.Swagger;
+using System.IO;
+using System.Globalization;
+using Microsoft.OpenApi.Writers;
+using System.Text;
+using Microsoft.OpenApi.Models;
 
 namespace MMLib.SwaggerForOcelot.Middleware
 {
@@ -21,10 +27,11 @@ namespace MMLib.SwaggerForOcelot.Middleware
         private readonly RequestDelegate _next;
 #pragma warning restore IDE0052
 
-        private readonly IOptions<List<RouteOptions>> _routes;
+        private readonly IOptionsMonitor<List<RouteOptions>> _routes;
         private readonly ISwaggerJsonTransformer _transformer;
         private readonly SwaggerForOcelotUIOptions _options;
         private readonly ISwaggerDownstreamInterceptor _downstreamInterceptor;
+        private readonly ISwaggerProvider _swaggerProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SwaggerForOcelotMiddleware"/> class.
@@ -32,14 +39,15 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// <param name="next">The next delegate.</param>
         /// <param name="options">The options.</param>
         /// <param name="routes">The Ocelot Routes configuration.</param>
-        /// <param name="swaggerEndPoints">The swagger end points.</param>
-        /// <param name="httpClientFactory">The HTTP client factory.</param>
         /// <param name="transformer">The SwaggerJsonTransformer</param>
+        /// <param name="swaggerProvider">Swagger provider.</param>
+        /// <param name="downstreamInterceptor">Downstream interceptor.</param>
         public SwaggerForOcelotMiddleware(
             RequestDelegate next,
             SwaggerForOcelotUIOptions options,
-            IOptions<List<RouteOptions>> routes,
+            IOptionsMonitor<List<RouteOptions>> routes,
             ISwaggerJsonTransformer transformer,
+            ISwaggerProvider swaggerProvider,
             ISwaggerDownstreamInterceptor downstreamInterceptor = null)
         {
             _transformer = Check.NotNull(transformer, nameof(transformer));
@@ -47,13 +55,13 @@ namespace MMLib.SwaggerForOcelot.Middleware
             _routes = Check.NotNull(routes, nameof(routes));
             _options = options;
             _downstreamInterceptor = downstreamInterceptor;
+            _swaggerProvider = swaggerProvider;
         }
 
         /// <summary>
         /// Invokes the specified context.
         /// </summary>
         /// <param name="context">The context.</param>
-        /// <param name="discoveryProvider">The discovery provider.</param>
         /// <param name="swaggerEndPointRepository">Swagger endpoint repository.</param>
         /// <param name="downstreamSwaggerDocs">Repository for obtaining downstream swagger docs.</param>
         public async Task Invoke(HttpContext context,
@@ -68,7 +76,15 @@ namespace MMLib.SwaggerForOcelot.Middleware
                 return;
             }
 
-            IEnumerable<RouteOptions> routeOptions = _routes.Value
+            if (endPoint.IsGatewayItSelf)
+            {
+                OpenApiDocument docs = _swaggerProvider.GetSwagger(version);
+                await RespondWithSwaggerJson(context.Response, docs);
+
+                return;
+            }
+
+            IEnumerable<RouteOptions> routeOptions = _routes.CurrentValue
                 .ExpandConfig(endPoint)
                 .GroupByPaths();
 
@@ -82,11 +98,25 @@ namespace MMLib.SwaggerForOcelot.Middleware
                     content,
                     routeOptions,
                     GetServerName(context, endPoint),
-                    endPoint.TakeServersFromDownstreamService);
+                    endPoint);
             }
             content = await ReconfigureUpstreamSwagger(context, content);
 
             await context.Response.WriteAsync(content);
+        }
+
+        private static async Task RespondWithSwaggerJson(HttpResponse response, OpenApiDocument swagger)
+        {
+            response.StatusCode = 200;
+            response.ContentType = "application/json;charset=utf-8";
+
+            using (var textWriter = new StringWriter(CultureInfo.InvariantCulture))
+            {
+                var jsonWriter = new OpenApiJsonWriter(textWriter);
+                swagger.SerializeAsV3(jsonWriter);
+
+                await response.WriteAsync(textWriter.ToString(), new UTF8Encoding(false));
+            }
         }
 
         private string GetServerName(HttpContext context, SwaggerEndPointOptions endPoint)
@@ -143,7 +173,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// <returns>
         /// Version and the key of End point.
         /// </returns>
-        private (string Version, string Key) GetEndPointInfo(string path)
+        private static (string Version, string Key) GetEndPointInfo(string path)
         {
             string[] keys = path.Split('/');
             return (keys[1], keys[2]);

@@ -1,15 +1,19 @@
-![alt logo](https://github.com/Burgyn/MMLib.SwaggerForOcelot/blob/master/.github/MMLibLogo.png?raw=true)
+![alt logo](https://raw.githubusercontent.com/Burgyn/MMLib.SwaggerForOcelot/master/.github/MMLibLogo.png)
 
 ![Publish package](https://github.com/Burgyn/MMLib.SwaggerForOcelot/workflows/Publish%20package/badge.svg)
+
+How satisfied are you with the package? [Please let me know by answering this question](https://app.swallowpoll.com/TNtseFprsD) 🙏.
 
 **SwaggerForOcelot** combines two amazing projects **[Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)** and **[Ocelot](https://github.com/ThreeMammals/Ocelot)**. Allows you to view and use swagger documentation for downstream services directly through the Ocelot project.
 
 Direct via `http://ocelotprojecturl:port/swagger` provides documentation for downstream services configured in `ocelot.json`. Additionally, the addresses are modified to match the `UpstreamPathTemplate` from the configuration.
 
-![SwaggerForOcelot](https://github.com/Burgyn/MMLib.SwaggerForOcelot/blob/master/demo/image.png?raw=true)
+![SwaggerForOcelot](https://raw.githubusercontent.com/Burgyn/MMLib.SwaggerForOcelot/master/demo/image.png)
 
 ---
 Did this project help you? [You can now buy me a beer 😎🍺.](https://www.buymeacoffee.com/0dQ7tNG)
+
+[!["You can now buy me a beer 😎🍺."](https://raw.githubusercontent.com/Burgyn/MMLib.SwaggerForOcelot/master/demo/buymecoffee.png)](https://www.buymeacoffee.com/0dQ7tNG)
 
 ## Get Started
 
@@ -112,7 +116,7 @@ app.UseSwaggerForOcelotUI(opt => {
 
   ```CSharp
 app.UseSwaggerForOcelotUI(opt => {
-    opts.DownstreamSwaggerHeaders = new[]
+    opt.DownstreamSwaggerHeaders = new[]
     {
         new KeyValuePair<string, string>("Auth-Key", "AuthValue"),
     };
@@ -130,14 +134,24 @@ public string AlterUpstreamSwaggerJson(HttpContext context, string swaggerJson)
 }
 
 app.UseSwaggerForOcelotUI(opt => {
-    opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
+    opt.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
 })
   ```
 You can optionally customize the swagger server prior to calling the endpoints of the microservices as follows:
 ```CSharp
 app.UseSwaggerForOcelotUI(opt => {
-    opts.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
-	opts.ServerOcelot = "/siteName/apigateway" ;
+    opt.ReConfigureUpstreamSwaggerJson = AlterUpstreamSwaggerJson;
+    opt.ServerOcelot = "/siteName/apigateway" ;
+})
+  ```
+
+You can optionally customize SwaggerUI:
+```CSharp
+app.UseSwaggerForOcelotUI(opt => {
+    // swaggerForOcelot options
+}, uiOpt => {
+    //swaggerUI options
+    uiOpt.DocumentTitle = "Gateway documentation";
 })
   ```
 
@@ -252,10 +266,41 @@ or you can provide more options for gateway itself documentation
 services.AddSwaggerForOcelot(Configuration,
   (o) =>
   {
-      o.GenerateDocsForGatewayItSelf(opt =>
+      o.GenerateDocsDocsForGatewayItSelf(opt =>
       {
           opt.FilePathsForXmlComments = { "MyAPI.xml" };
+          opt.GatewayDocsTitle = "My Gateway";
+          opt.GatewayDocsOpenApiInfo = new()
+          {
+             Title = "My Gateway",
+             Version = "v1",
+          };
           opt.DocumentFilter<MyDocumentFilter>();
+          opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+          {
+              Description = @"JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token in the text input below. Example: 'Bearer 12345abcdef'",
+              Name = "Authorization",
+              In = ParameterLocation.Header,
+              Type = SecuritySchemeType.ApiKey,
+              Scheme = "Bearer"
+          });
+          opt.AddSecurityRequirement(new OpenApiSecurityRequirement()
+          {
+              {
+                  new OpenApiSecurityScheme
+                  {
+                      Reference = new OpenApiReference
+                      {
+                          Type = ReferenceType.SecurityScheme,
+                          Id = "Bearer"
+                      },
+                      Scheme = "oauth2",
+                      Name = "Bearer",
+                      In = ParameterLocation.Header,
+                  },
+                  new List<string>()
+              }
+          });
       });
   });
 ```
@@ -266,7 +311,7 @@ services.AddSwaggerForOcelot(Configuration,
 app.UseSwagger();
 ```
 
-![ocelot docs](./demo/ocelotdocs.png)
+![ocelot docs](https://raw.githubusercontent.com/Burgyn/MMLib.SwaggerForOcelot/swaggerforocelot_v4.9.1/demo/ocelotdocs.png)
 
 ## Documentation of Ocelot Aggregates
 
@@ -286,7 +331,7 @@ services.AddSwaggerForOcelot(Configuration,
 ```
 
 Documentations of your aggregates will be available on custom page **Aggregates**.
-![aggregates docs](./demo/aggregates.png)
+![aggregates docs](https://raw.githubusercontent.com/Burgyn/MMLib.SwaggerForOcelot/swaggerforocelot_v4.9.1/demo/aggregates.png)
 
 The current implementation may not cover all scenarios *(I hope most of them)*, but there are several ways you can change the final documentation.
 
@@ -476,11 +521,86 @@ public class PublishedDownstreamInterceptor : ISwaggerDownstreamInterceptor
 Note, the service is still visible in the swagger ui the response is only visible in the request to the downstream url.
 If you want to control the visibility of the endpoints as well you have to implement a custom swagger ui.
 
+## Security definition generation
+
+It is possible to generate security definitions for the enpoints based on Ocelot configuration
+
+1. Add `AuthenticationOptions` to your route definition
+``` Json
+"Routes": [
+  {
+    "DownstreamPathTemplate": "/api/{everything}",
+    "ServiceName": "projects",
+    "UpstreamPathTemplate": "/api/project/{everything}",
+    "SwaggerKey": "projects",
+    "AuthenticationOptions": {
+      "AuthenticationProviderKey": "Bearer",
+      "AllowedScopes": [ "scope" ]
+    },
+  }
+]
+```
+
+2. Provide a mapping in Startup between `AuthenticationProviderKey` and it's corresponding `securityDefintion`
+```CSharp
+services.AddSwaggerForOcelot(Configuration,
+  (o) =>
+  {
+    o.AddAuthenticationProviderKeyMapping("Bearer", "appAuth");
+  });
+```
+
+3. Now you should have security definitions on your swagger documents
+``` Json
+{
+  "paths": {
+    "/api/project": {
+      "get": {
+        ...
+        "security": [
+          {
+            "appAuth": [ "scope" ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+Note, this does not affect nor checks the swagger document's `securityDefinitions` property.
+
 ## Limitation
 
 - Now, this library support only `{everything}` as a wildcard in routing definition. #68
 - This package unfortunately does not support parameter translating between upstream and downstream path template. #59
+- If your downstream documentation is too large (usually more than 10 MB), the response may be too slow. You can turn off the removal of an unused schema component from downstream documentation by using `RemoveUnusedComponentsFromScheme: false`.
+```csharp
+ "SwaggerEndPoints": [
+    {
+      "Key": "projects",
+      "RemoveUnusedComponentsFromScheme": false,
+      "Config": [
+        {
+          "Name": "Projects API",
+          "Version": "v1",
+          "Service": {
+            "Name": "projects",
+            "Path": "/swagger/v1/swagger.json"
+          }
+        }
+      ]
+    }
+  ]
+```
+
+## Version 6.0.0
+
+⚠️ Breaking change [#240](https://github.com/Burgyn/MMLib.SwaggerForOcelot/pull/240) - new way to modify swagger UI configuration.
 
 ## Version 2.0.0
 
 This version is breaking change. Because support Ocelot 16.0.0, which rename `ReRoutes` to `Routes`. See Ocelot [v16.0.0](https://github.com/ThreeMammals/Ocelot/releases/tag/16.0.0).
+
+---
+If you have read this readme to the end, please let me know by [clicking this link](https://clicks.burgyn.online/lRUXPzJGG).

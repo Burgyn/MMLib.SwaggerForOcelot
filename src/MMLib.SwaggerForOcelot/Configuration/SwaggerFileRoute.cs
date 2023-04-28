@@ -7,6 +7,9 @@ namespace MMLib.SwaggerForOcelot.Configuration
     /// </summary>
     public class SwaggerFileRoute : FileRoute
     {
+        /// <summary>
+        /// Swagger key. (for swagger configuration match)
+        /// </summary>
         public string SwaggerKey { get; set; }
     }
 }

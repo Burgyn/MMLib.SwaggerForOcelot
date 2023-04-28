@@ -20,6 +20,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
         [InlineData("serviceWithMoreSimpleParameter1", "serviceWithMoreSimpleParameter2", "/{id}/{message}")]
         [InlineData("serviceWithMoreSimpleParameter1", "serviceWithMoreSimpleParameterAnotherNames", "/{id}/{message}", "{id}-{idcko};{message}-{sprava}")]
         [InlineData("moreMethod1", "moreMethod2")]
+        [InlineData("withoutcontent1", "withoutcontent2")]
         public async Task GetDocs(string firstService, string secondService, string parameters = null, string paramsMap = null)
         {
             RoutesDocumentationProvider provider = await CreateProviderAsync();

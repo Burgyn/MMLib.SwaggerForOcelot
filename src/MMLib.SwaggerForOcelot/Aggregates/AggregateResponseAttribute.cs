@@ -1,5 +1,6 @@
 ﻿using Kros.Utils;
 using Microsoft.AspNetCore.Http;
+using Ocelot.Multiplexer;
 using System;
 using System.Net.Mime;
 
@@ -14,7 +15,10 @@ namespace MMLib.SwaggerForOcelot.Aggregates
     public class AggregateResponseAttribute : Attribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateResponseAggregate"/> class.
+        /// Initializes a new instance of the <see>
+        ///     <cref>AggregateResponseAggregate</cref>
+        /// </see>
+        /// class.
         /// </summary>
         /// <param name="description">The description.</param>
         /// <param name="responseType">Type of the response.</param>

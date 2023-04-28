@@ -1,6 +1,7 @@
 name: Publish package
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
@@ -13,13 +14,15 @@ jobs:
     - name: Setup .NET Core if needed
       uses: actions/setup-dotnet@v1.7.2
       with:
-        dotnet-version: 5.0.101
+        dotnet-version:  6.0.x
     - name: Build
       run: dotnet build ./MMLib.SwaggerForOcelot.sln --configuration Release
     - name: Test
       run: dotnet test ./MMLib.SwaggerForOcelot.sln --configuration Release
+    - name: Benchmark
+      run: dotnet run --project ./tests/MMLib.SwaggerForOcelot.BenchmarkTests/MMLib.SwaggerForOcelot.BenchmarkTests.csproj -c Release
     - name: Generate nuget package
-      run: dotnet pack  ./MMLib.SwaggerForOcelot.sln --configuration Release -o nupkg
+      run: dotnet pack  ./src/MMLib.SwaggerForOcelot/MMLib.SwaggerForOcelot.csproj --configuration Release -o nupkg
     - name: Publish nuget package
       run: find . -name *.nupkg -type f -print0 | xargs -0 -I pkg dotnet nuget push pkg -k $nuget_api_key -s "https://api.nuget.org/v3/index.json" --skip-duplicate
       env:

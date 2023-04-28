@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using MMLib.SwaggerForOcelot.Configuration;
+﻿using MMLib.SwaggerForOcelot.Configuration;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 namespace MMLib.SwaggerForOcelot.Tests
 {
@@ -46,6 +46,13 @@ namespace MMLib.SwaggerForOcelot.Tests
         ///   <c>true</c> if [take servers from downstream service]; otherwise, <c>false</c>.
         /// </value>
         public bool TakeServersFromDownstreamService { get; set; } = false;
+
+        /// <summary>
+        /// Indicating if can remove unused components from downstream docs in this test case.
+        /// </summary>
+        public bool RemoveUnusedComponentsFromScheme { get; set; } = true;
+
+        public Dictionary<string, string> AuthenticationProviderKeyMap { get; set; } = new();
 
         /// <summary>
         /// Test name.

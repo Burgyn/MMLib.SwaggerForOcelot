@@ -15,18 +15,21 @@ namespace MMLib.SwaggerForOcelot
         /// <param name="routeOptions">The re route options.</param>
         public static IEnumerable<RouteOptions> GroupByPaths(this IEnumerable<RouteOptions> routeOptions)
             => routeOptions
-            .GroupBy(p => new { p.SwaggerKey, p.UpstreamPathTemplate, p.DownstreamPathTemplate, p.VirtualDirectory})
-            .Select(p => {
+            .GroupBy(p => new { p.SwaggerKey, p.UpstreamPathTemplate, p.DownstreamPathTemplate, p.VirtualDirectory })
+            .Select(p =>
+            {
                 RouteOptions route = p.First();
                 return new RouteOptions(
                     p.Key.SwaggerKey,
                     route.UpstreamPathTemplate,
                     route.DownstreamPathTemplate,
                     p.Key.VirtualDirectory,
+                    route.DangerousAcceptAnyServerCertificateValidator,
                     p.Where(r => r.UpstreamHttpMethod != null).SelectMany(r => r.UpstreamHttpMethod))
                 {
                     DownstreamHttpVersion = route.DownstreamHttpVersion,
-                    DownstreamScheme = route.DownstreamScheme
+                    DownstreamScheme = route.DownstreamScheme,
+                    AuthenticationOptions = route.AuthenticationOptions,
                 };
             });
 
@@ -64,7 +67,8 @@ namespace MMLib.SwaggerForOcelot
                             c.Version),
                     VirtualDirectory = routeOption.VirtualDirectory,
                     DownstreamHttpVersion = routeOption.DownstreamHttpVersion,
-                    DownstreamScheme = routeOption.DownstreamScheme
+                    DownstreamScheme = routeOption.DownstreamScheme,
+                    AuthenticationOptions = routeOption.AuthenticationOptions,
                 });
                 routeOptions.AddRange(versionMappedRouteOptions);
             }

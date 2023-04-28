@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Kros.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Kros.Extensions;
 
 namespace MMLib.SwaggerForOcelot.Configuration
 {
@@ -11,6 +11,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
     public class RouteOptions
     {
         private const string CatchAllPlaceHolder = "{everything}";
+
         private readonly string[] _defaultMethodsTypes =
             new string[] { "get", "post", "put", "delete", "options", "patch", "head", "connect", "trace" };
 
@@ -39,6 +40,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
             string upstreamPathTemplate,
             string downstreamPathTemplate,
             string virtualDirectory,
+            bool dangerousAcceptAnyServerCertificateValidator,
             IEnumerable<string> upstreamMethods) : this()
         {
             SwaggerKey = swaggerKey;
@@ -46,6 +48,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
             DownstreamPathTemplate = downstreamPathTemplate;
             VirtualDirectory = virtualDirectory;
             UpstreamHttpMethod = upstreamMethods;
+            DangerousAcceptAnyServerCertificateValidator = dangerousAcceptAnyServerCertificateValidator;
         }
 
         /// <summary>
@@ -90,6 +93,11 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public IEnumerable<string> UpstreamHttpMethod { get; set; }
 
         /// <summary>
+        /// Gets or sets the downstream ssl certificate check value.
+        /// </summary>
+        public bool DangerousAcceptAnyServerCertificateValidator { get; set; }
+
+        /// <summary>
         /// Gets or sets the key.
         /// </summary>
         public string Key { get; set; }
@@ -115,6 +123,11 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// Key is Ocelot route parameter name and value is downstream service parameter name.
         /// </summary>
         public Dictionary<string, string> ParametersMap { get; set; }
+
+        /// <summary>
+        /// Gets or sets the authentication options.
+        /// </summary>
+        public AuthenticationOptions AuthenticationOptions { get; set; }
 
         /// <summary>
         /// Gets the downstream path.

@@ -11,6 +11,7 @@ using MMLib.SwaggerForOcelot.Repositories;
 using MMLib.SwaggerForOcelot.Aggregates;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.IO;
+using System.Net.Http;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -19,12 +20,13 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class ServiceCollectionExtensions
     {
+        public const string IgnoreSslCertificate = "HttpClientWithSSLUntrusted";
         /// <summary>
         /// Adds configuration for for <see cref="SwaggerForOcelotMiddleware"/> into <see cref="IServiceCollection"/>.
         /// </summary>
         /// <param name="services">The services.</param>
         /// <param name="configuration">The configuration.</param>
-        /// <param name="ocelotSwaggerSetup">Setup action for configraution thios package.</param>
+        /// <param name="ocelotSwaggerSetup">Setup action for configraution this package.</param>
         /// <param name="swaggerSetup">Setup acton for configuration of swagger generator.</param>
         /// <returns><see cref="IServiceCollection"/></returns>
         public static IServiceCollection AddSwaggerForOcelot(
@@ -38,12 +40,22 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IDownstreamSwaggerDocsRepository, DownstreamSwaggerDocsRepository>()
                 .AddTransient<ISwaggerServiceDiscoveryProvider, SwaggerServiceDiscoveryProvider>()
                 .AddTransient<ISwaggerJsonTransformer, SwaggerJsonTransformer>()
-                .Configure<List<RouteOptions>>(options => configuration.GetSection("Routes").Bind(options))
-                .Configure<List<SwaggerEndPointOptions>>(options
-                    => configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName).Bind(options))
+                .Configure<List<RouteOptions>>(configuration.GetSection("Routes"))
+                .Configure<List<SwaggerEndPointOptions>>(configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName))
                 .AddHttpClient()
                 .AddMemoryCache()
-                .AddSingleton<ISwaggerEndPointProvider, SwaggerEndPointProvider>();
+                .AddTransient<ISwaggerEndPointProvider, SwaggerEndPointProvider>();
+
+            services.AddHttpClient(IgnoreSslCertificate, c =>
+            {
+            }).ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler
+                {
+                    ClientCertificateOptions = ClientCertificateOption.Manual,
+                    ServerCertificateCustomValidationCallback = (httpRequestMessage, cert, certChain, policyErrors) => true
+                };
+            });
 
             services.TryAddTransient<IAggregateRouteDocumentationGenerator, AggregateRouteDocumentationGenerator>();
 
@@ -73,15 +85,14 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             if (options.GenerateDocsForGatewayItSelf)
             {
-                c.SwaggerDoc(OcelotSwaggerGenOptions.GatewayKey, new OpenApiInfo
-                {
-                    Title = "Gateway",
-                    Version = OcelotSwaggerGenOptions.GatewayKey,
-                });
+                c.SwaggerDoc(OcelotSwaggerGenOptions.GatewayKey, options.GatewayDocsOpenApiInfo);
 
                 if (options.OcelotGatewayItSelfSwaggerGenOptions is not null)
                 {
-                    AddDocumentFilterForGatewayItSelf(options.OcelotGatewayItSelfSwaggerGenOptions.DocumentFilterActions, c);
+                    InvokeSwaggerGenOptionsActions(options.OcelotGatewayItSelfSwaggerGenOptions.DocumentFilterActions, c);
+                    InvokeSwaggerGenOptionsActions(options.OcelotGatewayItSelfSwaggerGenOptions.OperationFilterActions, c);
+                    InvokeSwaggerGenOptionsActions(options.OcelotGatewayItSelfSwaggerGenOptions.SecurityDefinitionActions, c);
+                    InvokeSwaggerGenOptionsActions(options.OcelotGatewayItSelfSwaggerGenOptions.SecurityRequirementActions, c);
                     IncludeXmlComments(options.OcelotGatewayItSelfSwaggerGenOptions.FilePathsForXmlComments, c);
                 }
             }
@@ -114,9 +125,9 @@ namespace Microsoft.Extensions.DependencyInjection
             }
         }
 
-        private static void AddDocumentFilterForGatewayItSelf(List<Action<SwaggerGenOptions>> documentFilterActions, SwaggerGenOptions c)
+        private static void InvokeSwaggerGenOptionsActions(List<Action<SwaggerGenOptions>> actions, SwaggerGenOptions c)
         {
-            documentFilterActions.ForEach(f => f.Invoke(c));
+            actions.ForEach(f => f.Invoke(c));
         }
     }
 }

@@ -2,7 +2,6 @@
 using ApiGatewayWithEndpointSecurity.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ocelot.DependencyInjection;
@@ -29,7 +28,7 @@ namespace ApiGatewayWithEndpointSecurity
             services.AddSingleton<ISwaggerDownstreamInterceptor, PublishedDownstreamInterceptor>();
             services.AddSingleton<ISwaggerEndpointConfigurationRepository, DummySwaggerEndpointRepository>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -68,7 +68,8 @@ namespace MMLib.SwaggerForOcelot.DependencyInjection
         /// Get files of ocelot Configuration with a filter of envirotment.
         /// </summary>
         /// <param name="folder"></param>
-        /// <returns>A var of type List<FileInfo> with the list of files of configuration of ocelot.</returns>
+        /// <param name="nameEnvirotment"></param>
+        /// <returns>A var of type List[FileInfo] with the list of files of configuration of ocelot.</returns>
         private static List<FileInfo> GetListOfOcelotFiles(string folder, string nameEnvirotment)
         {
             var reg = new Regex(OcelotFilePattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);

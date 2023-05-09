@@ -18,7 +18,6 @@ public class SwaggerJsonTransfromerBenchmark
     private readonly List<RouteOptions> _routeOptions;
     private readonly IMemoryCache memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
 
-
     public SwaggerJsonTransfromerBenchmark()
     {
         _swagger = ReadFile("Swagger.json");

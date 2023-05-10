@@ -34,18 +34,18 @@ namespace MMLib.SwaggerForOcelot.Transformation
             string serverOverride,
             SwaggerEndPointOptions endPointOptions)
         {
-            return _ocelotSwaggerGenOptions.DownstreamDocsCacheExpireInSeconds switch
+            if (_ocelotSwaggerGenOptions.DownstreamDocsCacheExpire == TimeSpan.Zero)
             {
-                < 0 => throw new ArgumentOutOfRangeException("DownstreamDocsCacheExpireInSeconds", "DownstreamDocsCacheExpireInSeconds must not be less than zero."),
-                0 => TransformSwaggerOrOpenApi(swaggerJson, routes, serverOverride, endPointOptions),
-                _ => _memoryCache.GetOrCreate(
-                    ComputeHash(swaggerJson),
-                    entry =>
-                    {
-                        entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(_ocelotSwaggerGenOptions.DownstreamDocsCacheExpireInSeconds);
-                        return TransformSwaggerOrOpenApi(swaggerJson, routes, serverOverride, endPointOptions);
-                    })
-            };
+                return TransformSwaggerOrOpenApi(swaggerJson, routes, serverOverride, endPointOptions);
+            }
+
+            return _memoryCache.GetOrCreate(
+                ComputeHash(swaggerJson),
+                entry =>
+                {
+                    entry.AbsoluteExpirationRelativeToNow = _ocelotSwaggerGenOptions.DownstreamDocsCacheExpire;
+                    return TransformSwaggerOrOpenApi(swaggerJson, routes, serverOverride, endPointOptions);
+                });
         }
 
         private string TransformSwaggerOrOpenApi(

@@ -32,7 +32,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// <value>
         ///     <c>0</c> if it won't be cached; otherwise, cache expire duration in seconds.
         /// </value>
-        public int DownstreamDocsCacheExpireInSeconds { get; set; } = 0;
+        public TimeSpan DownstreamDocsCacheExpire { get; set; } = TimeSpan.Zero;
 
         /// <summary>
         /// Generates docs for gateway it self with options.

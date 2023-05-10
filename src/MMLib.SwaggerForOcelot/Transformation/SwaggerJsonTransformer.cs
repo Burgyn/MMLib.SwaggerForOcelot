@@ -1,10 +1,14 @@
-﻿using Kros.IO;
+using Kros.IO;
+using Microsoft.Extensions.Caching.Memory;
 using MMLib.SwaggerForOcelot.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace MMLib.SwaggerForOcelot.Transformation
 {
@@ -15,14 +19,37 @@ namespace MMLib.SwaggerForOcelot.Transformation
     public class SwaggerJsonTransformer : ISwaggerJsonTransformer
     {
         private readonly OcelotSwaggerGenOptions _ocelotSwaggerGenOptions;
+        private readonly IMemoryCache _memoryCache;
 
-        public SwaggerJsonTransformer(OcelotSwaggerGenOptions ocelotSwaggerGenOptions)
+        public SwaggerJsonTransformer(OcelotSwaggerGenOptions ocelotSwaggerGenOptions, IMemoryCache memoryCache)
         {
             _ocelotSwaggerGenOptions = ocelotSwaggerGenOptions;
+            _memoryCache = memoryCache;
         }
 
         /// <inheritdoc/>
-        public string Transform(string swaggerJson,
+        public string Transform(
+            string swaggerJson,
+            IEnumerable<RouteOptions> routes,
+            string serverOverride,
+            SwaggerEndPointOptions endPointOptions)
+        {
+            if (_ocelotSwaggerGenOptions.DownstreamDocsCacheExpire == TimeSpan.Zero)
+            {
+                return TransformSwaggerOrOpenApi(swaggerJson, routes, serverOverride, endPointOptions);
+            }
+
+            return _memoryCache.GetOrCreate(
+                ComputeHash(swaggerJson),
+                entry =>
+                {
+                    entry.AbsoluteExpirationRelativeToNow = _ocelotSwaggerGenOptions.DownstreamDocsCacheExpire;
+                    return TransformSwaggerOrOpenApi(swaggerJson, routes, serverOverride, endPointOptions);
+                });
+        }
+
+        private string TransformSwaggerOrOpenApi(
+            string swaggerJson,
             IEnumerable<RouteOptions> routes,
             string serverOverride,
             SwaggerEndPointOptions endPointOptions)
@@ -326,6 +353,14 @@ namespace MMLib.SwaggerForOcelot.Transformation
                     server[OpenApiProperties.Url] = serverOverride.RemoveSlashFromEnd();
                 }
             }
+        }
+
+        private static string ComputeHash(string input)
+        {
+            using var sha256 = SHA256.Create();
+            byte[] bytes = Encoding.UTF8.GetBytes(input);
+            byte[] hash = sha256.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
         }
     }
 }

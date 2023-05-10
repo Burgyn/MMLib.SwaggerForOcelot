@@ -27,13 +27,21 @@ namespace MMLib.SwaggerForOcelot.Configuration
         public bool GenerateDocsForGatewayItSelf { get; set; } = false;
 
         /// <summary>
+        /// Gets or sets a value indicating downstream docs cache expire duration in seconds.
+        /// </summary>
+        /// <value>
+        ///     <c>0</c> if it won't be cached; otherwise, cache expire duration in seconds.
+        /// </value>
+        public TimeSpan DownstreamDocsCacheExpire { get; set; } = TimeSpan.Zero;
+
+        /// <summary>
         /// Generates docs for gateway it self with options.
         /// </summary>
         /// <param name="options">Gateway itself docs generation options.</param>
         public void GenerateDocsDocsForGatewayItSelf(Action<OcelotGatewayItSelfSwaggerGenOptions> options = null)
         {
             GenerateDocsForGatewayItSelf = true;
-           
+
             OcelotGatewayItSelfSwaggerGenOptions = new OcelotGatewayItSelfSwaggerGenOptions();
             options?.Invoke(OcelotGatewayItSelfSwaggerGenOptions);
 

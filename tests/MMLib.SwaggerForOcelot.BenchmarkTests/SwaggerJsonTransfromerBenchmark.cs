@@ -1,4 +1,6 @@
 using BenchmarkDotNet.Attributes;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
 using MMLib.SwaggerForOcelot.Transformation;
 using System.Collections.Generic;
@@ -14,6 +16,7 @@ public class SwaggerJsonTransfromerBenchmark
     private readonly string _swagger;
     private readonly SwaggerJsonTransformer _transformer;
     private readonly List<RouteOptions> _routeOptions;
+    private readonly IMemoryCache memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
 
     public SwaggerJsonTransfromerBenchmark()
     {
@@ -40,7 +43,7 @@ public class SwaggerJsonTransfromerBenchmark
             }
         };
 
-        _transformer = new SwaggerJsonTransformer(new OcelotSwaggerGenOptions());
+        _transformer = new SwaggerJsonTransformer(new OcelotSwaggerGenOptions(), memoryCache);
     }
 
     [Benchmark]

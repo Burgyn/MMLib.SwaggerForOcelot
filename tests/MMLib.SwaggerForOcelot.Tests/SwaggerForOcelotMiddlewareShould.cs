@@ -10,6 +10,7 @@ using FluentAssertions;
 using JsonDiffPatchDotNet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
 using MMLib.SwaggerForOcelot.Middleware;
@@ -23,6 +24,7 @@ using NSubstitute;
 using Swashbuckle.AspNetCore.Swagger;
 using Xunit;
 using Xunit.Sdk;
+using Options = Microsoft.Extensions.Options.Options;
 
 namespace MMLib.SwaggerForOcelot.Tests
 {
@@ -35,6 +37,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             const string version = "v1";
             const string key = "projects";
             HttpContext httpContext = GetHttpContext(requestPath: $"/{version}/{key}");
+            IMemoryCache memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
 
             var next = new TestRequestDelegate();
 
@@ -82,7 +85,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                     string swaggerJson,
                     IEnumerable<RouteOptions> routeOptions,
                     string serverOverride,
-                    SwaggerEndPointOptions options) => new SwaggerJsonTransformer(OcelotSwaggerGenOptions.Default)
+                    SwaggerEndPointOptions options) => new SwaggerJsonTransformer(OcelotSwaggerGenOptions.Default, memoryCache)
                     .Transform(swaggerJson, routeOptions, serverOverride, options));
             var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
                 next.Invoke,
@@ -167,6 +170,7 @@ namespace MMLib.SwaggerForOcelot.Tests
             const string version = "v1";
             const string key = "projects";
             HttpContext httpContext = GetHttpContext(requestPath: $"/{version}/{key}");
+            IMemoryCache memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
 
             var next = new TestRequestDelegate();
 
@@ -200,7 +204,7 @@ namespace MMLib.SwaggerForOcelot.Tests
                     string swaggerJson,
                     IEnumerable<RouteOptions> routeOptions,
                     string serverOverride,
-                    SwaggerEndPointOptions options) => new SwaggerJsonTransformer(OcelotSwaggerGenOptions.Default)
+                    SwaggerEndPointOptions options) => new SwaggerJsonTransformer(OcelotSwaggerGenOptions.Default, memoryCache)
                     .Transform(swaggerJson, routeOptions, serverOverride, options));
             var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
                 next.Invoke,

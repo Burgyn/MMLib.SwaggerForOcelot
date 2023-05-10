@@ -570,6 +570,20 @@ services.AddSwaggerForOcelot(Configuration,
 
 Note, this does not affect nor checks the swagger document's `securityDefinitions` property.
 
+## Downstream Documentation Caching
+If your downstream documentation is too large, the response time may be slow. 
+To address this issue, you can enable caching of transformed documentation by setting the 
+`DownstreamDocsCacheExpire` parameter. If this parameter is not provided, the documentation won't be cached.
+If there is any change in the downstream documentation, the cache will be refreshed.
+
+```csharp
+services.AddSwaggerForOcelot(Configuration,
+            setup =>
+            {
+                setup.DownstreamDocsCacheExpire = TimeSpan.FromMinutes(10);
+            });
+```
+
 ## Limitation
 
 - Now, this library support only `{everything}` as a wildcard in routing definition. #68

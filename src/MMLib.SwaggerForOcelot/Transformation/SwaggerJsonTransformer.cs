@@ -127,7 +127,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
         {
             // NOTE: Only supporting one server for now.
             string downstreamBasePath = "";
-            if (openApi.ContainsKey(OpenApiProperties.Servers) && !endPointOptions.TakeServersFromDownstreamService)
+            if (openApi.GetValue(OpenApiProperties.Servers)?.Any() == true && !endPointOptions.TakeServersFromDownstreamService)
             {
                 string firstServerUrl = openApi.GetValue(OpenApiProperties.Servers).First.Value<string>(OpenApiProperties.Url);
                 var downstreamUrl = new Uri(firstServerUrl, UriKind.RelativeOrAbsolute);

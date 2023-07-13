@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <Version>6.3.2</Version>
+        <TargetFramework>net7.0</TargetFramework>
+        <Version>7.0.0</Version>
         <Authors>Milan Martiniak</Authors>
         <Company>MMLib</Company>
         <Description>Swagger generator for Ocelot downstream services.</Description>
@@ -10,7 +10,7 @@
         <PackageIcon>icon.png</PackageIcon>
         <RepositoryUrl>https://github.com/Burgyn/MMLib.SwaggerForOcelot</RepositoryUrl>
         <PackageTags>swagger;documentation;ocelot</PackageTags>
-        <PackageReleaseNotes/>
+        <PackageReleaseNotes />
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Copyright>@MMLib</Copyright>
@@ -24,17 +24,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="icon.png" Pack="true" PackagePath=""/>
+        <None Include="icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Kros.Utils" Version="2.1.0"/>
-        <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0"/>
-        <PackageReference Include="Ocelot" Version="18.0.0"/>
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.3.0"/>
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.4.0"/>
+        <PackageReference Include="Kros.Utils" Version="2.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+        <PackageReference Include="Ocelot" Version="19.0.2" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
     </ItemGroup>
     <ItemGroup>
-        <None Include="../../README.md" Pack="true" PackagePath="\"/>
+        <None Include="../../README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 </Project>

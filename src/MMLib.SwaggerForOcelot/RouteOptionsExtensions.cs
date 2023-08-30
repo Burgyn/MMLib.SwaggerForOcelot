@@ -69,6 +69,7 @@ namespace MMLib.SwaggerForOcelot
                     DownstreamHttpVersion = routeOption.DownstreamHttpVersion,
                     DownstreamScheme = routeOption.DownstreamScheme,
                     AuthenticationOptions = routeOption.AuthenticationOptions,
+                    DangerousAcceptAnyServerCertificateValidator = routeOption.DangerousAcceptAnyServerCertificateValidator
                 });
                 routeOptions.AddRange(versionMappedRouteOptions);
             }

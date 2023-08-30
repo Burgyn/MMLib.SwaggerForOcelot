@@ -1,4 +1,4 @@
-![alt logo](https://raw.githubusercontent.com/Burgyn/MMLib.SwaggerForOcelot/master/.github/MMLibLogo.png)
+<img src="./assets/logo.png" alt="logo" width="300"/>
 
 ![Publish package](https://github.com/Burgyn/MMLib.SwaggerForOcelot/workflows/Publish%20package/badge.svg)
 

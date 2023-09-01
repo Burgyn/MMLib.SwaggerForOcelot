@@ -52,5 +52,64 @@ namespace MMLib.SwaggerForOcelot.Tests
                 .Should()
                 .BeEquivalentTo("Get", "Post");
         }
+
+        [Fact]
+        public void ExpandConfig()
+        {
+            IEnumerable<RouteOptions> routeOptions = new List<RouteOptions>()
+            {
+                new RouteOptions(){
+                    DownstreamPathTemplate= "/api/{version}/masterdatatype",
+                    UpstreamPathTemplate = "/masterdatatype",
+                    UpstreamHttpMethod = new HashSet<string>(){ "Get"},
+                    DangerousAcceptAnyServerCertificateValidator = true
+                },
+                new RouteOptions(){
+                    DownstreamPathTemplate= "/api/{version}/masterdatatype",
+                    UpstreamPathTemplate = "/masterdatatype",
+                    UpstreamHttpMethod = new HashSet<string>(){ "Post"},
+                    DangerousAcceptAnyServerCertificateValidator = true
+                },
+                new RouteOptions(){
+                    DownstreamPathTemplate= "/api/{version}/masterdatatype/{everything}",
+                    UpstreamPathTemplate = "/masterdatatype/{everything}",
+                    UpstreamHttpMethod = new HashSet<string>(){ "Delete"},
+                    DangerousAcceptAnyServerCertificateValidator = true
+                },
+                new RouteOptions(){
+                    DownstreamPathTemplate= "/api/{version}/masterdatatype/{everything}",
+                    UpstreamPathTemplate = "/masterdatatype/{everything}",
+                    UpstreamHttpMethod = new HashSet<string>(){ "Delete"},
+                    VirtualDirectory = "something",
+                    DangerousAcceptAnyServerCertificateValidator = true
+                },
+                new RouteOptions(){
+                    DownstreamPathTemplate= "/api/{version}/masterdata",
+                    UpstreamPathTemplate = "/masterdata",
+                    UpstreamHttpMethod = new HashSet<string>(){ "Delete"},
+                    DangerousAcceptAnyServerCertificateValidator = true
+                },
+            };
+
+            SwaggerEndPointOptions swaggerEndPointOptions = new()
+            {
+                Config = new List<SwaggerEndPointConfig>()
+                {
+                    new SwaggerEndPointConfig()
+                    {
+                        Version = "v1"
+                    }
+                }
+            };
+
+            IEnumerable<RouteOptions> actual = routeOptions.ExpandConfig(swaggerEndPointOptions);
+
+            actual
+                .Should()
+                .HaveCount(5);
+            actual
+                .Should()
+                .OnlyContain(route => route.DownstreamPathTemplate.Contains("/api/v1") && route.DangerousAcceptAnyServerCertificateValidator);
+        }
     }
 }

@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
         <Version>7.0.1</Version>
         <Authors>Milan Martiniak</Authors>
         <Company>MMLib</Company>
@@ -17,22 +16,27 @@
         <LangVersion>preview</LangVersion>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
-
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <DocumentationFile>bin\Release\MMLib.SwaggerForOcelot.xml</DocumentationFile>
         <OutputPath>bin\Release</OutputPath>
     </PropertyGroup>
-
     <ItemGroup>
         <None Include="icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
-
     <ItemGroup>
         <PackageReference Include="Kros.Utils" Version="2.1.0" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-        <PackageReference Include="Ocelot" Version="19.0.2" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+        <PackageReference Include="Ocelot" Version="18.*" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+        <PackageReference Include="Ocelot" Version="19.*" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <PackageReference Include="Ocelot" Version="20.*" />
     </ItemGroup>
     <ItemGroup>
         <None Include="../../README.md" Pack="true" PackagePath="\" />

@@ -93,8 +93,11 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
             {
                 throw new InvalidOperationException(GetErrorMessage(endPoint));
             }
-
+#if NET6_0
             ServiceHostAndPort service = (await serviceProvider.Data.Get()).FirstOrDefault()?.HostAndPort;
+#else
+            ServiceHostAndPort service = (await serviceProvider.Data.GetAsync()).FirstOrDefault()?.HostAndPort;
+#endif
 
             if (service is null)
             {

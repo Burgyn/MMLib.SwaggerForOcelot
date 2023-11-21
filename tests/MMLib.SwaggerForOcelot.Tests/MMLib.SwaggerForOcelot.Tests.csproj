@@ -1,8 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+  </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\AggregatesOpenApiResource.json" />
     <None Remove="Tests\BasicConfigurationWithSchemaInHostOverride.json" />
@@ -69,8 +74,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\MMLib.SwaggerForOcelot\MMLib.SwaggerForOcelot.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>

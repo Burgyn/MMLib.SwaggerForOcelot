@@ -108,7 +108,7 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
             options.CurrentValue.Returns(new FileConfiguration());
 
             IServiceDiscoveryProvider serviceProvider = Substitute.For<IServiceDiscoveryProvider>();
-            serviceProvider.Get().Returns(new List<Service>() { service });
+            serviceProvider.GetAsync().Returns(new List<Service>() { service });
             var response = new OkResponse<IServiceDiscoveryProvider>(serviceProvider);
 
             serviceDiscovery.Get(Arg.Any<ServiceProviderConfiguration>(), Arg.Any<DownstreamRoute>()).Returns(response);

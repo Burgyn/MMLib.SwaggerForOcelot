@@ -134,7 +134,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// </summary>
         public string DownstreamPath => DownstreamPathWithVirtualDirectory.RemoveSlashFromEnd();
 
-        internal string DownstreamPathWithSlash => DownstreamPathWithVirtualDirectory.WithShashEnding();
+        internal string DownstreamPathWithSlash => DownstreamPathWithVirtualDirectory.WithSlashEnding();
 
         private readonly string _downstreamPathWithVirtualDirectory = null;
 

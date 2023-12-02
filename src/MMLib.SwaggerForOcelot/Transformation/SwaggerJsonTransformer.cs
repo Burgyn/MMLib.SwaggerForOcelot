@@ -1,11 +1,10 @@
-using Kros.IO;
+﻿using Kros.IO;
 using Microsoft.Extensions.Caching.Memory;
 using MMLib.SwaggerForOcelot.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -171,81 +170,54 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
         private void RenameAndRemovePaths(IEnumerable<RouteOptions> routes, JToken paths, string basePath)
         {
-            var forRemove = new List<JProperty>();
-
+            var oldPaths = new List<JProperty>();
+            var newPaths = new Dictionary<string, JProperty>();
             for (int i = 0; i < paths.Count(); i++)
             {
-                var path = paths.ElementAt(i) as JProperty;
-                string downstreamPath = path.Name.RemoveSlashFromEnd();
-                RouteOptions route = FindRoute(routes, path.Name.WithShashEnding(), basePath);
-
-                if (route != null && RemoveMethods(path, route))
+                var oldPath = paths.ElementAt(i) as JProperty;
+                oldPaths.Add(oldPath);
+                string downstreamPath = oldPath.Name.RemoveSlashFromEnd();
+                foreach (var tmpMethod in oldPath.First)
                 {
-                    AddSecurityDefinitions(path, route);
-
-                    RenameToken(path, ConvertDownstreamPathToUpstreamPath(downstreamPath, route.DownstreamPath, route.UpstreamPath, basePath));
-                }
-                else
-                {
-                    forRemove.Add(path);
+                    var method = tmpMethod as JProperty;
+                    List<RouteOptions> matchedRoutes = FindRoutes(routes, oldPath.Name.WithSlashEnding(), method.Name, basePath);
+                    foreach (var route in matchedRoutes)
+                    {
+                        string newPath = ConvertDownstreamPathToUpstreamPath(
+                            downstreamPath, route.DownstreamPath, route.UpstreamPath, basePath);
+                        if (!newPaths.TryGetValue(newPath, out JProperty newPathJson))
+                        {
+                            newPathJson = new JProperty(newPath, new JObject());
+                            newPaths.Add(newPath, newPathJson);
+                        }
+                        var newMethod = (method.DeepClone() as JProperty);
+                        AddSecurityDefinition(newMethod, route);
+                        ((JObject)newPathJson.Value).Add(newMethod);
+                    }
                 }
             }
 
-            foreach (JProperty p in forRemove)
-            {
-                p.Remove();
-            }
+            oldPaths.ForEach(oldPath => oldPath.Remove());
+            newPaths.Select(item => item.Value)
+                .OrderBy(newPath => newPath.Name)
+                .ForEach(newPath => ((JObject)paths).Add(newPath));
         }
 
-        private bool RemoveMethods(JProperty path, RouteOptions route)
-        {
-            var forRemove = new List<JProperty>();
-            var method = path.First.First as JProperty;
-
-            while (method != null)
-            {
-                if (!route.ContainsHttpMethod(method.Name))
-                {
-                    forRemove.Add(method);
-                }
-                method = method.Next as JProperty;
-            }
-
-            foreach (JProperty m in forRemove)
-            {
-                m.Remove();
-            }
-
-            return path.First.Any();
-        }
-
-        private void AddSecurityDefinitions(JProperty path, RouteOptions route)
+        private void AddSecurityDefinition(JProperty method, RouteOptions route)
         {
             var authProviderKey = route.AuthenticationOptions?.AuthenticationProviderKey;
-
             if (string.IsNullOrEmpty(authProviderKey))
             {
                 return;
             }
-
-            if (_ocelotSwaggerGenOptions.AuthenticationProviderKeyMap.TryGetValue(
-                authProviderKey,
-                out var securityScheme))
+            if (_ocelotSwaggerGenOptions.AuthenticationProviderKeyMap.TryGetValue(authProviderKey, out var securityScheme))
             {
-                var method = path.First.First as JProperty;
-
-                while (method != null)
-                {
-                    var securityProperty = new JProperty(OpenApiProperties.Security,
-                        new JArray(
-                            new JObject(
-                                new JProperty(securityScheme,
-                                    new JArray(route.AuthenticationOptions?.AllowedScopes?.ToArray() ?? Array.Empty<string>())))));
-
-                    ((JObject)method.Value).Add(securityProperty);
-
-                    method = method.Next as JProperty;
-                }
+                var securityProperty = new JProperty(OpenApiProperties.Security,
+                    new JArray(
+                        new JObject(
+                            new JProperty(securityScheme,
+                                new JArray(route.AuthenticationOptions?.AllowedScopes?.ToArray() ?? [])))));
+                ((JObject)method.Value).Add(securityProperty);
             }
         }
 
@@ -297,13 +269,21 @@ namespace MMLib.SwaggerForOcelot.Transformation
             }
         }
 
-        private static RouteOptions FindRoute(IEnumerable<RouteOptions> routes, string downstreamPath, string basePath)
+        private static List<RouteOptions> FindRoutes(
+            IEnumerable<RouteOptions> routes,
+            string downstreamPath,
+            string method,
+            string basePath)
         {
+            static bool MatchPaths(RouteOptions route, string downstreamPath)
+                => route.CanCatchAll
+                    ? downstreamPath.StartsWith(route.DownstreamPathWithSlash, StringComparison.OrdinalIgnoreCase)
+                    : route.DownstreamPathWithSlash.Equals(downstreamPath, StringComparison.OrdinalIgnoreCase);
+
             string downstreamPathWithBasePath = PathHelper.BuildPath(basePath, downstreamPath);
-            return routes.FirstOrDefault(p
-                => p.CanCatchAll
-                    ? downstreamPathWithBasePath.StartsWith(p.DownstreamPathWithSlash, StringComparison.CurrentCultureIgnoreCase)
-                    : p.DownstreamPathWithSlash.Equals(downstreamPathWithBasePath, StringComparison.CurrentCultureIgnoreCase));
+            return routes
+                .Where(route => route.ContainsHttpMethod(method) && MatchPaths(route, downstreamPathWithBasePath))
+                .ToList();
         }
 
         private static void AddHost(JObject swagger, string swaggerHost)
@@ -331,12 +311,6 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 return downstreamPath;
             }
             return $"{downstreamPath.Substring(0, pos)}{upstreamPattern}{downstreamPath.Substring(pos + downstreamPattern.Length)}";
-        }
-
-        private static void RenameToken(JProperty property, string newName)
-        {
-            var newProperty = new JProperty(newName, property.Value);
-            property.Replace(newProperty);
         }
 
         private static void TransformServerPaths(JObject openApi, string serverOverride, bool takeServersFromDownstreamService)

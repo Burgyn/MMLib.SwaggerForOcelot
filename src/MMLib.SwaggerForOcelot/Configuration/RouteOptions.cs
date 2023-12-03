@@ -162,7 +162,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// Gets a value indicating whether this instance can catch all.
         /// </summary>
         public bool CanCatchAll
-            => DownstreamPathTemplate.EndsWith(CatchAllPlaceHolder, StringComparison.CurrentCultureIgnoreCase);
+            => DownstreamPathTemplate.EndsWith(CatchAllPlaceHolder, StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
         /// Gets the upstream path.

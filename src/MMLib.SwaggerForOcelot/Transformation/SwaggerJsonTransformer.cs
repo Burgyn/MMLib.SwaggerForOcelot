@@ -171,7 +171,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
         private void RenameAndRemovePaths(IEnumerable<RouteOptions> routes, JToken paths, string basePath)
         {
             var oldPaths = new List<JProperty>();
-            var newPaths = new Dictionary<string, JProperty>();
+            var newPaths = new Dictionary<string, JProperty>(StringComparer.OrdinalIgnoreCase);
             for (int i = 0; i < paths.Count(); i++)
             {
                 var oldPath = paths.ElementAt(i) as JProperty;
@@ -281,9 +281,35 @@ namespace MMLib.SwaggerForOcelot.Transformation
                     : route.DownstreamPathWithSlash.Equals(downstreamPath, StringComparison.OrdinalIgnoreCase);
 
             string downstreamPathWithBasePath = PathHelper.BuildPath(basePath, downstreamPath);
-            return routes
+            var matchedRoutes = routes
                 .Where(route => route.ContainsHttpMethod(method) && MatchPaths(route, downstreamPathWithBasePath))
                 .ToList();
+
+            RemoveRedundantRoutes(matchedRoutes);
+            return matchedRoutes;
+        }
+
+        // Redundant routes are routes with the ALMOST same upstream path templates. For example these path templates
+        // are redundant:
+        //   - /api/projects/Projects
+        //   - /api/projects/Projects/
+        //   - /api/projects/Projects/{everything}
+        //
+        // `route.UpstreamPath` contains route without trailing slash and without catch-all placeholder, so all previous
+        // routes have the same upstream path `/api/projects/Projects`. The logic is to keep just the shortestof the path
+        // templates. If we would keep all routes, it will throw an exception during the generation of the swagger document
+        // later because of the same paths.
+        private static void RemoveRedundantRoutes(List<RouteOptions> routes)
+        {
+            IEnumerable<IGrouping<string, RouteOptions>> groups = routes
+                .GroupBy(route => route.UpstreamPath, StringComparer.OrdinalIgnoreCase)
+                .Where(group => group.Count() > 1);
+            foreach (var group in groups)
+            {
+                group.OrderBy(r => r.DownstreamPathTemplate.Length)
+                    .Skip(1)
+                    .ForEach(r => routes.Remove(r));
+            }
         }
 
         private static void AddHost(JObject swagger, string swaggerHost)
@@ -305,7 +331,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 downstreamPath = PathHelper.BuildPath(downstreamBasePath, downstreamPath);
             }
 
-            int pos = downstreamPath.IndexOf(downstreamPattern, StringComparison.CurrentCultureIgnoreCase);
+            int pos = downstreamPath.IndexOf(downstreamPattern, StringComparison.OrdinalIgnoreCase);
             if (pos < 0)
             {
                 return downstreamPath;

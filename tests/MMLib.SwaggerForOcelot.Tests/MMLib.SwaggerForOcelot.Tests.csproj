@@ -10,6 +10,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\AggregatesOpenApiResource.json" />
+    <None Remove="Resources\DifferentOcelotRoutesForOneDownstream.json" />
+    <None Remove="Resources\DifferentOcelotRoutesForOneDownstreamTransformed.json" />
     <None Remove="Tests\BasicConfigurationWithSchemaInHostOverride.json" />
     <None Remove="Tests\Issue_128.json" />
     <None Remove="Tests\Issue_135.json" />
@@ -20,6 +22,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\AggregatesOpenApiResource.json" />
+    <EmbeddedResource Include="Resources\DifferentOcelotRoutesForOneDownstream.json" />
+    <EmbeddedResource Include="Resources\DifferentOcelotRoutesForOneDownstreamTransformed.json" />
     <EmbeddedResource Include="Resources\OpenApiWithVersionPlaceholderBase.json" />
     <EmbeddedResource Include="Resources\OpenApiWithVersionPlaceholderBaseTransformed.json" />
     <EmbeddedResource Include="Resources\OpenApiBase.json" />

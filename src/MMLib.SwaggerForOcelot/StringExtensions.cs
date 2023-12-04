@@ -10,16 +10,19 @@
         /// </summary>
         /// <param name="value">The value.</param>
         public static string RemoveSlashFromEnd(this string value)
-            => value.TrimEnd().EndsWith("/")
-            ? value.TrimEnd().TrimEnd('/')
-            : value;
+            => value.TrimEnd().TrimEnd('/');
 
         /// <summary>
         /// Add slash to end.
         /// </summary>
-        public static string WithShashEnding(this string value)
-            => !value.TrimEnd().EndsWith("/")
-            ? value + "/"
-            : value;
+        public static string WithSlashEnding(this string value)
+        {
+            value = value.TrimEnd();
+            if (!value.EndsWith('/'))
+            {
+                value += "/";
+            }
+            return value;
+        }
     }
 }

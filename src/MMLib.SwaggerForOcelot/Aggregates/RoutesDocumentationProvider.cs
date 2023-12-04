@@ -46,7 +46,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             JToken paths = docs[OpenApiProperties.Paths];
             string downstreamPath = GetDownstreamPath(route);
             JProperty path = paths.OfType<JProperty>().FirstOrDefault(p =>
-                downstreamPath.Equals(p.Name.WithShashEnding(), StringComparison.CurrentCultureIgnoreCase));
+                downstreamPath.Equals(p.Name.WithSlashEnding(), StringComparison.OrdinalIgnoreCase));
 
             return new RouteDocs()
             {

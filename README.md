@@ -9,9 +9,9 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 ![SwaggerForOcelot](https://raw.githubusercontent.com/Burgyn/MMLib.SwaggerForOcelot/master/demo/image.png)
 
 ---
-Did this project help you? [You can now buy me a beer 😎🍺.](https://www.buymeacoffee.com/0dQ7tNG)
+Did this project help you? [You can now buy me a beer 😎🍺.](www.buymeacoffee.com/minomartiniak)
 
-[!["You can now buy me a beer 😎🍺."](https://raw.githubusercontent.com/Burgyn/MMLib.SwaggerForOcelot/master/demo/buymecoffee.png)](https://www.buymeacoffee.com/0dQ7tNG)
+[!["You can now buy me a beer 😎🍺."](https://raw.githubusercontent.com/Burgyn/MMLib.SwaggerForOcelot/master/demo/buymecoffee.png)](www.buymeacoffee.com/minomartiniak)
 
 ## Get Started
 

@@ -14,6 +14,7 @@ using System.Globalization;
 using Microsoft.OpenApi.Writers;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using MMLib.SwaggerForOcelot.ServiceDiscovery;
 
 namespace MMLib.SwaggerForOcelot.Middleware
 {
@@ -42,13 +43,9 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// <param name="transformer">The SwaggerJsonTransformer</param>
         /// <param name="swaggerProvider">Swagger provider.</param>
         /// <param name="downstreamInterceptor">Downstream interceptor.</param>
-        public SwaggerForOcelotMiddleware(
-            RequestDelegate next,
-            SwaggerForOcelotUIOptions options,
-            IOptionsMonitor<List<RouteOptions>> routes,
-            ISwaggerJsonTransformer transformer,
-            ISwaggerProvider swaggerProvider,
-            ISwaggerDownstreamInterceptor downstreamInterceptor = null)
+        public SwaggerForOcelotMiddleware(RequestDelegate next, SwaggerForOcelotUIOptions options,
+            IOptionsMonitor<List<RouteOptions>> routes, ISwaggerJsonTransformer transformer,
+            ISwaggerProvider swaggerProvider, ISwaggerDownstreamInterceptor downstreamInterceptor = null)
         {
             _transformer = Check.NotNull(transformer, nameof(transformer));
             _next = Check.NotNull(next, nameof(next));
@@ -64,11 +61,11 @@ namespace MMLib.SwaggerForOcelot.Middleware
         /// <param name="context">The context.</param>
         /// <param name="swaggerEndPointRepository">Swagger endpoint repository.</param>
         /// <param name="downstreamSwaggerDocs">Repository for obtaining downstream swagger docs.</param>
-        public async Task Invoke(HttpContext context,
-            ISwaggerEndPointProvider swaggerEndPointRepository,
+        public async Task Invoke(HttpContext context, ISwaggerEndPointProvider swaggerEndPointRepository,
             IDownstreamSwaggerDocsRepository downstreamSwaggerDocs)
         {
-            (string version, SwaggerEndPointOptions endPoint) = GetEndPoint(context.Request.Path, swaggerEndPointRepository);
+            (string version, SwaggerEndPointOptions endPoint) =
+                GetEndPoint(context.Request.Path, swaggerEndPointRepository);
 
             if (_downstreamInterceptor != null &&
                 !_downstreamInterceptor.DoDownstreamSwaggerEndpoint(context, version, endPoint))
@@ -84,22 +81,22 @@ namespace MMLib.SwaggerForOcelot.Middleware
                 return;
             }
 
-            IEnumerable<RouteOptions> routeOptions = _routes.CurrentValue
-                .ExpandConfig(endPoint)
-                .GroupByPaths();
+            IEnumerable<RouteOptions> routeOptions = _routes.CurrentValue.ExpandConfig(endPoint).GroupByPaths();
 
             RouteOptions route = routeOptions.FirstOrDefault(r => r.SwaggerKey == endPoint.Key);
 
             string content = await downstreamSwaggerDocs.GetSwaggerJsonAsync(route, endPoint, version);
 
-            if (endPoint.TransformByOcelotConfig)
-            {
-                content = _transformer.Transform(
-                    content,
-                    routeOptions,
-                    GetServerName(context, endPoint),
-                    endPoint);
-            }
+            if (SwaggerServiceDiscoveryProvider.ServiceProviderType != "Consul") // ignore if Consul , this will just replace the freshly fetched swagger json from the service with an empty one
+                if (endPoint.TransformByOcelotConfig)
+                {
+                    content = _transformer.Transform(
+                        content,
+                        routeOptions,
+                        GetServerName(context, endPoint),
+                        endPoint);
+                }
+
             content = await ReconfigureUpstreamSwagger(context, content);
 
             await context.Response.WriteAsync(content);
@@ -124,8 +121,8 @@ namespace MMLib.SwaggerForOcelot.Middleware
             string serverName;
             if (string.IsNullOrWhiteSpace(_options.ServerOcelot))
             {
-                serverName = endPoint.HostOverride
-                    ?? $"{context.Request.Scheme}://{context.Request.Host.Value.RemoveSlashFromEnd()}";
+                serverName = endPoint.HostOverride ??
+                             $"{context.Request.Scheme}://{context.Request.Host.Value.RemoveSlashFromEnd()}";
             }
             else
             {
@@ -156,8 +153,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
             return swaggerJson;
         }
 
-        private (string version, SwaggerEndPointOptions endpoint) GetEndPoint(
-            string path,
+        private (string version, SwaggerEndPointOptions endpoint) GetEndPoint(string path,
             ISwaggerEndPointProvider swaggerEndPointRepository)
         {
             (string Version, string Key) endPointInfo = GetEndPointInfo(path);

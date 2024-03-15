@@ -81,8 +81,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
         {
             var conf = _configurationCreator.Create(_options.CurrentValue.GlobalConfiguration);
 
-            ServiceProviderType = conf.Type; // get a way to detect who the service provider is
-
+            ServiceProviderType = conf.Type;
 
             var downstreamRoute = new DownstreamRouteBuilder()
                 .WithUseServiceDiscovery(true)
@@ -127,7 +126,6 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
                 80 => Uri.UriSchemeHttp,
                 _ => string.Empty,
             };
-
 
         public static string ServiceProviderType { get; set; }
 

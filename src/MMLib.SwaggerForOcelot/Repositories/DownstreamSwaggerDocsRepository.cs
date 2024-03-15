@@ -46,11 +46,10 @@ namespace MMLib.SwaggerForOcelot.Repositories
             var clientName = _options.Value.HttpClientName ?? ((route?.DangerousAcceptAnyServerCertificateValidator ?? false) ? ServiceCollectionExtensions.IgnoreSslCertificate : string.Empty);
             var httpClient = _httpClientFactory.CreateClient(clientName);
 
-            if (!(url.StartsWith("http://") || url.StartsWith("https://"))) //the url that gets constructed when using consul misses the http schema , and trows an exception
+            if (!(url.StartsWith("http://",StringComparison.InvariantCultureIgnoreCase) || url.StartsWith("https://",StringComparison.InvariantCultureIgnoreCase)))
             {
-                url = "https://" + url;   //appending https because that`s what i use (there is no real way to figure out the protocol from Consul)
+                url = "https://" + url;
             }
-
 
             SetHttpVersion(httpClient, route);
             AddHeaders(httpClient);

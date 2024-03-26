@@ -81,7 +81,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
         {
             var conf = _configurationCreator.Create(_options.CurrentValue.GlobalConfiguration);
 
-            ServiceProviderType = conf.Type;
+            ServiceProviderType = conf?.Type;
 
             var downstreamRoute = new DownstreamRouteBuilder()
                 .WithUseServiceDiscovery(true)
@@ -127,7 +127,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
                 _ => string.Empty,
             };
 
-        public static string ServiceProviderType { get; set; }
+        public static string? ServiceProviderType { get; set; }
 
         private static string GetErrorMessage(SwaggerEndPointConfig endPoint) => $"Service with swagger documentation '{endPoint.Service.Name}' cann't be discovered";
     }

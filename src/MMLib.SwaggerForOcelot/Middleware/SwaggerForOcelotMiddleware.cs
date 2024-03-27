@@ -1,4 +1,4 @@
-﻿using Kros.Utils;
+﻿﻿using Kros.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
@@ -14,6 +14,7 @@ using System.Globalization;
 using Microsoft.OpenApi.Writers;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using MMLib.SwaggerForOcelot.ServiceDiscovery;
 
 namespace MMLib.SwaggerForOcelot.Middleware
 {
@@ -91,15 +92,14 @@ namespace MMLib.SwaggerForOcelot.Middleware
             RouteOptions route = routeOptions.FirstOrDefault(r => r.SwaggerKey == endPoint.Key);
 
             string content = await downstreamSwaggerDocs.GetSwaggerJsonAsync(route, endPoint, version);
-
-            if (endPoint.TransformByOcelotConfig)
+            if (SwaggerServiceDiscoveryProvider.ServiceProviderType != "Consul")
             {
-                content = _transformer.Transform(
-                    content,
-                    routeOptions,
-                    GetServerName(context, endPoint),
-                    endPoint);
+                if (endPoint.TransformByOcelotConfig)
+                {
+                    content = _transformer.Transform(content, routeOptions, GetServerName(context, endPoint), endPoint);
+                }
             }
+
             content = await ReconfigureUpstreamSwagger(context, content);
 
             await context.Response.WriteAsync(content);

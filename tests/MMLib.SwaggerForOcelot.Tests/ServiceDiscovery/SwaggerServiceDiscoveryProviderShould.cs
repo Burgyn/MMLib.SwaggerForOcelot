@@ -50,6 +50,22 @@ namespace MMLib.SwaggerForOcelot.Tests.ServiceDiscovery
         }
 
         [Fact]
+        public async Task RespectApiVersionWhenUriIsNotExplicitlySet()
+        {
+            SwaggerServiceDiscoveryProvider provider = CreateProvider(CreateService("Projects", "localhost", 5000));
+
+            Uri uri = await provider.GetSwaggerUriAsync(
+                new SwaggerEndPointConfig()
+                {
+                    Version = "1.0",
+                    Service = new SwaggerService() { Name = "Projects" }
+                },
+                new Configuration.RouteOptions());
+
+            uri.AbsoluteUri.Should().Be("http://localhost:5000/swagger/1.0/swagger.json");
+        }
+
+        [Fact]
         public async Task ReturnUriFromServiceDiscoveryWhenRouteDoesntExist()
         {
             SwaggerServiceDiscoveryProvider provider = CreateProvider(CreateService("Projects", "localhost", 5000));

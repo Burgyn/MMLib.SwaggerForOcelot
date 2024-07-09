@@ -106,15 +106,16 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
                 throw new InvalidOperationException(GetErrorMessage(endPoint));
             }
 
-            var builder = new UriBuilder(GetScheme(service, route), service.DownstreamHost, service.DownstreamPort)
-            {
-                Path = endPoint.Service.Path
-            };
-            if (builder.Path.IsNullOrEmpty())
+            var builder = new UriBuilder(GetScheme(service, route), service.DownstreamHost, service.DownstreamPort);
+            if (endPoint.Service.Path.IsNullOrEmpty())
             {
                 string version = endPoint.Version.IsNullOrEmpty() ? "v1" : endPoint.Version;
                 builder.Path = $"/swagger/{version}/swagger.json";
-            };
+            }
+            else
+            {
+                builder.Path = endPoint.Service.Path;
+            }
 
             return builder.Uri;
         }

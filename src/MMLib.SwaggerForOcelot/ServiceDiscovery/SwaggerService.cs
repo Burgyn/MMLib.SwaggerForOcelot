@@ -13,6 +13,6 @@
         /// <summary>
         /// Gets or sets the path.
         /// </summary>
-        public string Path { get; set; } = "/swagger/v1/swagger.json";
+        public string Path { get; set; }
     }
 }

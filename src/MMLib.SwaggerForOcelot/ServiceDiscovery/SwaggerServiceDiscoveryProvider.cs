@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Kros.Extensions;
+﻿using Kros.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
@@ -13,6 +10,9 @@ using Ocelot.ServiceDiscovery;
 using Ocelot.ServiceDiscovery.Providers;
 using Ocelot.Values;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MMLib.SwaggerForOcelot.ServiceDiscovery
 {
@@ -115,7 +115,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
         }
 
         private string GetScheme(ServiceHostAndPort service, RouteOptions route)
-            => (route != null && !route.DownstreamScheme.IsNullOrEmpty())
+            => (route is not null && !route.DownstreamScheme.IsNullOrEmpty())
             ? route.DownstreamScheme
             : !service.Scheme.IsNullOrEmpty()
             ? service.Scheme

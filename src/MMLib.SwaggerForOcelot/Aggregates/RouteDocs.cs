@@ -57,7 +57,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             if (Docs.ContainsKey(PathKey))
             {
                 JToken parameters = Docs.SelectToken($"{PathKey}.{ParametersKey}");
-                if (parameters != null)
+                if (parameters is not null)
                 {
                     return parameters.ToObject<IEnumerable<OpenApiParameter>>()
                         .Select(d =>
@@ -65,7 +65,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
                             KeyValuePair<string, string>? map =
                                 ParametersMap?.FirstOrDefault(p => p.Value.Equals(d.Name, StringComparison.OrdinalIgnoreCase));
 
-                            if (map != null && map.HasValue && map.Value.Key != null)
+                            if (map is not null && map.HasValue && map.Value.Key is not null)
                             {
                                 d.Name = map.Value.Key;
                             }
@@ -141,7 +141,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             }
 
             OpenApiMediaTypeEx content = response.Content[MediaTypeNames.Application.Json];
-            if (content == null)
+            if (content is null)
             {
                 return ret;
             }

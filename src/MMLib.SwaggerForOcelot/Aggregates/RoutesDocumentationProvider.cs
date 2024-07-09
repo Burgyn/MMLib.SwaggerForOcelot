@@ -60,7 +60,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
         private static JObject CreateDocs(JObject docs, JToken paths, JProperty path)
         {
             var retDocs = new JObject();
-            if (path != null)
+            if (path is not null)
             {
                 retDocs[RouteDocs.PathKey] = paths.SelectToken($"{path.Name}.get");
             }
@@ -74,7 +74,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
         {
             var downstreamPath = new StringBuilder(route.DownstreamPathWithSlash);
 
-            if (route.ParametersMap != null)
+            if (route.ParametersMap is not null)
             {
                 foreach (KeyValuePair<string, string> map in route.ParametersMap)
                 {

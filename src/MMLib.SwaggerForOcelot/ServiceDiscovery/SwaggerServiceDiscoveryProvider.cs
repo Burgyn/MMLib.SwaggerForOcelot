@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Kros.Extensions;
+﻿using Kros.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
@@ -13,6 +10,9 @@ using Ocelot.ServiceDiscovery;
 using Ocelot.ServiceDiscovery.Providers;
 using Ocelot.Values;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MMLib.SwaggerForOcelot.ServiceDiscovery
 {
@@ -106,10 +106,16 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
                 throw new InvalidOperationException(GetErrorMessage(endPoint));
             }
 
-            var builder = new UriBuilder(GetScheme(service, route), service.DownstreamHost, service.DownstreamPort)
+            var builder = new UriBuilder(GetScheme(service, route), service.DownstreamHost, service.DownstreamPort);
+            if (endPoint.Service.Path.IsNullOrEmpty())
             {
-                Path = endPoint.Service.Path
-            };
+                string version = endPoint.Version.IsNullOrEmpty() ? "v1" : endPoint.Version;
+                builder.Path = $"/swagger/{version}/swagger.json";
+            }
+            else
+            {
+                builder.Path = endPoint.Service.Path;
+            }
 
             return builder.Uri;
         }

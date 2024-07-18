@@ -1,20 +1,20 @@
-﻿﻿using Kros.Utils;
+﻿using Kros.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Writers;
 using MMLib.SwaggerForOcelot.Configuration;
+using MMLib.SwaggerForOcelot.Repositories;
+using MMLib.SwaggerForOcelot.ServiceDiscovery;
 using MMLib.SwaggerForOcelot.Transformation;
+using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MMLib.SwaggerForOcelot.Repositories;
-using Swashbuckle.AspNetCore.Swagger;
-using System.IO;
 using System.Globalization;
-using Microsoft.OpenApi.Writers;
+using System.IO;
+using System.Linq;
 using System.Text;
-using Microsoft.OpenApi.Models;
-using MMLib.SwaggerForOcelot.ServiceDiscovery;
+using System.Threading.Tasks;
 
 namespace MMLib.SwaggerForOcelot.Middleware
 {
@@ -71,7 +71,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
         {
             (string version, SwaggerEndPointOptions endPoint) = GetEndPoint(context.Request.Path, swaggerEndPointRepository);
 
-            if (_downstreamInterceptor != null &&
+            if (_downstreamInterceptor is not null &&
                 !_downstreamInterceptor.DoDownstreamSwaggerEndpoint(context, version, endPoint))
             {
                 return;
@@ -137,18 +137,18 @@ namespace MMLib.SwaggerForOcelot.Middleware
 
         private async Task<string> ReconfigureUpstreamSwagger(HttpContext context, string swaggerJson)
         {
-            if (_options.ReConfigureUpstreamSwaggerJson != null && _options.ReConfigureUpstreamSwaggerJsonAsync != null)
+            if (_options.ReConfigureUpstreamSwaggerJson is not null && _options.ReConfigureUpstreamSwaggerJsonAsync is not null)
             {
                 throw new Exception(
                     "Both ReConfigureUpstreamSwaggerJson and ReConfigureUpstreamSwaggerJsonAsync cannot have a value. Only use one method.");
             }
 
-            if (_options.ReConfigureUpstreamSwaggerJson != null)
+            if (_options.ReConfigureUpstreamSwaggerJson is not null)
             {
                 return _options.ReConfigureUpstreamSwaggerJson(context, swaggerJson);
             }
 
-            if (_options.ReConfigureUpstreamSwaggerJsonAsync != null)
+            if (_options.ReConfigureUpstreamSwaggerJsonAsync is not null)
             {
                 return await _options.ReConfigureUpstreamSwaggerJsonAsync(context, swaggerJson);
             }

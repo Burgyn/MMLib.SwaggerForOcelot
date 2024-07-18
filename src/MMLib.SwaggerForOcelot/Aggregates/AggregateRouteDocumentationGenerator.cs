@@ -92,7 +92,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             OpenApiDocument openApiDocument)
         {
             AggregateResponseAttribute attribute = GetAggregatorAttribute(aggregateRoute);
-            if (attribute != null)
+            if (attribute is not null)
             {
                 OpenApiSchema reference = _schemaGenerator.GenerateSchema(attribute.ResponseType, _schemaRepository);
                 var response = new Response()
@@ -106,7 +106,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
                     openApiDocument.Components.Schemas.Add(item.Key, item.Value);
                 }
 
-                if (reference.Reference != null)
+                if (reference.Reference is not null)
                 {
                     response.Schema = _schemaRepository.Schemas[reference.Reference.Id];
                 }

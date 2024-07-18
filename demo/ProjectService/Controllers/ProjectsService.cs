@@ -51,7 +51,7 @@ namespace ProjectService.Controllers
         {
             Project project = _projects.Value.FirstOrDefault(p => p.Id == id);
 
-            if (project != null)
+            if (project is not null)
             {
                 return Ok(project);
             }

@@ -1,6 +1,6 @@
-﻿using System.Net;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace MMLib.SwaggerForOcelot.Configuration
 {
@@ -59,6 +59,6 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// </value>
         public bool TakeServersFromDownstreamService { get; set; } = false;
 
-        internal bool IsGatewayItSelf => Config != null && Config.Any(c => c.IsGatewayItSelf);
+        internal bool IsGatewayItSelf => Config is not null && Config.Any(c => c.IsGatewayItSelf);
     }
 }

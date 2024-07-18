@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Linq;
-using Microsoft.OpenApi.Models;
 
 namespace OrderService
 {
@@ -24,7 +23,7 @@ namespace OrderService
 
             operation.Deprecated = apiDescription.IsDeprecated();
 
-            if (operation.Parameters == null)
+            if (operation.Parameters is null)
             {
                 return;
             }
@@ -35,12 +34,12 @@ namespace OrderService
             {
                 ApiParameterDescription description = apiDescription.ParameterDescriptions.First(p => p.Name == parameter.Name);
 
-                if (parameter.Description == null)
+                if (parameter.Description is null)
                 {
                     parameter.Description = description.ModelMetadata?.Description;
                 }
 
-                if (parameter.Default == null)
+                if (parameter.Default is null)
                 {
                     parameter.Default = description.DefaultValue;
                 }

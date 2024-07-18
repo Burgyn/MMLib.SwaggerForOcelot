@@ -86,7 +86,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 AddHost(swagger, hostOverride);
             }
 
-            if (paths != null)
+            if (paths is not null)
             {
                 RenameAndRemovePaths(routes, paths, basePath);
 
@@ -100,7 +100,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                         i => $"$..[?(@*.*.allOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')])]",
                         i => $"$..allOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')]",
                         i => $"$..[?(@*.*.oneOf[?(@.$ref == '#/{SwaggerProperties.Definitions}/{i.Name}')])]");
-                    if (swagger["tags"] != null)
+                    if (swagger["tags"] is not null)
                     {
                         RemoveItems<JObject>(
                             swagger[SwaggerProperties.Tags],
@@ -136,12 +136,12 @@ namespace MMLib.SwaggerForOcelot.Transformation
             }
 
             JToken paths = openApi[OpenApiProperties.Paths];
-            if (paths != null)
+            if (paths is not null)
             {
                 RenameAndRemovePaths(routes, paths, downstreamBasePath);
 
                 JToken schemaToken = openApi[OpenApiProperties.Components][OpenApiProperties.Schemas];
-                if (endPointOptions.RemoveUnusedComponentsFromScheme && schemaToken != null)
+                if (endPointOptions.RemoveUnusedComponentsFromScheme && schemaToken is not null)
                 {
                     RemoveItems<JProperty>(schemaToken,
                         paths,
@@ -154,7 +154,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                         i => $"$..[?(@*.*.oneOf[?(@.$ref == '#/{OpenApiProperties.Components}/{OpenApiProperties.Schemas}/{i.Name}')])]");
                 }
 
-                if (endPointOptions.RemoveUnusedComponentsFromScheme && openApi["tags"] != null)
+                if (endPointOptions.RemoveUnusedComponentsFromScheme && openApi["tags"] is not null)
                 {
                     RemoveItems<JObject>(
                         openApi[OpenApiProperties.Tags],
@@ -348,7 +348,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
 
             foreach (JToken server in openApi.GetValue(OpenApiProperties.Servers))
             {
-                if (server[OpenApiProperties.Url] != null)
+                if (server[OpenApiProperties.Url] is not null)
                 {
                     server[OpenApiProperties.Url] = serverOverride.RemoveSlashFromEnd();
                 }

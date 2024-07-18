@@ -121,7 +121,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
         }
 
         private string GetScheme(ServiceHostAndPort service, RouteOptions route)
-            => (route != null && !route.DownstreamScheme.IsNullOrEmpty())
+            => (route is not null && !route.DownstreamScheme.IsNullOrEmpty())
             ? route.DownstreamScheme
             : !service.Scheme.IsNullOrEmpty()
             ? service.Scheme

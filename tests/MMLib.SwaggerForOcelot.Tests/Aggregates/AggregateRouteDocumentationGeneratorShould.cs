@@ -9,7 +9,6 @@ using Ocelot.Multiplexer;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mime;
 using Xunit;
 
 namespace MMLib.SwaggerForOcelot.Tests.Aggregates
@@ -284,7 +283,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
             {
                 var path = new JObject(new JProperty(RouteDocs.SummaryKey, summary));
 
-                if (parameters != null)
+                if (parameters is not null)
                 {
                     path.Add(RouteDocs.ParametersKey, parameters);
                 }

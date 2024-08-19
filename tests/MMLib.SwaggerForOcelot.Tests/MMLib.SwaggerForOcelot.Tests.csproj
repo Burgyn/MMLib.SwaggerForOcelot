@@ -13,8 +13,8 @@
     <None Remove="Resources\DifferentOcelotRoutesForOneDownstream.json" />
     <None Remove="Resources\DifferentOcelotRoutesForOneDownstreamTransformed.json" />
     <None Remove="Tests\BasicConfigurationWithSchemaInHostOverride.json" />
-    <EmbeddedResource Include="Resources\DifferentOcelotRoutesForOneDownstreamWithCatchAll.json" />
-    <EmbeddedResource Include="Resources\DifferentOcelotRoutesForOneDownstreamTransformedWithCatchAll.json" />
+    <None Remove="Resources\DifferentOcelotRoutesForOneDownstreamWithCatchAll.json" />
+    <None Remove="Resources\DifferentOcelotRoutesForOneDownstreamTransformedWithCatchAll.json" />
     <None Remove="Tests\Issue_128.json" />
     <None Remove="Tests\Issue_135.json" />
     <None Remove="Tests\Issue_149.json" />

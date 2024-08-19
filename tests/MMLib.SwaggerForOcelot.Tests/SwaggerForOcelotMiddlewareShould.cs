@@ -30,6 +30,88 @@ namespace MMLib.SwaggerForOcelot.Tests
 {
     public class SwaggerForOcelotMiddlewareShould
     {
+                [Fact]
+        public async Task TransformDifferentOcelotRoutesForOneDownstreamPathWithCatchAll()
+        {
+            // Arrange
+            const string version = "v1";
+            const string key = "test";
+            HttpContext httpContext = GetHttpContext(requestPath: $"/{version}/{key}");
+            IMemoryCache memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
+
+            var next = new TestRequestDelegate();
+
+            // What is being tested
+            var swaggerForOcelotOptions = new SwaggerForOcelotUIOptions();
+            TestSwaggerEndpointOptions swaggerEndpointOptions = CreateSwaggerEndpointOptions(key, version);
+            var routeOptions = new TestRouteOptions(new List<RouteOptions>
+            {
+                new ()
+                {
+                    SwaggerKey = "test",
+                    UpstreamPathTemplate = "/get/ocelot/config/{everything}",
+                    UpstreamHttpMethod = [ "Get" ],
+                    DownstreamPathTemplate = "/api/{everything}",
+                },
+                new()
+                {
+                    SwaggerKey = "test",
+                    UpstreamPathTemplate = "/get/ocelot/config/test/{everything}",
+                    UpstreamHttpMethod = [ "Get" ],
+                    DownstreamPathTemplate = "/api/test/{everything}",
+                }
+            });
+
+            // downstreamSwagger is returned when client.GetStringAsync is called by the middleware.
+            string downstreamSwagger = await GetBaseOpenApi("DifferentOcelotRoutesForOneDownstreamWithCatchAll");
+            HttpClient httClientMock = GetHttpClient(downstreamSwagger);
+            var httpClientFactory = new TestHttpClientFactory(httClientMock);
+
+            // upstreamSwagger is returned after swaggerJsonTransformer transforms the downstreamSwagger
+            string expectedSwagger = await GetBaseOpenApi("DifferentOcelotRoutesForOneDownstreamTransformedWithCatchAll");
+
+            var swaggerJsonTransformerMock = new Mock<ISwaggerJsonTransformer>();
+            swaggerJsonTransformerMock
+                .Setup(x => x.Transform(
+                    It.IsAny<string>(),
+                    It.IsAny<IEnumerable<RouteOptions>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<SwaggerEndPointOptions>()))
+                .Returns((
+                    string swaggerJson,
+                    IEnumerable<RouteOptions> routeOptions,
+                    string serverOverride,
+                    SwaggerEndPointOptions options) => new SwaggerJsonTransformer(OcelotSwaggerGenOptions.Default, memoryCache)
+                    .Transform(swaggerJson, routeOptions, serverOverride, options));
+            var swaggerForOcelotMiddleware = new SwaggerForOcelotMiddleware(
+                next.Invoke,
+                swaggerForOcelotOptions,
+                routeOptions,
+                swaggerJsonTransformerMock.Object,
+                Substitute.For<ISwaggerProvider>());
+
+            // Act
+            await swaggerForOcelotMiddleware.Invoke(
+                httpContext,
+                new SwaggerEndPointProvider(swaggerEndpointOptions, OcelotSwaggerGenOptions.Default),
+                new DownstreamSwaggerDocsRepository(Options.Create(swaggerForOcelotOptions),
+                    httpClientFactory, DummySwaggerServiceDiscoveryProvider.Default));
+            httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
+
+            // Assert
+            using (var streamReader = new StreamReader(httpContext.Response.Body))
+            {
+                string transformedUpstreamSwagger = await streamReader.ReadToEndAsync();
+                AreEqual(transformedUpstreamSwagger, expectedSwagger);
+            }
+
+            swaggerJsonTransformerMock.Verify(x => x.Transform(
+                It.IsAny<string>(),
+                It.IsAny<IEnumerable<RouteOptions>>(),
+                It.IsAny<string>(),
+                It.IsAny<SwaggerEndPointOptions>()), Times.Once);
+        }
+
         [Fact]
         public async Task TransformDifferentOcelotRoutesForOneDownstreamPath()
         {

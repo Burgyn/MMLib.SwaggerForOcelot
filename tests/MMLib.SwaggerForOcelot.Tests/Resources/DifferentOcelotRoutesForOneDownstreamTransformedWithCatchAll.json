@@ -1,0 +1,30 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "WebApplication1",
+      "version": "1.0"
+    },
+    "paths": {
+      "/get/ocelot/config/test": {
+        "get": {
+          "tags": [
+            "WebApplication1"
+          ],
+          "operationId": "testGet",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {}
+  }

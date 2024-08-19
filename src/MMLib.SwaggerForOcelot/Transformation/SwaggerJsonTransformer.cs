@@ -285,7 +285,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
                 .Where(route => route.ContainsHttpMethod(method) && MatchPaths(route, downstreamPathWithBasePath))
                 .ToList();
 
-            RemoveRedundantRoutes(matchedRoutes);
+            RemoveRedundantRoutes(matchedRoutes, downstreamPath, basePath);
             return matchedRoutes;
         }
 
@@ -299,10 +299,12 @@ namespace MMLib.SwaggerForOcelot.Transformation
         // routes have the same upstream path `/api/projects/Projects`. The logic is to keep just the shortestof the path
         // templates. If we would keep all routes, it will throw an exception during the generation of the swagger document
         // later because of the same paths.
-        private static void RemoveRedundantRoutes(List<RouteOptions> routes)
+        // Replaced `route.UpstreamPath` wiht ConvertDownstreamPathToUpstreamPath as thats's what's being actually checked against
+        private static void RemoveRedundantRoutes(List<RouteOptions> routes, string downstreamPath, string basePath)
         {
             IEnumerable<IGrouping<string, RouteOptions>> groups = routes
-                .GroupBy(route => route.UpstreamPath, StringComparer.OrdinalIgnoreCase)
+                .GroupBy(route => ConvertDownstreamPathToUpstreamPath(
+                    downstreamPath, route.DownstreamPath, route.UpstreamPath, basePath), StringComparer.OrdinalIgnoreCase)
                 .Where(group => group.Count() > 1);
             foreach (var group in groups)
             {
@@ -310,6 +312,8 @@ namespace MMLib.SwaggerForOcelot.Transformation
                     .Skip(1)
                     .ForEach(r => routes.Remove(r));
             }
+
+
         }
 
         private static void AddHost(JObject swagger, string swaggerHost)

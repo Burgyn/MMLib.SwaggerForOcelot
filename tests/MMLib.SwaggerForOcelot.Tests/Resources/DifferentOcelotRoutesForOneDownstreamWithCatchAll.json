@@ -1,0 +1,48 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "WebApplication1",
+      "version": "1.0"
+    },
+    "paths": {
+      "/api/test": {
+        "get": {
+          "tags": [
+            "WebApplication1"
+          ],
+          "operationId": "testGet",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": [
+            "WebApplication1"
+          ],
+          "operationId": "testPost",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {}
+  }

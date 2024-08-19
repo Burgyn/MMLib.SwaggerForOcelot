@@ -312,8 +312,6 @@ namespace MMLib.SwaggerForOcelot.Transformation
                     .Skip(1)
                     .ForEach(r => routes.Remove(r));
             }
-
-
         }
 
         private static void AddHost(JObject swagger, string swaggerHost)

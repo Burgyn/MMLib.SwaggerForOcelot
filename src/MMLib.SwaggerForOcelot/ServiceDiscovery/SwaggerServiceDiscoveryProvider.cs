@@ -108,6 +108,9 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
 
             var builder = new UriBuilder(GetScheme(service, route), service.DownstreamHost, service.DownstreamPort);
             if (builder.Scheme.IsNullOrEmpty())
+            {
+                builder.Scheme = conf?.Scheme ?? "http";
+            }
                 builder.Scheme = conf?.Scheme ?? "http";
 
             if (endPoint.Service.Path.IsNullOrEmpty())

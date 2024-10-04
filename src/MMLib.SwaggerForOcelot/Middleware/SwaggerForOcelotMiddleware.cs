@@ -69,7 +69,8 @@ namespace MMLib.SwaggerForOcelot.Middleware
             ISwaggerEndPointProvider swaggerEndPointRepository,
             IDownstreamSwaggerDocsRepository downstreamSwaggerDocs)
         {
-            (string version, SwaggerEndPointOptions endPoint) = GetEndPoint(context.Request.Path, swaggerEndPointRepository);
+            (string version, SwaggerEndPointOptions endPoint) =
+                GetEndPoint(context.Request.Path, swaggerEndPointRepository);
 
             if (_downstreamInterceptor is not null &&
                 !_downstreamInterceptor.DoDownstreamSwaggerEndpoint(context, version, endPoint))
@@ -92,7 +93,8 @@ namespace MMLib.SwaggerForOcelot.Middleware
             RouteOptions route = routeOptions.FirstOrDefault(r => r.SwaggerKey == endPoint.Key);
 
             string content = await downstreamSwaggerDocs.GetSwaggerJsonAsync(route, endPoint, version);
-            if (SwaggerServiceDiscoveryProvider.ServiceProviderType != "Consul")
+            if (SwaggerServiceDiscoveryProvider.ServiceProviderType != "Consul" &&
+                SwaggerServiceDiscoveryProvider.ServiceProviderType != "PollConsul")
             {
                 if (endPoint.TransformByOcelotConfig)
                 {
@@ -125,7 +127,7 @@ namespace MMLib.SwaggerForOcelot.Middleware
             if (string.IsNullOrWhiteSpace(_options.ServerOcelot))
             {
                 serverName = endPoint.HostOverride
-                    ?? $"{context.Request.Scheme}://{context.Request.Host.Value.RemoveSlashFromEnd()}";
+                             ?? $"{context.Request.Scheme}://{context.Request.Host.Value.RemoveSlashFromEnd()}";
             }
             else
             {
@@ -137,7 +139,8 @@ namespace MMLib.SwaggerForOcelot.Middleware
 
         private async Task<string> ReconfigureUpstreamSwagger(HttpContext context, string swaggerJson)
         {
-            if (_options.ReConfigureUpstreamSwaggerJson is not null && _options.ReConfigureUpstreamSwaggerJsonAsync is not null)
+            if (_options.ReConfigureUpstreamSwaggerJson is not null &&
+                _options.ReConfigureUpstreamSwaggerJsonAsync is not null)
             {
                 throw new Exception(
                     "Both ReConfigureUpstreamSwaggerJson and ReConfigureUpstreamSwaggerJsonAsync cannot have a value. Only use one method.");

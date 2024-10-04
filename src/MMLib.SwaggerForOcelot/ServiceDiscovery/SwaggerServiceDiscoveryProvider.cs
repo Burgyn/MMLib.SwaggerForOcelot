@@ -107,6 +107,9 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
             }
 
             var builder = new UriBuilder(GetScheme(service, route), service.DownstreamHost, service.DownstreamPort);
+            if (builder.Scheme.IsNullOrEmpty())
+                builder.Scheme = conf?.Scheme ?? "http";
+
             if (endPoint.Service.Path.IsNullOrEmpty())
             {
                 string version = endPoint.Version.IsNullOrEmpty() ? "v1" : endPoint.Version;
@@ -122,19 +125,20 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
 
         private string GetScheme(ServiceHostAndPort service, RouteOptions route)
             => (route is not null && !route.DownstreamScheme.IsNullOrEmpty())
-            ? route.DownstreamScheme
-            : !service.Scheme.IsNullOrEmpty()
-            ? service.Scheme
-            : service.DownstreamPort
-            switch
-            {
-                443 => Uri.UriSchemeHttps,
-                80 => Uri.UriSchemeHttp,
-                _ => string.Empty,
-            };
+                ? route.DownstreamScheme
+                : !service.Scheme.IsNullOrEmpty()
+                    ? service.Scheme
+                    : service.DownstreamPort
+                        switch
+                        {
+                            443 => Uri.UriSchemeHttps,
+                            80 => Uri.UriSchemeHttp,
+                            _ => string.Empty,
+                        };
 
         public static string? ServiceProviderType { get; set; }
 
-        private static string GetErrorMessage(SwaggerEndPointConfig endPoint) => $"Service with swagger documentation '{endPoint.Service.Name}' cann't be discovered";
+        private static string GetErrorMessage(SwaggerEndPointConfig endPoint) =>
+            $"Service with swagger documentation '{endPoint.Service.Name}' cann't be discovered";
     }
 }

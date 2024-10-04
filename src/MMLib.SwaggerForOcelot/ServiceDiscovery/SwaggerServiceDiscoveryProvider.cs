@@ -134,7 +134,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
                         {
                             443 => Uri.UriSchemeHttps,
                             80 => Uri.UriSchemeHttp,
-                            _ => conf?.Scheme ?? "http",
+                            _ => conf?.Scheme ?? "http"
                         };
 
         public static string? ServiceProviderType { get; set; }

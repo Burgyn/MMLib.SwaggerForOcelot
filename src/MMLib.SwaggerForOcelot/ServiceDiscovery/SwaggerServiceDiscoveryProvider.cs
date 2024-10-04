@@ -111,7 +111,6 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
             {
                 builder.Scheme = conf?.Scheme ?? "http";
             }
-                builder.Scheme = conf?.Scheme ?? "http";
 
             if (endPoint.Service.Path.IsNullOrEmpty())
             {

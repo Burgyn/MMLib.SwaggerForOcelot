@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
+using Ocelot.Configuration;
 using Ocelot.Configuration.Builder;
 using Ocelot.Configuration.Creator;
 using Ocelot.Configuration.File;
@@ -13,6 +14,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using RouteOptions = MMLib.SwaggerForOcelot.Configuration.RouteOptions;
 
 namespace MMLib.SwaggerForOcelot.ServiceDiscovery
 {
@@ -106,12 +108,8 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
                 throw new InvalidOperationException(GetErrorMessage(endPoint));
             }
 
-            var builder = new UriBuilder(GetScheme(service, route), service.DownstreamHost, service.DownstreamPort);
-            if (builder.Scheme.IsNullOrEmpty())
-            {
-                builder.Scheme = conf?.Scheme ?? "http";
-            }
-                builder.Scheme = conf?.Scheme ?? "http";
+            var builder = new UriBuilder(GetScheme(service, route, conf), service.DownstreamHost,
+                service.DownstreamPort);
 
             if (endPoint.Service.Path.IsNullOrEmpty())
             {
@@ -126,7 +124,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
             return builder.Uri;
         }
 
-        private string GetScheme(ServiceHostAndPort service, RouteOptions route)
+        private string GetScheme(ServiceHostAndPort service, RouteOptions route, ServiceProviderConfiguration conf)
             => (route is not null && !route.DownstreamScheme.IsNullOrEmpty())
                 ? route.DownstreamScheme
                 : !service.Scheme.IsNullOrEmpty()
@@ -136,7 +134,7 @@ namespace MMLib.SwaggerForOcelot.ServiceDiscovery
                         {
                             443 => Uri.UriSchemeHttps,
                             80 => Uri.UriSchemeHttp,
-                            _ => string.Empty,
+                            _ => conf?.Scheme ?? "http",
                         };
 
         public static string? ServiceProviderType { get; set; }

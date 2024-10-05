@@ -101,6 +101,10 @@ namespace MMLib.SwaggerForOcelot.Middleware
                     content = _transformer.Transform(content, routeOptions, GetServerName(context, endPoint), endPoint);
                 }
             }
+            else
+            {
+                content = _transformer.AddServiceNamePrefixToPaths(content, endPoint, version);
+            }
 
             content = await ReconfigureUpstreamSwagger(context, content);
 

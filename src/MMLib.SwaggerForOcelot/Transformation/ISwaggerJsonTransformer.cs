@@ -22,5 +22,18 @@ namespace MMLib.SwaggerForOcelot.Transformation
             IEnumerable<RouteOptions> routes,
             string serverOverride,
             SwaggerEndPointOptions endPointOptions);
+
+        /// <summary>
+        /// Modifies the paths in a given Swagger JSON by adding a specified service name as a prefix to each path.
+        /// If the "paths" section is missing or null, the method returns the original Swagger JSON without modifications.
+        /// </summary>
+        /// <param name="swaggerJson">The original Swagger JSON as a string.</param>
+        /// <param name="serviceName">The service name to be prefixed to each path in the Swagger JSON.</param>
+        /// <param name="version"></param>
+        /// <returns>
+        /// A modified Swagger JSON string where each path in the "paths" section is prefixed with the provided service name.
+        /// If the "paths" section does not exist or is null, the original Swagger JSON is returned.
+        /// </returns>
+        string AddServiceNamePrefixToPaths(string swaggerJson, SwaggerEndPointOptions serviceName, string version);
     }
 }

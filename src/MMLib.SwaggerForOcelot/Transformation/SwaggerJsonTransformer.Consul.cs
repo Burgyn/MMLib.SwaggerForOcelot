@@ -1,40 +1,62 @@
 using MMLib.SwaggerForOcelot.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 
 namespace MMLib.SwaggerForOcelot.Transformation;
 
+/// <summary>
+///
+/// </summary>
 public partial class SwaggerJsonTransformer
 {
+    /// <summary>
+    /// Modifies the paths in a given Swagger JSON by adding a specified service name as a prefix to each path.
+    /// If the "paths" section is missing or null, the method returns the original Swagger JSON without modifications.
+    /// </summary>
+    /// <param name="swaggerJson">The original Swagger JSON as a string.</param>
+    /// <param name="serviceName">The service name to be prefixed to each path in the Swagger JSON.</param>
+    /// <param name="version"></param>
+    /// <returns>
+    /// A modified Swagger JSON string where each path in the "paths" section is prefixed with the provided service name.
+    /// If the "paths" section does not exist or is null, the original Swagger JSON is returned.
+    /// </returns>
     public string AddServiceNamePrefixToPaths(string swaggerJson, SwaggerEndPointOptions endPoint, string version)
     {
-        SwaggerEndPointConfig config =
-            string.IsNullOrEmpty(version)
-                ? endPoint.Config.FirstOrDefault()
-                : endPoint.Config.FirstOrDefault(x => x.Version == version);
+        var config = string.IsNullOrEmpty(version)
+            ? endPoint.Config.FirstOrDefault()
+            : endPoint.Config.FirstOrDefault(x => x.Version == version);
 
         var serviceName = config?.Service?.Name;
         if (string.IsNullOrEmpty(serviceName))
             return swaggerJson;
 
-        var swaggerDoc = JsonSerializer.Deserialize<Dictionary<string, object>>(swaggerJson);
+        var swaggerObj = JObject.Parse(swaggerJson);
+        if (!swaggerObj.TryGetValue(OpenApiProperties.Paths, out var swaggerPaths))
+            return swaggerJson;
 
-        if (swaggerDoc != null && swaggerDoc.ContainsKey("paths"))
-        {
-            var paths = JsonSerializer.Deserialize<Dictionary<string, object>>(swaggerDoc["paths"].ToString());
-            var modifiedPaths = new Dictionary<string, object>();
+        if (swaggerPaths is not JObject pathsObj)
+            return swaggerJson;
 
-            foreach (var path in paths)
-            {
-                var newPath = $"/{serviceName}{path.Key}";
-                modifiedPaths[newPath] = path.Value;
-            }
+        var properties = pathsObj.Properties().ToList();
+        properties.ForEach(f => SetToPathServiceName(f, pathsObj, serviceName));
 
-            swaggerDoc["paths"] = modifiedPaths;
-            return JsonSerializer.Serialize(swaggerDoc, new JsonSerializerOptions { WriteIndented = true });
-        }
+        return swaggerObj.ToString();
+    }
 
-        return swaggerJson;
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="jProperty"></param>
+    /// <param name="pathsObj"></param>
+    /// <param name="serviceName"></param>
+    private void SetToPathServiceName(JProperty jProperty, JObject pathsObj, string serviceName)
+    {
+        jProperty.Remove();
+
+        var path = $"/{serviceName}{jProperty.Name}";
+        pathsObj.Add(path, jProperty.Value);
     }
 }

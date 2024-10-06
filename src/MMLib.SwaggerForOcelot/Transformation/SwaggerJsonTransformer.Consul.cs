@@ -1,4 +1,5 @@
 using MMLib.SwaggerForOcelot.Configuration;
+using MMLib.SwaggerForOcelot.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -33,7 +34,9 @@ public partial class SwaggerJsonTransformer
         if (string.IsNullOrEmpty(serviceName))
             return swaggerJson;
 
-        var swaggerObj = JObject.Parse(swaggerJson);
+        if (!swaggerJson.TryParse(out var swaggerObj))
+            return swaggerJson;
+
         if (!swaggerObj.TryGetValue(OpenApiProperties.Paths, out var swaggerPaths))
             return swaggerJson;
 

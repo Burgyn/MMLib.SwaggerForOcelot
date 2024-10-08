@@ -1,6 +1,7 @@
 ﻿using Kros.Utils;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
+using MMLib.SwaggerForOcelot.ServiceDiscovery.ConsulServiceDiscoveries;
 using System;
 using System.Collections.Generic;
 using System.Linq;

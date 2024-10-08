@@ -104,7 +104,6 @@ namespace MMLib.SwaggerForOcelot.Middleware
             else
             {
                 content = _transformer.AddServiceNamePrefixToPaths(content, endPoint, version);
-
             }
 
             content = await ReconfigureUpstreamSwagger(context, content);

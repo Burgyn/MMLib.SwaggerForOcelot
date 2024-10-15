@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.PlatformAbstractions;
+using MMLib.ServiceDiscovery.Consul.DependencyInjection;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO;
 using System.Reflection;
@@ -67,6 +67,7 @@ namespace OrderService
                     // integrate xml comments
                     options.IncludeXmlComments(XmlCommentsFilePath);
                 });
+
         }
 
         /// <summary>
@@ -79,15 +80,34 @@ namespace OrderService
             app.UseRouting();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             app.UseSwagger();
-            _ = app.UseSwaggerUI(
-                options =>
+            // _ = app.UseSwaggerUI(
+            //     options =>
+            //     {
+            //         // build a swagger endpoint for each discovered API version
+            //         foreach (ApiVersionDescription description in provider.ApiVersionDescriptions)
+            //         {
+            //             options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+            //         }
+            //     });
+            app.UseSwaggerUI(c =>
+            {
+                c.RoutePrefix = "swagger";
+                foreach (var description in provider.ApiVersionDescriptions)
                 {
-                    // build a swagger endpoint for each discovered API version
-                    foreach (ApiVersionDescription description in provider.ApiVersionDescriptions)
-                    {
-                        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
-                    }
+                    c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", $"Version {description.GroupName}");
+                }
+            });
+
+            // Separate endpoints that contain only one version
+            foreach (var description in provider.ApiVersionDescriptions)
+            {
+                app.UseSwaggerUI(c =>
+                {
+                    c.RoutePrefix = $"swagger/{description.GroupName}";
+                    c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", $"Version {description.GroupName}");
                 });
+            }
+
         }
 
         static string XmlCommentsFilePath

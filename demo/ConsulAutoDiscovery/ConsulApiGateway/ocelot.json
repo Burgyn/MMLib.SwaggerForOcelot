@@ -1,0 +1,14 @@
+{
+  "Routes": [],
+  "SwaggerEndPoints": [],
+  "GlobalConfiguration": {
+    "ServiceDiscoveryProvider": {
+      "Scheme": "http",
+      "Host": "localhost",
+      "Port": 8500,
+      "Type": "PollConsul",
+      "PollingInterval": 100
+    }
+  }
+}
+

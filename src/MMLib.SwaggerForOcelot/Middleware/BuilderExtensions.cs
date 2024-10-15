@@ -29,7 +29,8 @@ namespace Microsoft.AspNetCore.Builder
             Action<SwaggerForOcelotUIOptions> setupAction = null,
             Action<SwaggerUIOptions> setupUiAction = null)
         {
-            SwaggerForOcelotUIOptions options = app.ApplicationServices.GetService<IOptions<SwaggerForOcelotUIOptions>>().Value;
+            SwaggerForOcelotUIOptions options =
+                app.ApplicationServices.GetService<IOptions<SwaggerForOcelotUIOptions>>().Value;
             setupAction?.Invoke(options);
             UseSwaggerForOcelot(app, options);
 
@@ -46,10 +47,12 @@ namespace Microsoft.AspNetCore.Builder
             return app;
         }
 
-        private static void ChangeDetection(IApplicationBuilder app, SwaggerUIOptions c, SwaggerForOcelotUIOptions options)
+        private static void ChangeDetection(IApplicationBuilder app, SwaggerUIOptions c,
+            SwaggerForOcelotUIOptions options)
         {
             IOptionsMonitor<List<SwaggerEndPointOptions>> endpointsChangeMonitor =
                 app.ApplicationServices.GetService<IOptionsMonitor<List<SwaggerEndPointOptions>>>();
+
             endpointsChangeMonitor.OnChange((newEndpoints) =>
             {
                 c.ConfigObject.Urls = null;
@@ -73,7 +76,8 @@ namespace Microsoft.AspNetCore.Builder
             => app.UseSwaggerForOcelotUI(setupAction);
 
         private static void UseSwaggerForOcelot(IApplicationBuilder app, SwaggerForOcelotUIOptions options)
-            => app.Map(options.PathToSwaggerGenerator, builder => builder.UseMiddleware<SwaggerForOcelotMiddleware>(options));
+            => app.Map(options.PathToSwaggerGenerator,
+                builder => builder.UseMiddleware<SwaggerForOcelotMiddleware>(options));
 
         private static void AddSwaggerEndPoints(
             SwaggerUIOptions c,
@@ -83,11 +87,11 @@ namespace Microsoft.AspNetCore.Builder
             static string GetDescription(SwaggerEndPointConfig config)
                 => config.IsGatewayItSelf ? config.Name : $"{config.Name} - {config.Version}";
 
-            if (endPoints is null || endPoints.Count == 0)
-            {
-                throw new InvalidOperationException(
-                    $"{SwaggerEndPointOptions.ConfigurationSectionName} configuration section is missing or empty.");
-            }
+            // if (endPoints is null || endPoints.Count == 0)
+            // {
+            //     throw new InvalidOperationException(
+            //         $"{SwaggerEndPointOptions.ConfigurationSectionName} configuration section is missing or empty.");
+            // }
 
             foreach (SwaggerEndPointOptions endPoint in endPoints)
             {

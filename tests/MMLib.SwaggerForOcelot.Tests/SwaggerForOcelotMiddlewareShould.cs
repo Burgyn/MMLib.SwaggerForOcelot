@@ -494,6 +494,10 @@ namespace MMLib.SwaggerForOcelot.Tests
             {
                 return _transformedJson;
             }
+
+            public string AddServiceNamePrefixToPaths(string swaggerJson,
+                SwaggerEndPointOptions serviceName,
+                string version) => _transformedJson;
         }
     }
 }

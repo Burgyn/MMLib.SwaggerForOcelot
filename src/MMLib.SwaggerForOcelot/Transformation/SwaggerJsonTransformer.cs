@@ -15,7 +15,7 @@ namespace MMLib.SwaggerForOcelot.Transformation
     /// Class which implement transformation downstream service swagger json into upstream format
     /// </summary>
     /// <seealso cref="ISwaggerJsonTransformer" />
-    public class SwaggerJsonTransformer : ISwaggerJsonTransformer
+    public partial class SwaggerJsonTransformer : ISwaggerJsonTransformer
     {
         private readonly OcelotSwaggerGenOptions _ocelotSwaggerGenOptions;
         private readonly IMemoryCache _memoryCache;

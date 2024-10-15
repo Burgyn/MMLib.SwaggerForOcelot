@@ -13,5 +13,9 @@
   <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
  </ItemGroup>
 
+ <ItemGroup>
+   <ProjectReference Include="..\..\src\MMLib.ServiceDiscovery.Consul\MMLib.ServiceDiscovery.Consul.csproj" />
+ </ItemGroup>
+
 
 </Project>

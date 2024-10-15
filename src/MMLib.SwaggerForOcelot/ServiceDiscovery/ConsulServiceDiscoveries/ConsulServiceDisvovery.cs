@@ -1,9 +1,6 @@
 using Consul;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Configuration;
-using Ocelot.Configuration.Creator;
-using Ocelot.Configuration.File;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,40 +8,70 @@ using System.Threading.Tasks;
 
 namespace MMLib.SwaggerForOcelot.ServiceDiscovery.ConsulServiceDiscoveries;
 
+/// <summary>
+///
+/// </summary>
 public class ConsulServiceDisvovery : IConsulServiceDiscovery
 {
+    /// <summary>
+    ///
+    /// </summary>
     private readonly IConsulClient _consulClient;
 
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="serviceProvider"></param>
     public ConsulServiceDisvovery(IServiceProvider serviceProvider)
     {
         _consulClient = serviceProvider.GetRequiredService<IConsulClient>();
     }
 
-    public async Task<List<SwaggerEndPointOptions>> GetServicesAsync()
+    /// <summary>
+    ///
+    /// </summary>
+    /// <returns></returns>
+    public Task<List<SwaggerEndPointOptions>> GetServicesAsync()
+    {
+        return GetConsulServices();
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
+    public async Task<SwaggerEndPointOptions> GetByKeyAsync(string key)
+    {
+        var services = await GetConsulServices();
+        return services.FirstOrDefault(f => f.Key == key);
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    private async Task<List<SwaggerEndPointOptions>> GetConsulServices()
     {
         var services = await _consulClient.Agent.Services();
-        var serviceNames = new List<SwaggerEndPointOptions>();
 
-        serviceNames = services.Response.Select(service => new SwaggerEndPointOptions
-        {
-            Key = service.Key,
-            TransformByOcelotConfig = false,
-            Config = new List<SwaggerEndPointConfig>
+        var endpoints = services.Response
+            .Select(service => new SwaggerEndPointOptions
             {
-                new()
-                {
-                    Name = $"{service.Value.Service} API",
-                    Version = "v1", //Need to make general logic
-                    Service = new SwaggerService
+                Key = service.Key,
+                TransformByOcelotConfig = false,
+                Config = service.Value.Meta
+                    .Where(w => w.Key.StartsWith("swagger"))
+                    .Select(swagger => new SwaggerEndPointConfig
                     {
-                        Name = service.Value.Service,
-                        Path = $"/swagger/v1/swagger.json" //set version
-                    }
-                }
-            }
-        }).ToList();
+                        Name = $"{service.Value.Service} API",
+                        Version = swagger.Value,
+                        Service = new SwaggerService
+                        {
+                            Name = service.Value.Service, Path = $"swagger/{swagger.Value}/swagger.json"
+                        }
+                    }).ToList()
+            }).ToList();
 
-
-        return serviceNames;
+        return endpoints;
     }
 }

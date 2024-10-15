@@ -54,10 +54,16 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Configure<List<RouteOptions>>(configuration.GetSection("Routes"))
                 .Configure<List<SwaggerEndPointOptions>>(
                     configuration.GetSection(SwaggerEndPointOptions.ConfigurationSectionName))
-                .AddDynamicConsulConfigs()
+                .AddTransient<ISwaggerEndPointProvider, SwaggerEndPointProvider>()
                 .AddHttpClient()
-                .AddMemoryCache()
-                .AddTransient<ISwaggerEndPointProvider, SwaggerEndPointProvider>();
+                .AddMemoryCache();
+
+            var conf = GetConfig(services);
+            if (conf?.Type is ("Consul" or "PollConsul"))
+            {
+                services.AddConsulClient(conf);
+                services.AddTransient<ISwaggerEndPointProvider, ConsulSwaggerEndpointProvider>();
+            }
 
             services.AddHttpClient(IgnoreSslCertificate, c =>
             {
@@ -91,29 +97,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 AddAggregatesDocs(c, options);
                 AddGatewayItSelfDocs(c, options);
-            });
-
-            return services;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="services"></param>
-        public static IServiceCollection AddDynamicConsulConfigs(this IServiceCollection services)
-        {
-            var conf = GetConfig(services);
-            if (conf?.Type is not ("Consul" or "PollConsul"))
-                return services;
-
-            services.AddConsulClient(conf);
-
-            var service = services.BuildServiceProvider().GetRequiredService<IConsulServiceDiscovery>();
-            var consulServices = service.GetServicesAsync().GetAwaiter().GetResult();
-
-            services.Configure<List<SwaggerEndPointOptions>>(options =>
-            {
-                consulServices.ForEach(f => InitOptions(f, options));
             });
 
             return services;

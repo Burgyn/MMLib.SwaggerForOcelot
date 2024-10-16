@@ -54,24 +54,61 @@ public class ConsulServiceDisvovery : IConsulServiceDiscovery
     {
         var services = await _consulClient.Agent.Services();
 
-        var endpoints = services.Response
-            .Select(service => new SwaggerEndPointOptions
-            {
-                Key = service.Key,
-                TransformByOcelotConfig = false,
-                Config = service.Value.Meta
-                    .Where(w => w.Key.StartsWith("swagger"))
-                    .Select(swagger => new SwaggerEndPointConfig
-                    {
-                        Name = $"{service.Value.Service} API",
-                        Version = swagger.Value,
-                        Service = new SwaggerService
-                        {
-                            Name = service.Value.Service, Path = $"swagger/{swagger.Value}/swagger.json"
-                        }
-                    }).ToList()
-            }).ToList();
+        return services.Response
+            .Select(s => ConvertToOption(s.Key, s.Value))
+            .ToList();
+    }
 
-        return endpoints;
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="service"></param>
+    /// <returns></returns>
+    private SwaggerEndPointOptions ConvertToOption(string key, AgentService service)
+    {
+        var option = new SwaggerEndPointOptions();
+        option.Key = key;
+        option.TransformByOcelotConfig = false;
+        option.Config = service.Meta
+            .Where(w => w.Key.StartsWith("swagger"))
+            .Select(swagger => ConvertToConfig(swagger, service))
+            .ToList();
+
+        if (option.Config.Count == 0)
+            option.Config.Add(DefaultConfig(service));
+
+        return option;
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="swagger"></param>
+    /// <param name="service"></param>
+    /// <returns></returns>
+    private SwaggerEndPointConfig ConvertToConfig(KeyValuePair<string, string> swagger, AgentService service)
+    {
+        var config = new SwaggerEndPointConfig();
+        config.Name = $"{service.Service} API";
+        config.Version = swagger.Value;
+        config.Service = new SwaggerService { Name = service.Service, Path = $"swagger/{swagger.Value}/swagger.json" };
+
+        return config;
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="service"></param>
+    /// <returns></returns>
+    private SwaggerEndPointConfig DefaultConfig(AgentService service)
+    {
+        var config = new SwaggerEndPointConfig();
+        config.Name = $"{service.Service} API";
+        config.Version = "v1";
+        config.Service = new SwaggerService { Name = service.Service, Path = $"swagger/{config.Version}/swagger.json" };
+
+        return config;
     }
 }

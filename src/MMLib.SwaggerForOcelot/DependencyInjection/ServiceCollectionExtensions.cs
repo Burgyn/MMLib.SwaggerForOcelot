@@ -12,6 +12,7 @@ using MMLib.SwaggerForOcelot.Repositories;
 using MMLib.SwaggerForOcelot.Aggregates;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using MMLib.SwaggerForOcelot.Repositories.EndPointValidators;
 using MMLib.SwaggerForOcelot.ServiceDiscovery.ConsulServiceDiscoveries;
 using Ocelot.Configuration;
 using Ocelot.Configuration.Creator;
@@ -47,6 +48,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services
                 .AddSingleton<IConsulServiceDiscovery, ConsulServiceDisvovery>()
+                .AddSingleton<ISwaggerEndpointsMonitor, SwaggerEndpointsMonitor>()
+                .AddSingleton<IEndPointValidator, EndPointValidator>()
                 .AddTransient<IRoutesDocumentationProvider, RoutesDocumentationProvider>()
                 .AddTransient<IDownstreamSwaggerDocsRepository, DownstreamSwaggerDocsRepository>()
                 .AddTransient<ISwaggerServiceDiscoveryProvider, SwaggerServiceDiscoveryProvider>()
@@ -62,7 +65,11 @@ namespace Microsoft.Extensions.DependencyInjection
             if (conf?.Type is ("Consul" or "PollConsul"))
             {
                 services.AddConsulClient(conf);
+
+                services.AddSingleton<IConsulEndpointOptionsMonitor, ConsulEndpointOptionsMonitor>();
+                services.AddSingleton<ISwaggerEndpointsMonitor, ConsulSwaggerEndpointsMonitor>();
                 services.AddTransient<ISwaggerEndPointProvider, ConsulSwaggerEndpointProvider>();
+                services.AddSingleton<IEndPointValidator, ConsulEndPointValidator>();
             }
 
             services.AddHttpClient(IgnoreSslCertificate, c =>

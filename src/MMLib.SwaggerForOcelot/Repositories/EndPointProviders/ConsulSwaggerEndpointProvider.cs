@@ -14,7 +14,7 @@ public class ConsulSwaggerEndpointProvider : ISwaggerEndPointProvider
     /// <summary>
     ///
     /// </summary>
-    public IConsulServiceDiscovery _service { get; set; }
+    private IConsulServiceDiscovery _service;
 
     /// <summary>
     ///

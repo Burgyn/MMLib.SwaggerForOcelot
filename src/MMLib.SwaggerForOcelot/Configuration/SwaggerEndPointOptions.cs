@@ -28,10 +28,11 @@ namespace MMLib.SwaggerForOcelot.Configuration
         /// Gets the path from key.
         /// </summary>
         public string KeyToPath => WebUtility.UrlEncode(Key);
+
         /// <summary>
         /// The swagger endpoint config collection
         /// </summary>
-        public List<SwaggerEndPointConfig> Config { get; set; }
+        public List<SwaggerEndPointConfig> Config { get; set; } = new();
 
         /// <summary>
         /// This host url is use used to overwrite the host of the upstream service.

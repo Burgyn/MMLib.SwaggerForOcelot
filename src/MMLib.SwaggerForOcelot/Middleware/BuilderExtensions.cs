@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MMLib.SwaggerForOcelot.Repositories;
+using MMLib.SwaggerForOcelot.Repositories.EndPointValidators;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -29,7 +30,8 @@ namespace Microsoft.AspNetCore.Builder
             Action<SwaggerForOcelotUIOptions> setupAction = null,
             Action<SwaggerUIOptions> setupUiAction = null)
         {
-            SwaggerForOcelotUIOptions options = app.ApplicationServices.GetService<IOptions<SwaggerForOcelotUIOptions>>().Value;
+            SwaggerForOcelotUIOptions options =
+                app.ApplicationServices.GetService<IOptions<SwaggerForOcelotUIOptions>>().Value;
             setupAction?.Invoke(options);
             UseSwaggerForOcelot(app, options);
 
@@ -40,21 +42,23 @@ namespace Microsoft.AspNetCore.Builder
                     .ApplicationServices.GetService<ISwaggerEndPointProvider>().GetAll();
 
                 ChangeDetection(app, c, options);
-                AddSwaggerEndPoints(c, endPoints, options.DownstreamSwaggerEndPointBasePath);
+                AddSwaggerEndPoints(app, c, endPoints, options.DownstreamSwaggerEndPointBasePath);
             });
 
             return app;
         }
 
-        private static void ChangeDetection(IApplicationBuilder app, SwaggerUIOptions c, SwaggerForOcelotUIOptions options)
+        private static void ChangeDetection(IApplicationBuilder app, SwaggerUIOptions c,
+            SwaggerForOcelotUIOptions options)
         {
-            IOptionsMonitor<List<SwaggerEndPointOptions>> endpointsChangeMonitor =
-                app.ApplicationServices.GetService<IOptionsMonitor<List<SwaggerEndPointOptions>>>();
-            endpointsChangeMonitor.OnChange((newEndpoints) =>
+            var endpointsChangeMonitor =
+                app.ApplicationServices.GetService<ISwaggerEndpointsMonitor>();
+
+            endpointsChangeMonitor.OptionsChanged += (s, newEndpoints) =>
             {
                 c.ConfigObject.Urls = null;
-                AddSwaggerEndPoints(c, newEndpoints, options.DownstreamSwaggerEndPointBasePath);
-            });
+                AddSwaggerEndPoints(app, c, newEndpoints, options.DownstreamSwaggerEndPointBasePath);
+            };
         }
 
         /// <inheritdoc cref="UseSwaggerForOcelotUI(IApplicationBuilder,Action{SwaggerForOcelotUIOptions})"/>
@@ -73,27 +77,26 @@ namespace Microsoft.AspNetCore.Builder
             => app.UseSwaggerForOcelotUI(setupAction);
 
         private static void UseSwaggerForOcelot(IApplicationBuilder app, SwaggerForOcelotUIOptions options)
-            => app.Map(options.PathToSwaggerGenerator, builder => builder.UseMiddleware<SwaggerForOcelotMiddleware>(options));
+            => app.Map(options.PathToSwaggerGenerator,
+                builder => builder.UseMiddleware<SwaggerForOcelotMiddleware>(options));
 
-        private static void AddSwaggerEndPoints(
-            SwaggerUIOptions c,
+        private static void AddSwaggerEndPoints(IApplicationBuilder app,
+            SwaggerUIOptions swaggerOptions,
             IReadOnlyList<SwaggerEndPointOptions> endPoints,
             string basePath)
         {
             static string GetDescription(SwaggerEndPointConfig config)
                 => config.IsGatewayItSelf ? config.Name : $"{config.Name} - {config.Version}";
 
-            if (endPoints is null || endPoints.Count == 0)
-            {
-                throw new InvalidOperationException(
-                    $"{SwaggerEndPointOptions.ConfigurationSectionName} configuration section is missing or empty.");
-            }
+            var validator = app.ApplicationServices.GetRequiredService<IEndPointValidator>();
+            validator.Validate(endPoints);
 
             foreach (SwaggerEndPointOptions endPoint in endPoints)
             {
                 foreach (SwaggerEndPointConfig config in endPoint.Config)
                 {
-                    c.SwaggerEndpoint($"{basePath}/{config.Version}/{endPoint.KeyToPath}", GetDescription(config));
+                    swaggerOptions.SwaggerEndpoint($"{basePath}/{config.Version}/{endPoint.KeyToPath}",
+                        GetDescription(config));
                 }
             }
         }

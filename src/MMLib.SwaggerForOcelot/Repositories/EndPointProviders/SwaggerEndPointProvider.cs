@@ -56,18 +56,15 @@ namespace MMLib.SwaggerForOcelot.Repositories
         }
 
         private static void AddEndpoint(Dictionary<string, SwaggerEndPointOptions> ret, string key, string description)
-            => ret.Add($"/{key}", new SwaggerEndPointOptions()
-            {
-                Key = key,
-                TransformByOcelotConfig = false,
-                Config = new List<SwaggerEndPointConfig>() {
-                    new SwaggerEndPointConfig()
+            => ret.Add($"/{key}",
+                new SwaggerEndPointOptions()
+                {
+                    Key = key,
+                    TransformByOcelotConfig = false,
+                    Config = new List<SwaggerEndPointConfig>()
                     {
-                        Name = description,
-                        Version = key,
-                        Url = ""
+                        new SwaggerEndPointConfig() { Name = description, Version = key, Url = "" }
                     }
-                }
-            });
+                });
     }
 }

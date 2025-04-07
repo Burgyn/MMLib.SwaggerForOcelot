@@ -26,9 +26,9 @@
     <ItemGroup>
         <PackageReference Include="Kros.Utils" Version="3.0.2" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
-        <PackageReference Include="Ocelot" Version="20.*" />
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
+        <PackageReference Include="Ocelot" Version="23.4.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="8.1.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="8.1.0" />
     </ItemGroup>
     <ItemGroup>
         <None Include="../../README.md" Pack="true" PackagePath="\" />

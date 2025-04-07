@@ -24,8 +24,8 @@
         <None Include="icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Kros.Utils" Version="2.1.0" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+        <PackageReference Include="Kros.Utils" Version="3.0.2" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
         <PackageReference Include="Ocelot" Version="20.*" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />

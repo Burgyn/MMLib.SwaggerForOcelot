@@ -313,7 +313,7 @@ app.UseSwagger();
 
 ## Documentation of Ocelot Aggregates
 
-You are probably familiar with Ocelot great feature [***Request Aggregation***](https://ocelot.readthedocs.io/en/latest/features/requestaggregation.html). Request Aggregation allows you to easily add a new endpoint to the gateway that will aggregate the result from other existing endpoints.
+You are probably familiar with Ocelot great feature [***Request Aggregation***](https://ocelot.readthedocs.io/en/latest/features/aggregation.html). Request Aggregation allows you to easily add a new endpoint to the gateway that will aggregate the result from other existing endpoints.
 If you use these aggregations, you would probably want to have these endpoints in the api documentation as well.
 
 📢 From version `3.0.0` you can use this package for generating documentation for Ocelot aggregates.

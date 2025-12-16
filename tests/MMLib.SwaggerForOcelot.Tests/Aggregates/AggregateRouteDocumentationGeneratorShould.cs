@@ -83,7 +83,6 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                         Summary = "Aggregation of routes: service1, service2",
                         Description = "Description from downstream services.<br /><br /><strong>service1:</strong><br />service 1<br /><br /><strong>service2:</strong><br />service 2",
                         Parameters = new List<IOpenApiParameter>()
-
                     });
             }
 

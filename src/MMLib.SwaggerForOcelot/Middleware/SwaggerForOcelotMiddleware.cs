@@ -1,8 +1,7 @@
 ﻿using Kros.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Writers;
+using Microsoft.OpenApi;
 using MMLib.SwaggerForOcelot.Configuration;
 using MMLib.SwaggerForOcelot.Repositories;
 using MMLib.SwaggerForOcelot.ServiceDiscovery;

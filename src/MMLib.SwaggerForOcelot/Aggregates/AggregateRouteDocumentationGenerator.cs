@@ -1,7 +1,7 @@
 ﻿using Kros.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using MMLib.SwaggerForOcelot.Configuration;
 using Ocelot.Configuration.Builder;
 using Ocelot.Multiplexer;
@@ -10,6 +10,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Mime;
 using System.Reflection;
 using System.Text;
@@ -66,7 +67,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             OpenApiDocument openApiDocument)
         {
             Response response = CreateResponseSchema(routes, aggregateRoute, openApiDocument);
-            Dictionary<OperationType, OpenApiOperation> operations = CreateOperations(aggregateRoute, routes, response);
+            Dictionary<HttpMethod, OpenApiOperation> operations = CreateOperations(aggregateRoute, routes, response);
 
             return new OpenApiPathItem()
             {
@@ -74,14 +75,14 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             };
         }
 
-        private static Dictionary<OperationType, OpenApiOperation> CreateOperations(
+        private static Dictionary<HttpMethod, OpenApiOperation> CreateOperations(
             SwaggerAggregateRoute aggregateRoute,
             IEnumerable<RouteDocs> routes,
             Response response)
-            => new Dictionary<OperationType, OpenApiOperation>()
+            => new Dictionary<HttpMethod, OpenApiOperation>()
             {
                 {
-                    OperationType.Get,
+                    HttpMethod.Get,
                     CreateOperation(aggregateRoute, routes, response)
                 }
             };
@@ -94,21 +95,21 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             AggregateResponseAttribute attribute = GetAggregatorAttribute(aggregateRoute);
             if (attribute is not null)
             {
-                OpenApiSchema reference = _schemaGenerator.GenerateSchema(attribute.ResponseType, _schemaRepository);
+                IOpenApiSchema reference = _schemaGenerator.GenerateSchema(attribute.ResponseType, _schemaRepository);
                 var response = new Response()
                 {
                     Description = attribute.Description,
                     MediaType = attribute.MediaType,
                     StatusCode = attribute.StatusCode
                 };
-                foreach (KeyValuePair<string, OpenApiSchema> item in _schemaRepository.Schemas)
+                foreach (KeyValuePair<string, IOpenApiSchema> item in _schemaRepository.Schemas)
                 {
                     openApiDocument.Components.Schemas.Add(item.Key, item.Value);
                 }
 
-                if (reference.Reference is not null)
+                if (reference is OpenApiSchemaReference schemaRef && schemaRef.Reference is not null)
                 {
-                    response.Schema = _schemaRepository.Schemas[reference.Reference.Id];
+                    response.Schema = _schemaRepository.Schemas[schemaRef.Reference.Id];
                 }
                 else
                 {
@@ -120,8 +121,8 @@ namespace MMLib.SwaggerForOcelot.Aggregates
 
             var schema = new OpenApiSchema
             {
-                Type = "object",
-                Properties = new Dictionary<string, OpenApiSchema>(),
+                Type = JsonSchemaType.Object,
+                Properties = new Dictionary<string, IOpenApiSchema>(),
                 Required = new SortedSet<string>(),
                 AdditionalPropertiesAllowed = false
             };
@@ -165,9 +166,9 @@ namespace MMLib.SwaggerForOcelot.Aggregates
                 Parameters = GetParameters(routesDocs)
             };
 
-        private static List<OpenApiParameter> GetParameters(IEnumerable<RouteDocs> routesDocs)
+        private static List<IOpenApiParameter> GetParameters(IEnumerable<RouteDocs> routesDocs)
         {
-            var parameters = new Dictionary<string, OpenApiParameter>(StringComparer.OrdinalIgnoreCase);
+            var parameters = new Dictionary<string, IOpenApiParameter>(StringComparer.OrdinalIgnoreCase);
             static string GetDescription(RouteDocs docs, OpenApiParameter parameter, string prefix = null)
                 => parameter.Description.IsNullOrWhiteSpace()
                     ? string.Empty
@@ -177,7 +178,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             {
                 foreach (OpenApiParameter parameter in docs.Parameters)
                 {
-                    if (!parameters.TryGetValue(parameter.Name, out OpenApiParameter newParam))
+                    if (!parameters.TryGetValue(parameter.Name, out IOpenApiParameter newParam))
                     {
                         newParam = parameter;
                         newParam.Description = GetDescription(docs, parameter);
@@ -223,12 +224,10 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             return sb.ToString();
         }
 
-        private static List<OpenApiTag> GetTags(IEnumerable<RouteDocs> route)
-            => new List<OpenApiTag>() {
-                new OpenApiTag() {
-                    Name = RoutesToString(route)
-                }
-            };
+        private static ISet<OpenApiTagReference> GetTags(IEnumerable<RouteDocs> route)
+            => new List<OpenApiTagReference>() {
+                new OpenApiTagReference(RoutesToString(route))
+            }.ToHashSet();
 
         private static string RoutesToString(IEnumerable<RouteDocs> route, string separator = "-")
             => string.Join(separator, route.OrderBy(p => p.SwaggerKey).Select(r => r.SwaggerKey).Distinct());
@@ -261,7 +260,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
 
             public string Description { get; set; } = "Success";
 
-            public OpenApiSchema Schema { get; set; }
+            public IOpenApiSchema Schema { get; set; }
         }
     }
 }

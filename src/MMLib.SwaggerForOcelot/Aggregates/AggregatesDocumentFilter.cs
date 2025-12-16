@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.OpenApi;
 using MMLib.SwaggerForOcelot.Configuration;
-using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Collections.Generic;
 
 namespace MMLib.SwaggerForOcelot.Aggregates
 {

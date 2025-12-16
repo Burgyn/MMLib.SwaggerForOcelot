@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi;
+using MMLib.Ocelot.Provider.AppConfiguration;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
-using Microsoft.Extensions.Hosting;
-using MMLib.Ocelot.Provider.AppConfiguration;
-using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 
 namespace ApiGateway
 {

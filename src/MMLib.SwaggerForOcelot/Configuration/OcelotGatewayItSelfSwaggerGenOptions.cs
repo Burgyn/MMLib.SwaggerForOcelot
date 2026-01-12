@@ -89,7 +89,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         {
             SecurityDefinitionActions.Add((s) =>
             {
-                s.AddSecurityRequirement((f) => openApiSecurityRequirement);
+                s.AddSecurityRequirement((_) => openApiSecurityRequirement);
             });
         }
     }

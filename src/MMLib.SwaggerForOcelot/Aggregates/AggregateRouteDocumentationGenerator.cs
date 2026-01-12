@@ -67,7 +67,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             OpenApiDocument openApiDocument)
         {
             Response response = CreateResponseSchema(routes, aggregateRoute, openApiDocument);
-            Dictionary<HttpMethod, OpenApiOperation> operations = CreateOperations(aggregateRoute, routes, response);
+            Dictionary<HttpMethod, OpenApiOperation> operations = CreateOperations(aggregateRoute, routes, response, openApiDocument);
 
             return new OpenApiPathItem()
             {
@@ -78,12 +78,13 @@ namespace MMLib.SwaggerForOcelot.Aggregates
         private static Dictionary<HttpMethod, OpenApiOperation> CreateOperations(
             SwaggerAggregateRoute aggregateRoute,
             IEnumerable<RouteDocs> routes,
-            Response response)
+            Response response,
+            OpenApiDocument openApiDocument)
             => new Dictionary<HttpMethod, OpenApiOperation>()
             {
                 {
                     HttpMethod.Get,
-                    CreateOperation(aggregateRoute, routes, response)
+                    CreateOperation(aggregateRoute, routes, response, openApiDocument)
                 }
             };
 
@@ -157,9 +158,10 @@ namespace MMLib.SwaggerForOcelot.Aggregates
         private static OpenApiOperation CreateOperation(
             SwaggerAggregateRoute aggregateRoute,
             IEnumerable<RouteDocs> routesDocs,
-            Response response) => new OpenApiOperation()
+            Response response,
+            OpenApiDocument openApiDocument) => new OpenApiOperation()
             {
-                Tags = GetTags(routesDocs),
+                Tags = GetTags(routesDocs, openApiDocument),
                 Summary = GetSummary(routesDocs),
                 Description = GetDescription(aggregateRoute, routesDocs),
                 Responses = OpenApiHelper.Responses(response),
@@ -224,9 +226,9 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             return sb.ToString();
         }
 
-        private static ISet<OpenApiTagReference> GetTags(IEnumerable<RouteDocs> route)
+        private static ISet<OpenApiTagReference> GetTags(IEnumerable<RouteDocs> route, OpenApiDocument openApiDocument)
             => new List<OpenApiTagReference>() {
-                new OpenApiTagReference(RoutesToString(route))
+                new OpenApiTagReference(RoutesToString(route), openApiDocument)
             }.ToHashSet();
 
         private static string RoutesToString(IEnumerable<RouteDocs> route, string separator = "-")

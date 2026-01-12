@@ -1,15 +1,15 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.OpenApi;
+using MMLib.SwaggerForOcelot.Aggregates;
 using MMLib.SwaggerForOcelot.Configuration;
+using MMLib.SwaggerForOcelot.Middleware;
+using MMLib.SwaggerForOcelot.Repositories;
 using MMLib.SwaggerForOcelot.ServiceDiscovery;
 using MMLib.SwaggerForOcelot.Transformation;
-using System.Collections.Generic;
-using MMLib.SwaggerForOcelot.Middleware;
-using System;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Microsoft.OpenApi.Models;
-using MMLib.SwaggerForOcelot.Repositories;
-using MMLib.SwaggerForOcelot.Aggregates;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 

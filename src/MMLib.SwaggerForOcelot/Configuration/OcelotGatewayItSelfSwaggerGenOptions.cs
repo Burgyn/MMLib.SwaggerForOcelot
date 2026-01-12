@@ -1,8 +1,8 @@
-﻿using Swashbuckle.AspNetCore.SwaggerGen;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
 
 namespace MMLib.SwaggerForOcelot.Configuration
 {
@@ -89,7 +89,7 @@ namespace MMLib.SwaggerForOcelot.Configuration
         {
             SecurityDefinitionActions.Add((s) =>
             {
-                s.AddSecurityRequirement(openApiSecurityRequirement);
+                s.AddSecurityRequirement((_) => openApiSecurityRequirement);
             });
         }
     }

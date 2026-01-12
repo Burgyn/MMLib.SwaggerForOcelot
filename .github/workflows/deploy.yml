@@ -12,9 +12,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core if needed
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version:  8.0.x
+        dotnet-version: 10.0.x
     - name: Build
       run: dotnet build ./MMLib.SwaggerForOcelot.sln --configuration Release
     - name: Test

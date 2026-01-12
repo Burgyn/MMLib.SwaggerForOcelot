@@ -1,5 +1,5 @@
 ﻿using Kros.Extensions;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;

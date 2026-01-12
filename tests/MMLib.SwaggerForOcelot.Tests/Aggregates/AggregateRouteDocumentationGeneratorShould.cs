@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using MMLib.SwaggerForOcelot.Aggregates;
 using MMLib.SwaggerForOcelot.Configuration;
 using Newtonsoft.Json.Linq;
@@ -82,6 +82,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                     {
                         Summary = "Aggregation of routes: service1, service2",
                         Description = "Description from downstream services.<br /><br /><strong>service1:</strong><br />service 1<br /><br /><strong>service2:</strong><br />service 2",
+                        Parameters = new List<IOpenApiParameter>()
                     });
             }
 
@@ -99,7 +100,8 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                     new OpenApiOperation()
                     {
                         Summary = "Aggregation of routes: service1, service2",
-                        Description = "custom aggregate description"
+                        Description = "custom aggregate description",
+                        Parameters = new List<IOpenApiParameter>()
                     });
             }
 
@@ -116,7 +118,8 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                     new OpenApiOperation()
                     {
                         Summary = "Aggregation of routes: service1, service2",
-                        Description = "Description from downstream services.<br /><br /><strong>service1:</strong><br />service 1"
+                        Description = "Description from downstream services.<br /><br /><strong>service1:</strong><br />service 1",
+                        Parameters = new List<IOpenApiParameter>()
                     });
             }
 
@@ -133,7 +136,8 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                     new OpenApiOperation()
                     {
                         Summary = "Aggregation of routes: service1, service2",
-                        Description = string.Empty
+                        Description = string.Empty,
+                        Parameters = new List<IOpenApiParameter>()
                     });
             }
 
@@ -152,7 +156,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                     {
                         Summary = "Aggregation of routes: service1, service2",
                         Description = string.Empty,
-                        Parameters = new List<OpenApiParameter>() { CreateParameter("id") }
+                        Parameters = new List<IOpenApiParameter>() { CreateParameter("id") }
                     });
             }
 
@@ -171,7 +175,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                     {
                         Summary = "Aggregation of routes: service1, service2",
                         Description = string.Empty,
-                        Parameters = new List<OpenApiParameter>() { CreateParameter("id"), CreateParameter("type") }
+                        Parameters = new List<IOpenApiParameter>() { CreateParameter("id"), CreateParameter("type") }
                     });
             }
 
@@ -194,7 +198,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                     {
                         Summary = "Aggregation of routes: service1, service2",
                         Description = string.Empty,
-                        Parameters = new List<OpenApiParameter>() { CreateParameter("id"), CreateParameter("type") }
+                        Parameters = new List<IOpenApiParameter>() { CreateParameter("id"), CreateParameter("type") }
                     });
             }
 
@@ -216,7 +220,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                     {
                         Summary = "Aggregation of routes: service1, service2",
                         Description = string.Empty,
-                        Parameters = new List<OpenApiParameter>() {
+                        Parameters = new List<IOpenApiParameter>() {
                             CreateParameter("id"), CreateParameter("q1", ParameterLocation.Query)
                         }
                     });
@@ -240,7 +244,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                     {
                         Summary = "Aggregation of routes: service1, service2",
                         Description = string.Empty,
-                        Parameters = new List<OpenApiParameter>() {
+                        Parameters = new List<IOpenApiParameter>() {
                             CreateParameter("id"), CreateParameter("q1", ParameterLocation.Query)
                         }
                     });
@@ -266,7 +270,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                     {
                         Summary = "Aggregation of routes: service1, service2",
                         Description = string.Empty,
-                        Parameters = new List<OpenApiParameter>() {
+                        Parameters = new List<IOpenApiParameter>() {
                             CreateParameter("id", description:"<strong>service1:</strong><br />User identifier<br /><br /><strong>service2:</strong><br />Identifier"),
                             CreateParameter("q1", ParameterLocation.Query)
                         }

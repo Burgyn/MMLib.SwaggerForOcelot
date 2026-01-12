@@ -1,4 +1,4 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi;
 using MMLib.SwaggerForOcelot.Aggregates;
 using System;
 using System.Collections.Generic;

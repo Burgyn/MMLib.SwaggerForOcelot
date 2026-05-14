@@ -73,7 +73,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                 Add(new SwaggerAggregateRoute()
                 {
                     UpstreamPathTemplate = "/api/aggregate1",
-                    RouteKeys = new List<string>() { "service1", "service2" }
+                    RouteKeys = new HashSet<string>() { "service1", "service2" }
                 },
                     new List<RouteDocs>() {
                         new RouteDocs("service1", CreateDocs("service 1")),
@@ -91,7 +91,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                 Add(new SwaggerAggregateRoute()
                 {
                     UpstreamPathTemplate = "/api/aggregate1",
-                    RouteKeys = new List<string>() { "service1", "service2" },
+                    RouteKeys = new HashSet<string>() { "service1", "service2" },
                     Description = "custom aggregate description"
                 },
                     new List<RouteDocs>() {
@@ -110,7 +110,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                 Add(new SwaggerAggregateRoute()
                 {
                     UpstreamPathTemplate = "/api/aggregate1",
-                    RouteKeys = new List<string>() { "service1", "service2" },
+                    RouteKeys = new HashSet<string>() { "service1", "service2" },
                 },
                     new List<RouteDocs>() {
                         new RouteDocs("service1", CreateDocs("service 1")),
@@ -128,7 +128,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                 Add(new SwaggerAggregateRoute()
                 {
                     UpstreamPathTemplate = "/api/aggregate1",
-                    RouteKeys = new List<string>() { "service1", "service2" },
+                    RouteKeys = new HashSet<string>() { "service1", "service2" },
                 },
                     new List<RouteDocs>() {
                         new RouteDocs("service1", CreateDocs("")),
@@ -147,7 +147,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                 Add(new SwaggerAggregateRoute()
                 {
                     UpstreamPathTemplate = "/api/aggregate1",
-                    RouteKeys = new List<string>() { "service1", "service2" },
+                    RouteKeys = new HashSet<string>() { "service1", "service2" },
                 },
                     new List<RouteDocs>() {
                         new RouteDocs("service1", docs),
@@ -166,7 +166,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                 Add(new SwaggerAggregateRoute()
                 {
                     UpstreamPathTemplate = "/api/aggregate1",
-                    RouteKeys = new List<string>() { "service1", "service2" },
+                    RouteKeys = new HashSet<string>() { "service1", "service2" },
                 },
                     new List<RouteDocs>() {
                         new RouteDocs("service1", docs),
@@ -184,7 +184,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                 Add(new SwaggerAggregateRoute()
                 {
                     UpstreamPathTemplate = "/api/aggregate1",
-                    RouteKeys = new List<string>() { "service1", "service2" },
+                    RouteKeys = new HashSet<string>() { "service1", "service2" },
                 },
                     new List<RouteDocs>() {
                         new RouteDocs("service1", CreateDocs("", CreateParameters(CreateParameter("id"), CreateParameter("type")))),
@@ -207,7 +207,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                 Add(new SwaggerAggregateRoute()
                 {
                     UpstreamPathTemplate = "/api/aggregate1",
-                    RouteKeys = new List<string>() { "service1", "service2" },
+                    RouteKeys = new HashSet<string>() { "service1", "service2" },
                 },
                     new List<RouteDocs>() {
                         new RouteDocs("service1",
@@ -231,7 +231,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                 Add(new SwaggerAggregateRoute()
                 {
                     UpstreamPathTemplate = "/api/aggregate1",
-                    RouteKeys = new List<string>() { "service1", "service2" },
+                    RouteKeys = new HashSet<string>() { "service1", "service2" },
                 },
                     new List<RouteDocs>() {
                         new RouteDocs("service1",
@@ -255,7 +255,7 @@ namespace MMLib.SwaggerForOcelot.Tests.Aggregates
                 Add(new SwaggerAggregateRoute()
                 {
                     UpstreamPathTemplate = "/api/aggregate1",
-                    RouteKeys = new List<string>() { "service1", "service2" },
+                    RouteKeys = new HashSet<string>() { "service1", "service2" },
                 },
                     new List<RouteDocs>() {
                         new RouteDocs("service1",

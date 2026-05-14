@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using MMLib.SwaggerForOcelot.Configuration;
-using Ocelot.Configuration.Builder;
+using Ocelot.Configuration;
 using Ocelot.Multiplexer;
 using Ocelot.Responses;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -146,7 +146,7 @@ namespace MMLib.SwaggerForOcelot.Aggregates
             if (!aggregateRoute.Aggregator.IsNullOrEmpty())
             {
                 Response<IDefinedAggregator> aggregator = _definedAggregatorProvider
-                    .Get(new RouteBuilder().WithAggregator(aggregateRoute.Aggregator).Build());
+                    .Get(new Route { Aggregator = aggregateRoute.Aggregator });
                 if (!aggregator.IsError)
                 {
                     return aggregator.Data.GetType().GetCustomAttribute<AggregateResponseAttribute>();

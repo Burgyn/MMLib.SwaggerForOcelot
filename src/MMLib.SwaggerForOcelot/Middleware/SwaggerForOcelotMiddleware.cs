@@ -178,6 +178,10 @@ namespace MMLib.SwaggerForOcelot.Middleware
         private static (string Version, string Key) GetEndPointInfo(string path)
         {
             string[] keys = path.Split('/');
+            if (keys.Length < 3)
+            {
+                return (null, null);
+            }
             return (keys[1], keys[2]);
         }
     }

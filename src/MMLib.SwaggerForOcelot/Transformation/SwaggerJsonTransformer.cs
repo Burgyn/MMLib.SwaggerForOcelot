@@ -192,7 +192,11 @@ namespace MMLib.SwaggerForOcelot.Transformation
                         }
                         var newMethod = (method.DeepClone() as JProperty);
                         AddSecurityDefinition(newMethod, route);
-                        ((JObject)newPathJson.Value).Add(newMethod);
+                        var newPathObject = (JObject)newPathJson.Value;
+                        if (newPathObject.Property(newMethod.Name) is null)
+                        {
+                            newPathObject.Add(newMethod);
+                        }
                     }
                 }
             }

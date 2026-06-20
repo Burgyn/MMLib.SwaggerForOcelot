@@ -8,6 +8,8 @@ Direct via `http://ocelotprojecturl:port/swagger` provides documentation for dow
 
 ![SwaggerForOcelot](https://raw.githubusercontent.com/Burgyn/MMLib.SwaggerForOcelot/master/demo/image.png)
 
+> 🚀 **Using YARP instead of Ocelot?** Check out the sister project **[MMLib.OpenApiForYarp](https://github.com/Burgyn/MMLib.OpenApiForYarp)** — it brings the same idea (aggregating downstream OpenAPI docs onto your API gateway) to the [YARP](https://github.com/dotnet/yarp) reverse proxy. It reuses your existing YARP route definitions and transforms to rewrite paths, and serves the result through Scalar or Swagger UI.
+
 ---
 Did this project help you? You can now buy me a coffee ☕️. 
 

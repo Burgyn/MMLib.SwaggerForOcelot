@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -105,6 +106,16 @@ namespace MMLib.SwaggerForOcelot.Tests
             IServiceCollection serviceCollection = new ServiceCollection();
 
             serviceCollection.AddSingleton(Substitute.For<ISwaggerProvider>());
+
+            // In a real host IWebHostEnvironment is always registered; Swashbuckle's UseSwaggerUI
+            // requires it since 10.2.x, so it must be provided in this bare test service collection.
+            var webHostEnvironment = Substitute.For<IWebHostEnvironment>();
+            webHostEnvironment.EnvironmentName.Returns("Development");
+            webHostEnvironment.ApplicationName.Returns("MMLib.SwaggerForOcelot.Tests");
+            webHostEnvironment.WebRootPath.Returns(Directory.GetCurrentDirectory());
+            webHostEnvironment.ContentRootPath.Returns(Directory.GetCurrentDirectory());
+            serviceCollection.AddSingleton(webHostEnvironment);
+
             serviceCollection.AddSwaggerForOcelot(configuration);
             configureServices?.Invoke(serviceCollection);
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();

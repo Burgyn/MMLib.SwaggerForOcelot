@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>net10.0</TargetFrameworks>
-        <Version>10.0.2</Version>
+        <Version>11.0.0</Version>
         <Authors>Milan Martiniak</Authors>
         <Company>MMLib</Company>
         <Description>Swagger generator for Ocelot downstream services.</Description>
